@@ -2,11 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
 public class ObjectManager : MonoBehaviour
 {
     [SerializeField]
-    private InteractiveObject[] _interactiveObjectList;
+    private InteractiveObject[] _interactiveObjectList = new InteractiveObject[0];
 
+
+    public void FindAllObject()
+    {
+        _interactiveObjectList = FindObjectsOfType<InteractiveObject>();
+    }
 
     public InteractiveObject ObjectsInRange(Vector3 position, float range)
     {

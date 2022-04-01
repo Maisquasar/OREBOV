@@ -5,16 +5,10 @@ using UnityEngine;
 public class InteractiveObject : MonoBehaviour
 {
 
-    public enum InteractiveStatus
-    {
-        Deactive,
-        Selected,
-        Active,
-    }
 
 
     [SerializeField]
-    private bool _isSelected;
+    public bool _isSelected;
 
     protected bool _objectActive;
 
