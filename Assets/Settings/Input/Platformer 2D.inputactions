@@ -20,6 +20,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Hold(duration=0.4,pressPoint=0.5)"
+                },
+                {
+                    "name": "Interaction",
+                    "type": "Button",
+                    "id": "a6ec30d3-f812-4bba-9953-520df6e408b5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold(duration=0.4,pressPoint=0.5)"
                 }
             ],
             "bindings": [
@@ -185,6 +193,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4e23089-4feb-4ae6-96bb-38b64a2193b0",
+                    "path": "<XInputController>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Interaction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
