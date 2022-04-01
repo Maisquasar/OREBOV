@@ -47,7 +47,7 @@
   <PropertyGroup>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Package</UnityProjectGenerator>
-    <UnityProjectGeneratorVersion>2.0.9</UnityProjectGeneratorVersion>
+    <UnityProjectGeneratorVersion>2.0.15</UnityProjectGeneratorVersion>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2020.3.14f1</UnityVersion>
@@ -56,11 +56,15 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\SampleSceneAssets\Scripts\PlayerMovement.cs" />
-    <Compile Include="Assets\SampleSceneAssets\Scripts\SimpleCameraController.cs" />
-    <Compile Include="Assets\TestScript.cs" />
-    <Compile Include="Assets\SampleSceneAssets\TutorialInfo\Scripts\Readme.cs" />
-    <Compile Include="Assets\SampleSceneAssets\Scripts\LookWithMouse.cs" />
+    <Compile Include="Assets\Scripts\Level\Triggers\SoundTrigger.cs" />
+    <Compile Include="Assets\Scripts\Level\Triggers\LightTrigger.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Player.cs" />
+    <Compile Include="Assets\Scripts\Entities\EntityMovement.cs" />
+    <Compile Include="Assets\Scripts\Level\Triggers\CameraTrigger.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Level\Triggers\Trigger.cs" />
+    <Compile Include="Assets\Scripts\Entities\Entity.cs" />
+    <Compile Include="Assets\Scripts\Level\Triggers\DetectionZone.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

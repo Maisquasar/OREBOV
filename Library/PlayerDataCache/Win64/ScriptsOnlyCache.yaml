@@ -1,10 +1,18 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - CameraTrigger
+    - DetectionZone
+    - LightTrigger
+    - Player
+    - PlayerMovement
+    - SoundTrigger
     - TestScript
     Unity.InputSystem.dll:
+    - UnityEngine.InputSystem.InputActionAsset
     - UnityEngine.InputSystem.InputSettings
     - UnityEngine.InputSystem.InputSystemObject
+    - UnityEngine.InputSystem.PlayerInput
     - UnityEngine.InputSystem.RemoteInputPlayerConnection
     Unity.RenderPipelines.Core.Editor.dll:
     - UnityEditor.Rendering.VolumeProfileEditor
@@ -39,10 +47,10 @@ ScriptsOnlyBuild:
     - UnityEngine.Rendering.VolumeProfile
     Unity.RenderPipelines.HighDefinition.Editor.dll:
     - UnityEditor.Rendering.HighDefinition.HDProjectSettings
-    - UnityEditor.Rendering.HighDefinition.HDRenderPipelineEditor
     Unity.RenderPipelines.HighDefinition.Runtime.dll:
     - UnityEngine.Rendering.HighDefinition.AmbientOcclusion
     - UnityEngine.Rendering.HighDefinition.Bloom
+    - UnityEngine.Rendering.HighDefinition.ColorAdjustments
     - UnityEngine.Rendering.HighDefinition.ContactShadows
     - UnityEngine.Rendering.HighDefinition.DiffusionProfileSettings
     - UnityEngine.Rendering.HighDefinition.Exposure
@@ -53,6 +61,7 @@ ScriptsOnlyBuild:
     - UnityEngine.Rendering.HighDefinition.HDRISky
     - UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset
     - UnityEngine.Rendering.HighDefinition.HDRenderPipelineEditorResources
+    - UnityEngine.Rendering.HighDefinition.HDRenderPipelineRayTracingResources
     - UnityEngine.Rendering.HighDefinition.HDShadowSettings
     - UnityEngine.Rendering.HighDefinition.MotionBlur
     - UnityEngine.Rendering.HighDefinition.PhysicallyBasedSky
@@ -101,6 +110,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 54
+      Script: {instanceID: 0}
     - Class: 65
       Script: {instanceID: 0}
     - Class: 81
@@ -121,6 +132,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 1670}
     - Class: 114
       Script: {instanceID: 1678}
+    - Class: 114
+      Script: {instanceID: 1722}
     - Class: 114
       Script: {instanceID: 1776}
     - Class: 114
@@ -150,7 +163,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3962}
     - Class: 114
+      Script: {instanceID: 4128}
+    - Class: 114
       Script: {instanceID: 4344}
+    - Class: 114
+      Script: {instanceID: 4428}
     - Class: 114
       Script: {instanceID: 4510}
     - Class: 114
@@ -162,71 +179,83 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 4784}
     - Class: 114
-      Script: {instanceID: 4894}
+      Script: {instanceID: 4896}
     - Class: 114
-      Script: {instanceID: 5382}
+      Script: {instanceID: 5384}
     - Class: 114
-      Script: {instanceID: 5620}
+      Script: {instanceID: 5622}
     - Class: 114
-      Script: {instanceID: 5744}
+      Script: {instanceID: 5746}
     - Class: 114
-      Script: {instanceID: 5802}
+      Script: {instanceID: 5804}
     - Class: 114
-      Script: {instanceID: 5818}
+      Script: {instanceID: 5820}
     - Class: 114
-      Script: {instanceID: 5876}
+      Script: {instanceID: 5878}
     - Class: 114
-      Script: {instanceID: 5892}
-    - Class: 114
-      Script: {instanceID: 6116}
+      Script: {instanceID: 5894}
     - Class: 114
       Script: {instanceID: 6118}
     - Class: 114
-      Script: {instanceID: 6140}
+      Script: {instanceID: 6120}
     - Class: 114
-      Script: {instanceID: 6398}
+      Script: {instanceID: 6142}
     - Class: 114
       Script: {instanceID: 6400}
     - Class: 114
-      Script: {instanceID: 6536}
+      Script: {instanceID: 6402}
     - Class: 114
-      Script: {instanceID: 6712}
+      Script: {instanceID: 6538}
     - Class: 114
-      Script: {instanceID: 6794}
+      Script: {instanceID: 6714}
     - Class: 114
-      Script: {instanceID: 6802}
+      Script: {instanceID: 6796}
     - Class: 114
-      Script: {instanceID: 6918}
+      Script: {instanceID: 6804}
     - Class: 114
-      Script: {instanceID: 6934}
+      Script: {instanceID: 6920}
     - Class: 114
-      Script: {instanceID: 6978}
+      Script: {instanceID: 6936}
     - Class: 114
-      Script: {instanceID: 6982}
+      Script: {instanceID: 6980}
     - Class: 114
-      Script: {instanceID: 7032}
+      Script: {instanceID: 6984}
     - Class: 114
-      Script: {instanceID: 7080}
+      Script: {instanceID: 7034}
     - Class: 114
-      Script: {instanceID: 7128}
+      Script: {instanceID: 7082}
     - Class: 114
-      Script: {instanceID: 7244}
+      Script: {instanceID: 7130}
     - Class: 114
-      Script: {instanceID: 7404}
+      Script: {instanceID: 7246}
     - Class: 114
-      Script: {instanceID: 7528}
+      Script: {instanceID: 7406}
     - Class: 114
-      Script: {instanceID: 7592}
+      Script: {instanceID: 7530}
     - Class: 114
-      Script: {instanceID: 8338}
+      Script: {instanceID: 7594}
     - Class: 114
-      Script: {instanceID: 8364}
+      Script: {instanceID: 8340}
     - Class: 114
-      Script: {instanceID: 8692}
+      Script: {instanceID: 8366}
     - Class: 114
-      Script: {instanceID: 8864}
+      Script: {instanceID: 8694}
     - Class: 114
-      Script: {instanceID: 8990}
+      Script: {instanceID: 8866}
+    - Class: 114
+      Script: {instanceID: 8992}
+    - Class: 114
+      Script: {instanceID: 22048}
+    - Class: 114
+      Script: {instanceID: 22050}
+    - Class: 114
+      Script: {instanceID: 22052}
+    - Class: 114
+      Script: {instanceID: 22056}
+    - Class: 114
+      Script: {instanceID: 22058}
+    - Class: 114
+      Script: {instanceID: 22064}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -528,12 +557,6 @@ ScriptsOnlyBuild:
     className: CinemachineHardLookAt
   - hash:
       serializedVersion: 2
-      Hash: 6cef1a2f5ae3af78f4815d6fb076c559
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: PlayerMovement
-  - hash:
-      serializedVersion: 2
       Hash: 1f0602e7bad1e0a9cba31ce292eee8bb
     assemblyName: Unity.RenderPipelines.Core.Runtime.dll
     namespaceName: UnityEngine.Rendering.UI
@@ -742,12 +765,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.RenderPipelines.Core.Runtime.dll
     namespaceName: UnityEngine.Rendering.UI
     className: DebugUIHandlerVBox
-  - hash:
-      serializedVersion: 2
-      Hash: 0b97c6d4478b0755745e0f5063ada277
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: UnityTemplateProjects
-    className: SimpleCameraController
   - hash:
       serializedVersion: 2
       Hash: 611bc970ee9dc090779a3fac6a18fac6
@@ -1182,7 +1199,7 @@ ScriptsOnlyBuild:
     className: VFXPositionBinder
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: ac7bf61e002e3f554765d4330341ded8
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: TestScript
@@ -1498,12 +1515,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.RenderPipelines.Core.Runtime.dll
     namespaceName: UnityEngine.Rendering.UI
     className: DebugUIHandlerCanvas
-  - hash:
-      serializedVersion: 2
-      Hash: 655675a941ea756088027703b43352a4
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: LookWithMouse
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -1930,6 +1941,60 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualEffectGraph.Runtime.dll
     namespaceName: UnityEngine.VFX.Utility
     className: VFXInputAxisBinder
+  - hash:
+      serializedVersion: 2
+      Hash: 7ece9b8b30afab8eb358d86edb9f55c5
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SoundTrigger
+  - hash:
+      serializedVersion: 2
+      Hash: c96f4fb266c49307e6514c55ffa8dc35
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: LightTrigger
+  - hash:
+      serializedVersion: 2
+      Hash: 954deb187bbf98804a885d0ecc7e3ab4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Player
+  - hash:
+      serializedVersion: 2
+      Hash: cfa23f52a7c60a7e7bfb12894f7d3b3d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: EntityMovement
+  - hash:
+      serializedVersion: 2
+      Hash: b92bb2c2281938892320f6980492567e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CameraTrigger
+  - hash:
+      serializedVersion: 2
+      Hash: dd2dd26a522e29c4b4c32efd9e795230
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayerMovement
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Trigger
+  - hash:
+      serializedVersion: 2
+      Hash: 5deb3049aefd9edf0bcb9479b158b892
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Entity
+  - hash:
+      serializedVersion: 2
+      Hash: 3fcb92cca7a2edf4e19bb998084faea5
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DetectionZone
   platform: 19
   scenePathNames:
   - Assets/Scenes/Default.unity
