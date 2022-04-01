@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
+using States;
 
 
 public class Player : Entity
@@ -34,7 +35,8 @@ public class Player : Entity
 
     public void OnJumping(CallbackContext context)
     {
-        if (Controller.PlayerAction == PlayerStates.PlayerAction.IDLE || Controller.PlayerAction == PlayerStates.PlayerAction.RUN)
-            isJumping = true;
+        if (Controller.PlayerActionState == PlayerAction.IDLE || Controller.PlayerActionState == PlayerAction.RUN)
+            if (context.performed)
+                isJumping = true;
     }
 }
