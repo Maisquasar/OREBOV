@@ -21,6 +21,10 @@ public class Player : Entity
             isJumping = false;
     }
 
+    private void FixedUpdate()
+    {
+    }
+
     public void OnMove(CallbackContext context)
     {
         movementDir = context.ReadValue<Vector2>();
@@ -30,6 +34,7 @@ public class Player : Entity
 
     public void OnJumping(CallbackContext context)
     {
-        isJumping = true;
+        if (Controller.PlayerAction == PlayerStates.PlayerAction.IDLE || Controller.PlayerAction == PlayerStates.PlayerAction.RUN)
+            isJumping = true;
     }
 }
