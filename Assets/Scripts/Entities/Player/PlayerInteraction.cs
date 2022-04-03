@@ -51,8 +51,6 @@ public class PlayerInteraction : MonoBehaviour
         if (callback.started)
             PressInput();
 
-        
-
         if (callback.canceled)
             CancelInput();
 
@@ -78,7 +76,6 @@ public class PlayerInteraction : MonoBehaviour
         _inputReset = true;
     }
     #endregion
-
 
     #region Selecting Object
 

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Audio;
 public class InteractiveObject : MonoBehaviour
 {
 
@@ -9,8 +9,16 @@ public class InteractiveObject : MonoBehaviour
 
     [SerializeField]
     public bool _isSelected;
-
     protected bool _objectActive;
+
+    [Header("Sound")]
+    [SerializeField]
+    protected bool _activeSound = false;
+    [SerializeField]
+    protected AudioClip _soundActiveTrigger;
+    [SerializeField]
+    protected AudioClip _soundDeactiveTrigger;
+
 
 
     public virtual void ItemInteraction()
@@ -24,12 +32,15 @@ public class InteractiveObject : MonoBehaviour
 
     protected virtual void ActiveItem()
     {
-
+        if (_activeSound)
+            AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
         Debug.Log("Item Active");
     }
 
     protected virtual void DeactiveItem()
     {
+        if (_activeSound)
+            AudioSource.PlayClipAtPoint(_soundDeactiveTrigger, transform.position);
         Debug.Log("Item Deactive");
     }
 
@@ -46,7 +57,7 @@ public class InteractiveObject : MonoBehaviour
 
     protected virtual void ItemSelected()
     {
-       
+
     }
 
 
