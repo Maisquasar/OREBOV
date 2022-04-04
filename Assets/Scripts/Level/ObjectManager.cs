@@ -19,10 +19,12 @@ public class ObjectManager : MonoBehaviour
     {
         InteractiveObject _item = null;
         float distanceObject = range;
+        
 
         for (int i = 0; i < _interactiveObjectList.Length; i++)
         {
-            if (Vector3.Distance(position, _interactiveObjectList[i].transform.position) < distanceObject)
+           
+            if (Vector3.Distance(position, _interactiveObjectList[i].transform.position) <  GameMetric.GetUnityValue(distanceObject))
             {
                 distanceObject = Vector3.Distance(position, _interactiveObjectList[i].transform.position);
                 _item = _interactiveObjectList[i];
@@ -32,5 +34,7 @@ public class ObjectManager : MonoBehaviour
 
         return _item;
     }
+
+   
 
 }

@@ -45,6 +45,14 @@ public class PlayerInteraction : MonoBehaviour
             UnselectObject();
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, _detectDistance);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
+
+    }
+
     #region Input Managing
     public void InteractionInput(InputAction.CallbackContext callback)
     {
