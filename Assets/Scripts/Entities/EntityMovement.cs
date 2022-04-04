@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class EntityMovement : MonoBehaviour
 {
+    [SerializeField] protected Animator animator;
     [SerializeField] protected LayerMask GroundType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] List<float> ray;
@@ -21,6 +22,7 @@ public class EntityMovement : MonoBehaviour
 
     protected Rigidbody rb;
     protected bool grounded;
+    protected bool endOfCoroutine = true;
 
     protected virtual void Start()
     {
@@ -89,6 +91,7 @@ public class EntityMovement : MonoBehaviour
 
     protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
     {
+        endOfCoroutine = false;
         direction *= -1;
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
@@ -96,6 +99,7 @@ public class EntityMovement : MonoBehaviour
             yield return 0;
         }
         transform.rotation = goTo;
+        endOfCoroutine = true;
     }
 
     public virtual void Move() { }

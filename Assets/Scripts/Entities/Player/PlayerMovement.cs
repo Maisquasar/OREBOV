@@ -32,13 +32,25 @@ public class PlayerMovement : EntityMovement
     private void Update()
     {
         if (rb.velocity.y < -margeDetectionVelocity)
+        {
             ChangeStateFunction(ref PlayerActionState, PlayerAction.FALL);
+        }
         else if (rb.velocity.y > margeDetectionVelocity)
+        {
             ChangeStateFunction(ref PlayerActionState, PlayerAction.JUMP);
+            animator.SetBool("Jump", true);
+        }
         else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
+        {
             ChangeStateFunction(ref PlayerActionState, PlayerAction.RUN);
+            animator.SetBool("Jump", false);
+        }
         else
+        {
             ChangeStateFunction(ref PlayerActionState, PlayerAction.IDLE);
+            animator.SetBool("Jump", false);
+        }
+        animator.SetFloat("VelocityX", rb.velocity.x);
     }
 
     public void Move(float move, bool jump)
@@ -56,7 +68,7 @@ public class PlayerMovement : EntityMovement
         }
         time += Time.deltaTime;
 
-        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN))
+        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && endOfCoroutine)
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
         }

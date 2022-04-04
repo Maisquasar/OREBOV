@@ -19,6 +19,7 @@ public class Player : Entity
         Controller.Move(movementDir.x, isJumping);
         if (isJumping)
             isJumping = false;
+
     }
 
     public void OnMove(CallbackContext context)
