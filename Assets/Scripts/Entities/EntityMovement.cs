@@ -13,6 +13,7 @@ public class EntityMovement : MonoBehaviour
     protected float rayGroundSize = 1.1f;
     protected float rayCeilingSize = 1f;
     protected float rayWallSize = 0.51f;
+    protected int direction = 1;
 
     protected float globalGravity = -9.81f;
     [SerializeField] protected float gravityScale = 1;
@@ -86,6 +87,16 @@ public class EntityMovement : MonoBehaviour
         rb.AddForce(gravity, ForceMode.Acceleration);
     }
 
+    protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
+    {
+        direction *= -1;
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.rotation = goTo;
+    }
 
     public virtual void Move() { }
 }

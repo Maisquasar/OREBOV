@@ -55,6 +55,11 @@ public class PlayerMovement : EntityMovement
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         time += Time.deltaTime;
+
+        if (move > 0 && direction == -1 || move < 0 && direction == 1)
+        {
+            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+        }
     }
 
     public void ChangeStateFunction<T>(ref T change, T state)
