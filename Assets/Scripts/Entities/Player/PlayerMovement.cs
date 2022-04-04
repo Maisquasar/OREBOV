@@ -44,7 +44,7 @@ public class PlayerMovement : EntityMovement
 
     public void Move(float move, bool jump)
     {
-        if (grounded)
+        if (grounded || PlayerActionState == PlayerAction.IDLE)
         {
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }

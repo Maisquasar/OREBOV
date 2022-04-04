@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class CameraTrigger : Trigger
 {
-    [SerializeField] Camera cameraToMove;
+    [SerializeField] CameraSettings cameraToMove;
     [Tooltip("Ctrl + Shift + F to place the cube to camera position")]
     [SerializeField] bool reverse;
 
     List<CameraCheckPoint> switchToCamera = new List<CameraCheckPoint>();
     CameraCheckPoint InitialPos;
-    bool CoroutnineEnd = true;
+    bool CoroutineEnd = true;
     bool activate = false;
 
     public new void Start()
@@ -29,7 +29,7 @@ public class CameraTrigger : Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Player>() && CoroutnineEnd)
+        if (other.gameObject.GetComponent<Player>() && CoroutineEnd && !cameraToMove.FollowPlayer)
         {
             switchToCamera[0].transform.position = cameraToMove.transform.position;
             switchToCamera[0].transform.rotation = cameraToMove.transform.rotation;
@@ -42,7 +42,7 @@ public class CameraTrigger : Trigger
 
     IEnumerator GoTo(List<CameraCheckPoint> switchTo)
     {
-        CoroutnineEnd = false;
+        CoroutineEnd = false;
         activate = true;
         for (int i = 0; i < switchTo.Count - 1; i++)
         {
@@ -51,7 +51,7 @@ public class CameraTrigger : Trigger
         }
         if (reverse)
             Swap();
-        CoroutnineEnd = true;
+        CoroutineEnd = true;
     }
 
 

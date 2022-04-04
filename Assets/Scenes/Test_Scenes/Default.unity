@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.072616786, g: 0.058760583, b: 0.1152184, a: 1}
+  m_IndirectSpecularColor: {r: 0.07264055, g: 0.058783203, b: 0.11524224, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 39148287}
   - component: {fileID: 39148286}
   - component: {fileID: 39148289}
+  - component: {fileID: 39148290}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -321,6 +322,20 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+--- !u!114 &39148290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39148285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eff303454f9c2404992bd7b602742d1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followPlayer: 1
+  ratio: 0.5
 --- !u!1 &72729154
 GameObject:
   m_ObjectHideFlags: 0
@@ -3282,6 +3297,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 987234911}
     m_Modifications:
+    - target: {fileID: 7032142427468432396, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: jumpHeight
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032142427468432396, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: jumpDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7032142427468432400, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: m_RootOrder
       value: 0
