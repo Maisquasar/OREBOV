@@ -13,7 +13,6 @@ public class CameraTrigger : Trigger
 
     Vector3 initialPos;
     Quaternion initialRot;
-    bool activate = false;
 
     public new void Start()
     {
@@ -26,30 +25,13 @@ public class CameraTrigger : Trigger
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            /*
-            if (activate && reverse)
-            {
-                cameraToMove.transform.position = initialPos;
-                cameraToMove.transform.rotation = initialRot;
-            }
-            else 
-            {
-                cameraToMove.transform.position = switchToCamera.transform.position;
-                cameraToMove.transform.rotation = switchToCamera.transform.rotation;
-            }
-            activate = !activate;
-            */
-            if (activate && reverse)
-            {
-                StartCoroutine(LerpFromTo(switchToCamera.transform.position, initialPos, travelTime));
-                StartCoroutine(LerpFromTo(switchToCamera.transform.rotation, initialRot, travelTime));
-            }
-            else
-            {
-                StartCoroutine(LerpFromTo(initialPos, switchToCamera.transform.position, travelTime));
-                StartCoroutine(LerpFromTo(initialRot, switchToCamera.transform.rotation, travelTime));
-            }
-            activate = !activate;
+            initialPos = cameraToMove.transform.position;
+            initialRot = cameraToMove.transform.rotation;
+            StartCoroutine(LerpFromTo(initialPos, switchToCamera.transform.position, travelTime));
+            StartCoroutine(LerpFromTo(initialRot, switchToCamera.transform.rotation, travelTime));
+            if (reverse)
+                Swap();
+
         }
     }
 
@@ -71,5 +53,16 @@ public class CameraTrigger : Trigger
             yield return 0;
         }
         cameraToMove.transform.rotation = goTo;
+    }
+
+    // Swap values between startPos and SwitchTo.
+    void Swap()
+    {
+        var tmp = initialPos;
+        initialPos = switchToCamera.transform.position;
+        switchToCamera.transform.position = tmp;
+        var tmp2 = initialRot;
+        initialRot = switchToCamera.transform.rotation;
+        switchToCamera.transform.rotation = tmp2;
     }
 }

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using States;
 
 
-namespace PlayerStates
+namespace States
 {
     public enum PlayerAction
     {
@@ -17,13 +18,12 @@ namespace PlayerStates
         DEAD
     }
 }
-
 public class PlayerMovement : EntityMovement
 {
     [SerializeField] private float jumpForce;
     [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
-    [HideInInspector] public PlayerStates.PlayerAction PlayerAction;
+    [HideInInspector] public PlayerAction PlayerActionState;
 
     float margeDetectionVelocity = 0.2f;
     float time;
@@ -31,13 +31,13 @@ public class PlayerMovement : EntityMovement
     private void Update()
     {
         if (rb.velocity.y < -margeDetectionVelocity)
-            PlayerAction = PlayerStates.PlayerAction.FALL;
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.FALL);
         else if (rb.velocity.y > margeDetectionVelocity)
-            PlayerAction = PlayerStates.PlayerAction.JUMP;
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.JUMP);
         else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
-            PlayerAction = PlayerStates.PlayerAction.RUN;
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.RUN);
         else
-            PlayerAction = PlayerStates.PlayerAction.IDLE;
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.IDLE);
     }
 
     public void Move(float move, bool jump)
@@ -54,4 +54,9 @@ public class PlayerMovement : EntityMovement
         time += Time.deltaTime;
     }
 
+    public void ChangeStateFunction<T>(ref T change, T state)
+    {
+        if (!change.Equals(state))
+            change = state;
+    }
 }
