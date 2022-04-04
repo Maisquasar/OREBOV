@@ -10,7 +10,7 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField]
     public bool _isSelected;
     [SerializeField]    
-    protected bool _objectActive;
+    public bool _objectActive;
 
     [Header("Sound")]
     [SerializeField]
@@ -22,14 +22,19 @@ public class InteractiveObject : MonoBehaviour
 
 
 
-    public virtual void ItemInteraction()
+    protected GameObject _playerGO;
+    protected Vector2 _axis;
+
+
+    public virtual void ItemInteraction(GameObject player)
     {
         _objectActive = !_objectActive;
         Debug.Log("Interaction  Input");
 
+        
         if (_objectActive)
         {
-            ActiveItem();
+            ActiveItem(player);
             return;
         }
         if (!_objectActive)
@@ -39,10 +44,14 @@ public class InteractiveObject : MonoBehaviour
         }
     }
 
-    protected virtual void ActiveItem()
+
+
+    protected virtual void ActiveItem(GameObject player)
     {
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
+
+        _playerGO = player;
         Debug.Log("Item Active");
     }
 
@@ -53,8 +62,9 @@ public class InteractiveObject : MonoBehaviour
         Debug.Log("Item Deactive");
     }
 
-    public virtual void UpdateItem()
+    public virtual void UpdateItem(Vector2 axis)
     {
+        _axis = axis;
         Debug.Log("Item Update");
     }
 

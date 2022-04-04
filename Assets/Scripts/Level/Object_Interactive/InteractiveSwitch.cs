@@ -11,9 +11,9 @@ public class InteractiveSwitch : InteractiveObject
     private bool _lightState = false;
 
 
-    protected override void ActiveItem()
+    protected override void ActiveItem(GameObject player)
     {
-        base.ActiveItem();
+        base.ActiveItem(player);
         _lightConnect.enabled = true;
     }
 
