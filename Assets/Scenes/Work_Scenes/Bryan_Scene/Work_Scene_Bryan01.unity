@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.02231764, g: 0.01426468, b: 0.010579437, a: 1}
+  m_IndirectSpecularColor: {r: 0.02235704, g: 0.014283605, b: 0.010584578, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -200,8 +200,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 29363838}
-  m_LocalRotation: {x: -0.00019576588, y: 0.99165, z: -0.12894939, w: -0.0015022755}
-  m_LocalPosition: {x: -0.29383445, y: 4.256725, z: 8.899286}
+  m_LocalRotation: {x: 0.17188501, y: 0.027210452, z: -0.0047521642, w: 0.9847297}
+  m_LocalPosition: {x: -0.9308696, y: 5.9694715, z: -10.734875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -497,6 +497,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
 --- !u!65 &95433681
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -638,6 +639,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
 --- !u!65 &264130795
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -995,6 +997,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
 --- !u!65 &486579963
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1108,6 +1111,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
 --- !u!65 &633922280
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1221,6 +1225,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
 --- !u!65 &748302512
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1297,6 +1302,101 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &772313569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 772313573}
+  - component: {fileID: 772313572}
+  - component: {fileID: 772313571}
+  - component: {fileID: 772313570}
+  m_Layer: 4
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &772313570
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772313569}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &772313571
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772313569}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 257
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 73c176f402d2c2f4d929aa5da7585d17, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &772313572
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772313569}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &772313573
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772313569}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 2.5, z: 0}
+  m_LocalScale: {x: 1, y: 5, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &775312573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1336,7 +1436,7 @@ GameObject:
   - component: {fileID: 1098865986}
   - component: {fileID: 1098865985}
   m_Layer: 0
-  m_Name: Object (1)
+  m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1359,11 +1459,13 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
   _collisionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16
   _speedBox: 2
-  _moveTime: 1
+  _moveTime: 1.5
+  _timeBetweenMove: 0.3
   _activeMouvement: 0
 --- !u!65 &1098865986
 BoxCollider:
@@ -1435,7 +1537,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1098865984}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 0.73, z: 0}
+  m_LocalPosition: {x: -2.5, y: 0.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1807,12 +1909,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 75320035}
     - target: {fileID: 1847413034, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: _debugActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1847413034, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _objectManager
       value: 
       objectReference: {fileID: 1277638566}
     - target: {fileID: 1847413034, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _detectDistance
-      value: 2
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1847413034, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _objectInteractiveSelected
@@ -1962,7 +2068,7 @@ GameObject:
   - component: {fileID: 1554306604}
   - component: {fileID: 1554306608}
   m_Layer: 0
-  m_Name: Object
+  m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2038,7 +2144,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1554306602}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.029999971, y: 0.73, z: -3}
+  m_LocalPosition: {x: 0.029999971, y: 0.87, z: -1.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2061,6 +2167,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
   _lightConnect: {fileID: 310543259}
   _lightState: 1
 --- !u!1 &1740805186 stripped
@@ -2133,6 +2240,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
 --- !u!65 &1912609391
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2246,6 +2354,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
+  _debug: 0
 --- !u!65 &2043693890
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2412,8 +2521,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2069944745}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -3.9027}
-  m_LocalScale: {x: 1.2186, y: 1, z: 1.8860935}
+  m_LocalPosition: {x: 12.3496, y: 0, z: -3.9027}
+  m_LocalScale: {x: 4.2859054, y: 1, z: 1.8860935}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4

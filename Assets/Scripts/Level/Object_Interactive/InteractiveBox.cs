@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Tools;
+
 
 public class InteractiveBox : InteractiveObject
 {
@@ -27,6 +29,8 @@ public class InteractiveBox : InteractiveObject
         _playerGO.GetComponent<Player>().enabled = false;
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
         player.GetComponent<PlayerInteraction>().LinkObject(this);
+        _activeMouvement = true;
+        StartCoroutine(PauseBoxMouvement());
     }
 
     protected override void DeactiveItem()
@@ -43,9 +47,13 @@ public class InteractiveBox : InteractiveObject
         if (_objectActive)
         {
 
+                Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x/2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
             if (!_activeMouvement && axis.normalized.x != 0)
+            {
 
                 StartCoroutine(MoveBox(axis.normalized.x));
+
+            }
         }
     }
 
@@ -57,6 +65,10 @@ public class InteractiveBox : InteractiveObject
         Vector3 startPos = _playerGO.transform.position;
         Vector3 endPos = _playerGO.transform.position + _playerGO.transform.right * dir * _speedBox;
 
+        Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
+        if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x/2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
+            yield break;
+
 
         while (_moveTimer < _moveTime)
         {
@@ -66,15 +78,20 @@ public class InteractiveBox : InteractiveObject
         }
 
         _moveTimer = 0f;
+        _rigidbodyPlayer.velocity = Vector3.zero;
+        StartCoroutine(PauseBoxMouvement());
+
+    }
+
+    private IEnumerator PauseBoxMouvement()
+    {
         while (_moveTimer < _timeBetweenMove)
         {
 
             _moveTimer += Time.deltaTime;
             yield return Time.deltaTime;
         }
-        _moveTimer = 0f;
         _activeMouvement = false;
-        _rigidbodyPlayer.velocity = Vector3.zero;
-
+        _moveTimer = 0f;
     }
 }

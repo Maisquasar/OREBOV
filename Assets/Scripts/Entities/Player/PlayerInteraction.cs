@@ -68,9 +68,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, _detectDistance);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
+        if (_debugActive)
+        {
+            Gizmos.DrawWireSphere(transform.position, _detectDistance);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
+        }
 
     }
 
@@ -108,7 +111,7 @@ public class PlayerInteraction : MonoBehaviour
         if (_debugActive) Debug.Log("Hold Input");
         if (_objectInteractive != null)
         {
-            // _objectInteractiveSelected.UpdateItem(_axis);  // -> Create a HoldUpdate()
+            _objectInteractive.HoldUpdate();
 
         }
 
