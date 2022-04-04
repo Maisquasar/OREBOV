@@ -56,7 +56,7 @@ public class PlayerMovement : EntityMovement
         }
         time += Time.deltaTime;
 
-        if (move > 0 && direction == -1 || move < 0 && direction == 1)
+        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN))
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
         }
