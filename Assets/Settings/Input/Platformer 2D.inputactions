@@ -19,7 +19,7 @@
                     "id": "0aa38434-47e7-42a1-9edf-189645ef2eb7",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Hold(duration=0.4,pressPoint=0.5)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Interaction",
@@ -27,7 +27,15 @@
                     "id": "a6ec30d3-f812-4bba-9953-520df6e408b5",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Hold(duration=0.4,pressPoint=0.5)"
+                    "interactions": ""
+                },
+                {
+                    "name": "PauseMenu",
+                    "type": "Button",
+                    "id": "d85fd5cb-8a2c-4913-91f2-e2e608749782",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -215,6 +223,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Interaction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "247cf602-7e04-4e2f-9c34-2ad90905400b",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PauseMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e92d5a34-5903-4e5c-901a-789662b42f62",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

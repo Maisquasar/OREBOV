@@ -11,6 +11,7 @@ public class PlayerInteraction : MonoBehaviour
     // ObjectManger Component
 
     [SerializeField]
+    
     private ObjectManager _objectManager;
     // ObjectInteract selected
     [SerializeField]
@@ -75,7 +76,11 @@ public class PlayerInteraction : MonoBehaviour
     private void HoldInput()
     {
         if (_debugActive) Debug.Log("Hold Input");
+        if(_objectInteractiveSelected != null)
+        {
         _objectInteractiveSelected.UpdateItem();
+
+        }
 
     }
     private void CancelInput()

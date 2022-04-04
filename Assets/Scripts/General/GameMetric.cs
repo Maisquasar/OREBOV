@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-[System.Serializable]
 public class GameMetric : MonoBehaviour
 {
     private static float GameUnitInUnity = 2f;
