@@ -20,10 +20,12 @@ namespace States
 }
 public class PlayerMovement : EntityMovement
 {
-    [SerializeField] private float jumpForce;
     [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
     [HideInInspector] public PlayerAction PlayerActionState;
+    [SerializeField] float jumpDistance;
+    [SerializeField] float jumpHeight;
+    private float jumpForce;
 
     float margeDetectionVelocity = 0.2f;
     float time;
@@ -42,14 +44,15 @@ public class PlayerMovement : EntityMovement
 
     public void Move(float move, bool jump)
     {
-        if (grounded || airControl)
+        if (grounded)
         {
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
         if (grounded && jump)
         {
             grounded = false;
-            rb.AddForce((Vector3.up * (jumpForce) * 10));
+            jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
+            rb.AddForce((Vector3.up * (jumpForce) + Vector3.right * (jumpDistance * Mathf.Sign(move))), ForceMode.Impulse) ;
         }
         time += Time.deltaTime;
     }
