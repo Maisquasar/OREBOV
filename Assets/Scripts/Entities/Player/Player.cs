@@ -22,10 +22,6 @@ public class Player : Entity
             isJumping = false;
     }
 
-    private void FixedUpdate()
-    {
-    }
-
     public void OnMove(CallbackContext context)
     {
         movementDir = context.ReadValue<Vector2>();
