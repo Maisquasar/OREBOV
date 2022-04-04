@@ -29,12 +29,6 @@ public class PlayerInteraction : MonoBehaviour
     private bool _inputReset; // Use for the holding the input
 
 
-    private void Start()
-    {
-        ChangeSelectedObject(_objectInteractiveSelected);
-    }
-
-
     private void Update()
     {
 
@@ -94,13 +88,19 @@ public class PlayerInteraction : MonoBehaviour
 
     private void ChangeSelectedObject(InteractiveObject interactiveObject)
     {
+        if(_objectInteractiveSelected != interactiveObject && _objectInteractiveSelected != null)
+        {
+            UnselectObject();
+        }
         _objectInteractiveSelected = interactiveObject;
+        _objectInteractiveSelected._isSelected = true;
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractiveSelected.transform.position + Vector3.up * 1f;
     }
 
     private void UnselectObject()
     {
+        _objectInteractiveSelected._isSelected = false;
         _objectInteractiveSelected = null;
         _uiInteract.SetActive(false);
     }

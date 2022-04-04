@@ -9,6 +9,7 @@ public class InteractiveObject : MonoBehaviour
 
     [SerializeField]
     public bool _isSelected;
+    [SerializeField]    
     protected bool _objectActive;
 
     [Header("Sound")]
@@ -26,8 +27,16 @@ public class InteractiveObject : MonoBehaviour
         _objectActive = !_objectActive;
         Debug.Log("Interaction  Input");
 
-        if (_objectActive) ActiveItem();
-        if (!_objectActive) DeactiveItem();
+        if (_objectActive)
+        {
+            ActiveItem();
+            return;
+        }
+        if (!_objectActive)
+        {
+            DeactiveItem();
+            return;
+        }
     }
 
     protected virtual void ActiveItem()
