@@ -8,13 +8,15 @@ public class EntityMovement : MonoBehaviour
     [SerializeField] protected LayerMask GroundType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] List<float> ray;
+    [SerializeField] protected float speed;
 
-    protected float rayGroundSize;
-    protected float rayCeilingSize;
-    protected float rayWallSize;
+    protected float rayGroundSize = 1.1f;
+    protected float rayCeilingSize = 1f;
+    protected float rayWallSize = 0.51f;
 
     protected float globalGravity = -9.81f;
     [SerializeField] protected float gravityScale = 1;
+    float offset = 0.3f;
 
     protected Rigidbody rb;
     protected bool grounded;
@@ -22,21 +24,21 @@ public class EntityMovement : MonoBehaviour
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rayGroundSize = 1.5f;
+        rayGroundSize = 1.1f;
         rayCeilingSize = 1f;
-        rayWallSize = 0.5f;
-        rayWallSize += 0.01f;
+        rayWallSize = 0.51f;
     }
 
     private void OnDrawGizmos()
     {
         //Draw Debug line for ground
         Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, Vector3.down);
+        for (int i = 0; i < 3; i++)
+            Gizmos.DrawRay(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), new Vector3(-offset + offset * i, -1, 0));
 
         //Draw Debug line for ceiling
         Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, Vector3.up);
+        Gizmos.DrawRay(transform.position, Vector3.up * rayCeilingSize);
 
         //Draw Debug line for Wall
         Gizmos.color = Color.blue;
@@ -52,9 +54,12 @@ public class EntityMovement : MonoBehaviour
     {
         // Ground Detection
         grounded = false;
-        if (Physics.Raycast(transform.position, Vector3.down, rayGroundSize, GroundType, QueryTriggerInteraction.Ignore))
+        for (int i = 0; i < 3; i++)
         {
-            grounded = true;
+            if (Physics.Raycast(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), Vector3.down, rayGroundSize, GroundType, QueryTriggerInteraction.Ignore))
+            {
+                grounded = true;
+            }
         }
 
         // Ceiling Detection

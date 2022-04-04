@@ -23,11 +23,10 @@ public class PlayerMovement : EntityMovement
     [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
     [HideInInspector] public PlayerAction PlayerActionState;
-    [SerializeField] float jumpDistance;
     [SerializeField] float jumpHeight;
     private float jumpForce;
 
-    float margeDetectionVelocity = 0.2f;
+    float margeDetectionVelocity = 0.05f;
     float time;
 
     private void Update()
@@ -44,7 +43,8 @@ public class PlayerMovement : EntityMovement
 
     public void Move(float move, bool jump)
     {
-        if (grounded || PlayerActionState == PlayerAction.IDLE)
+        move *= speed;
+        if (grounded)
         {
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
@@ -52,7 +52,7 @@ public class PlayerMovement : EntityMovement
         {
             grounded = false;
             jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
-            rb.AddForce((Vector3.up * (jumpForce) + Vector3.right * (jumpDistance * Mathf.Sign(move))), ForceMode.Impulse) ;
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         time += Time.deltaTime;
     }
