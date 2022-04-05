@@ -5,8 +5,19 @@ using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    private enum InteractionState
+    {
+        None,
+        Selected,
+        Link,
+
+    }
+
     [SerializeField]
     private float _detectDistance = 1f;
+
+    [SerializeField]
+    private InteractionState _interactionState;
 
     // ObjectManger Component
 
@@ -14,8 +25,7 @@ public class PlayerInteraction : MonoBehaviour
     private ObjectManager _objectManager;
     // ObjectInteract selected
     [SerializeField]
-    private InteractiveObject _objectInteractiveSelected;
-
+    private InteractiveObject _objectInteractive;
     [Header("UI")]
     [SerializeField]
     private GameObject _uiInteract;
@@ -27,22 +37,44 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField]
     private bool _inputReset; // Use for the holding the input
 
-
-    private void Start()
-    {
-        ChangeSelectedObject(_objectInteractiveSelected);
-    }
-
+    private Vector2 _axis;
 
     private void Update()
     {
 
-        if (!_inputReset)
-            HoldInput();
-        if (_objectManager.ObjectsInRange(transform.position, _detectDistance) != null)
-            ChangeSelectedObject(_objectManager.ObjectsInRange(transform.position, _detectDistance));
+
+        if (_interactionState == InteractionState.Link)
+        {
+            _objectInteractive.UpdateItem(_axis);
+        }
         else
-            UnselectObject();
+        {
+            if (!_inputReset)
+                HoldInput();
+            if (_objectManager.ObjectsInRange(transform.position, _detectDistance) != null)
+            {
+                InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, _detectDistance);
+                UnselectObject(objectClose);
+                ChangeSelectedObject(objectClose);
+            }
+            else
+            {
+                UnselectObject();
+            }
+        }
+
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_debugActive)
+        {
+            Gizmos.DrawWireSphere(transform.position, _detectDistance);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
+        }
+
     }
 
     #region Input Managing
@@ -56,18 +88,32 @@ public class PlayerInteraction : MonoBehaviour
 
     }
 
+    public void AxisInput(InputAction.CallbackContext callback)
+    {
+        if (callback.performed)
+            _axis = callback.ReadValue<Vector2>();
+        if (callback.canceled)
+            _axis = Vector2.zero;
+
+
+    }
+
     private void PressInput()
     {
         if (_debugActive) Debug.Log("Press Input");
-        _objectInteractiveSelected.ItemInteraction();
         _inputReset = false;
+        _objectInteractive.ItemInteraction(gameObject);
     }
 
 
     private void HoldInput()
     {
         if (_debugActive) Debug.Log("Hold Input");
-        _objectInteractiveSelected.UpdateItem();
+        if (_objectInteractive != null)
+        {
+            _objectInteractive.HoldUpdate();
+
+        }
 
     }
     private void CancelInput()
@@ -81,17 +127,47 @@ public class PlayerInteraction : MonoBehaviour
 
     private void ChangeSelectedObject(InteractiveObject interactiveObject)
     {
-        _objectInteractiveSelected = interactiveObject;
+        _objectInteractive = interactiveObject;
+        _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);
-        _uiInteract.transform.position = _objectInteractiveSelected.transform.position + Vector3.up * 1f;
+        _uiInteract.transform.position = _objectInteractive.transform.position + Vector3.up * 1f;
+        _interactionState = InteractionState.Selected;
     }
 
     private void UnselectObject()
     {
-        _objectInteractiveSelected = null;
-        _uiInteract.SetActive(false);
+        if (_objectInteractive)
+        {
+            _objectInteractive._isSelected = false;
+            _objectInteractive = null;
+            _uiInteract.SetActive(false);
+            _interactionState = InteractionState.None;
+        }
+    }
+
+    private void UnselectObject(InteractiveObject obj)
+    {
+        if (_objectInteractive && _objectInteractive != obj)
+        {
+            _objectInteractive._isSelected = false;
+            _objectInteractive = null;
+            _uiInteract.SetActive(false);
+        }
     }
 
     #endregion
 
+
+    public void LinkObject(InteractiveObject objectToLink)
+    {
+        UnselectObject();
+        _interactionState = InteractionState.Link;
+        _objectInteractive = objectToLink;
+    }
+
+    public void UnlinkObject()
+    {
+        UnselectObject();
+        _interactionState = InteractionState.None;
+    }
 }
