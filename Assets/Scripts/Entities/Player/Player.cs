@@ -9,19 +9,32 @@ using States;
 
 public class Player : Entity
 {
-    public PlayerMovement Controller;
-    public ShadowCaster Caster;
-    public PlayerAnimator PlayerAnimator;
+    [HideInInspector] public PlayerAction PlayerActionState;
+    private PlayerMovement Controller;
+    private ShadowCaster Caster;
+    private PlayerAnimator PlayerAnimator;
+    private PlayerInteraction PlayerInteraction;
     float _shadowTime;
     bool _isJumping = false;
     bool _isShadow = false;
     Vector2 movementDir;
     Vector3 previousPos;
 
+    private void Start()
+    {
+        Controller = gameObject.GetComponent<PlayerMovement>();
+        Caster = gameObject.GetComponent<ShadowCaster>();
+        PlayerAnimator = gameObject.GetComponent<PlayerAnimator>();
+        PlayerInteraction = gameObject.GetComponent<PlayerInteraction>();
+    }
     // Update is called once per frame
     void Update()
     {
-        if (!PlayerAnimator.IsInAmination) Controller.Move(movementDir.x * speed, _isJumping);
+        if (!PlayerAnimator.IsInAmination && PlayerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
+        {
+            Controller.Move(movementDir.x * speed, _isJumping);
+            Controller.ChangeState(ref PlayerActionState);
+        }
         if (_isJumping)
             _isJumping = false;
         if (_isShadow && !Caster.CanTransform())
@@ -49,18 +62,19 @@ public class Player : Entity
         movementDir = context.ReadValue<Vector2>();
         if (Mathf.Abs(movementDir.x) < 0.03f) movementDir.x = 0.0f;
         if (Mathf.Abs(movementDir.y) < 0.03f) movementDir.y = 0.0f;
+        PlayerInteraction.AxisInput(context);
     }
 
-    public void OnJumping(CallbackContext context)
+    public void OnJump(CallbackContext context)
     {
-        if (Controller.PlayerActionState == PlayerAction.IDLE || Controller.PlayerActionState == PlayerAction.RUN)
+        if ((PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && PlayerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
             if (context.performed)
                 _isJumping = true;
     }
 
     public void OnTransformAction(CallbackContext context)
     {
-        if (!context.performed || _isJumping || (Controller.PlayerActionState != PlayerAction.IDLE && Controller.PlayerActionState != PlayerAction.RUN) || PlayerAnimator.IsInAmination)
+        if (!context.performed || _isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Link)
             return;
         if (_isShadow)
         {
@@ -85,5 +99,12 @@ public class Player : Entity
         StartCoroutine(PlayerAnimator.TransformToPlayerAnim());
         _isShadow = false;
         Controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
+    }
+
+    public void OnInteract(CallbackContext context)
+    {
+        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN) || PlayerAnimator.IsInAmination)
+            return;
+        PlayerInteraction.InteractionInput(context);
     }
 }

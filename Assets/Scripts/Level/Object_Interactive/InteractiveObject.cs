@@ -32,8 +32,6 @@ public class InteractiveObject : MonoBehaviour
     public virtual void ItemInteraction(GameObject player)
     {
         _objectActive = !_objectActive;
-        if(_debug) Debug.Log("Interaction  Input");
-
         
         if (_objectActive)
         {
@@ -55,26 +53,22 @@ public class InteractiveObject : MonoBehaviour
             AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
 
         _playerGO = player;
-        if (_debug) Debug.Log("Item Active");
     }
 
     protected virtual void DeactiveItem()
     {
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundDeactiveTrigger, transform.position);
-        if (_debug) Debug.Log("Item Deactive");
     }
 
     public virtual void UpdateItem(Vector2 axis)
     {
         _axis = axis;
-        if (_debug) Debug.Log("Item Update");
     }
 
     protected virtual void UpdateItemInternally()
     {
         if (_isSelected) ItemSelected();
-        if (_debug)  Debug.Log("Item Update");
     }
 
     protected virtual void ItemSelected()

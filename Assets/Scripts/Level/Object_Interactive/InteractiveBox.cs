@@ -30,13 +30,14 @@ public class InteractiveBox : InteractiveObject
 
     [SerializeField]
     private int mouvementCount = 1;
+    PlayerInteraction PlayerInteract;
 
     protected override void ActiveItem(GameObject player)
     {
         base.ActiveItem(player);
         transform.SetParent(player.transform);
-        _playerGO.GetComponent<Player>().enabled = false;
-        _playerGO.GetComponent<PlayerInteraction>().LinkObject(this);
+        PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
+        PlayerInteract.LinkObject(this);
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
         _activeMouvement = true;
         StartCoroutine(PauseBoxMouvement());
@@ -46,7 +47,6 @@ public class InteractiveBox : InteractiveObject
     {
         base.DeactiveItem();
         transform.SetParent(null);
-        _playerGO.GetComponent<Player>().enabled = true;
         _playerGO.GetComponent<PlayerInteraction>().UnlinkObject();
     }
 
@@ -70,10 +70,9 @@ public class InteractiveBox : InteractiveObject
     private IEnumerator MoveBox(float dir)
     {
         _activeMouvement = true;
-        Debug.Log(dir);
+        PlayerInteract.CanStopNow = false;
         Vector3 startPos = _playerGO.transform.position;
-        Vector3 endPos = _playerGO.transform.position + _playerGO.transform.right * dir * _speedBox;
-
+        Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
         Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
         if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
             yield break;
@@ -85,7 +84,6 @@ public class InteractiveBox : InteractiveObject
             _moveTimer += Time.deltaTime;
             yield return Time.deltaTime;
         }
-
         _moveTimer = 0f;
         _rigidbodyPlayer.velocity = Vector3.zero;
         StartCoroutine(PauseBoxMouvement());
@@ -101,6 +99,7 @@ public class InteractiveBox : InteractiveObject
             yield return Time.deltaTime;
         }
         _activeMouvement = false;
+        PlayerInteract.CanStopNow = true;
         _moveTimer = 0f;
     }
 

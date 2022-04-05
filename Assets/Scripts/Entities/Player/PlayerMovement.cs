@@ -3,41 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using States;
 
-
-namespace States
-{
-    public enum PlayerAction
-    {
-        IDLE,
-        RUN,
-        JUMP,
-        FALL,
-        HIDE,
-        INTERACT,
-        CLIMB,
-        DEAD
-    }
-}
 public class PlayerMovement : EntityMovement
 {
     [SerializeField] private float jumpForce;
     [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
-    [HideInInspector] public PlayerAction PlayerActionState;
 
     float margeDetectionVelocity = 0.2f;
     float time;
 
-    private void Update()
+    public void ChangeState(ref PlayerAction State)
     {
-        if (rb.velocity.y < -margeDetectionVelocity)
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.FALL);
-        else if (rb.velocity.y > margeDetectionVelocity)
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.JUMP);
-        else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.RUN);
-        else
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.IDLE);
+        if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
+        {
+            if (rb.velocity.y < -margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.FALL);
+            else if (rb.velocity.y > margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.JUMP);
+            else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.RUN);
+            else
+                ChangeStateFunction(ref State, PlayerAction.IDLE);
+        }
     }
 
     public void Move(float move, bool jump)

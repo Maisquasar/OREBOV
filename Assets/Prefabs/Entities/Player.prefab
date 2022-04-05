@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7032142427468432396}
   - component: {fileID: 6625135978788640298}
   - component: {fileID: 8358667430805240082}
+  - component: {fileID: 1847413034}
   - component: {fileID: 7032142427468432399}
   - component: {fileID: 7032142427468432398}
   - component: {fileID: 1919976867}
@@ -117,9 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1919976867}
   speed: 6
-  Controller: {fileID: 7032142427468432396}
-  Caster: {fileID: 6625135978788640298}
-  PlayerAnimator: {fileID: 8358667430805240082}
+  PlayerActionState: 0
 --- !u!114 &7032142427468432396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,7 +139,7 @@ MonoBehaviour:
   - 0
   - -0.5
   gravityScale: 3
-  jumpForce: 50
+  jumpForce: 100
   airControl: 1
   velocityCurve:
     serializedVersion: 2
@@ -166,8 +165,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  PlayerActionState: 0
-  PlayerAction: 0
 --- !u!114 &6625135978788640298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b8acef8ed73ef146acf78b24d6788dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowAllRays: 0
+  ShowAllRays: 1
   ShadowRayCastPosition:
   - {x: 0, y: 0.9}
   - {x: 0.5, y: 0}
@@ -208,6 +205,26 @@ MonoBehaviour:
   Renderer: {fileID: 7032142427468432402}
   PlayerMaterial: {fileID: 2100000, guid: db2944a8f43ff0541a344c7760774d5b, type: 2}
   PlayerFadeMaterial: {fileID: 2100000, guid: 43ebc263e6e502547b28ad7158eaec2c, type: 2}
+--- !u!114 &1847413034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032142427468432404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cd9f6bbc79e6b4cbcc0ad1bc730b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectDistance: 1
+  _interactionState: 0
+  _objectManager: {fileID: 0}
+  _objectInteractive: {fileID: 0}
+  _uiInteract: {fileID: 0}
+  _debugActive: 0
+  _inputReset: 0
+  CanStopNow: 1
 --- !u!114 &7032142427468432399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +270,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7032142427468432397}
         m_TargetAssemblyTypeName: Player, Assembly-CSharp
-        m_MethodName: OnJumping
+        m_MethodName: OnJump
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -321,6 +338,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: ad5ecc02-1177-4c9b-9178-c93a91ea9a67
     m_ActionName: Player/Transform[/Keyboard/enter,/SwitchProControllerHID/buttonWest]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UIPauseMenu, Assembly-CSharp
+        m_MethodName: CallPauseMenu
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d85fd5cb-8a2c-4913-91f2-e2e608749782
+    m_ActionName: Player/PauseMenu[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7032142427468432397}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnInteract
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4cb51572-490e-4660-aafa-31b20882b2fd
+    m_ActionName: Player/Interract[/Keyboard/e,/PAD S-WIRED-V5.00/button2]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -361,21 +410,3 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1847413034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7032142427468432404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23cd9f6bbc79e6b4cbcc0ad1bc730b1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _detectDistance: 10
-  _objectManager: {fileID: 0}
-  _objectInteractiveSelected: {fileID: 0}
-  _uiInteract: {fileID: 0}
-  _debugActive: 1
-  _inputReset: 0
