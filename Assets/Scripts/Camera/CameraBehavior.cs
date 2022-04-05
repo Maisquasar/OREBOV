@@ -6,102 +6,126 @@ using UnityEngine.UI;
 public class CameraBehavior : MonoBehaviour
 {
 
+    private enum CameraBehaviorState
+    {
+        FollowTarget,
+        FreeMovement,
+    }
 
+    [SerializeField]
+    private CameraBehaviorState _camState;
+
+    [Header("Camera Window")]
+    [SerializeField]
+    private GameObject _mainTarget;
+
+    [Space]
+    [SerializeField]
+    private bool _showWindow;
+
+    [SerializeField]
+    private Vector2 _windowSize;
+
+    [SerializeField]
+    private Vector2 _windowOffset;
 
 
     [SerializeField]
-    private GameObject _playerGO;
-
-    private Player _player;
-    [SerializeField]
-    private Rect _windown;
-
-    [SerializeField]
-    private Vector3 _windownCenter;
-    [SerializeField]
-    private Vector3 _windownSize;
-    [SerializeField]
-    private Vector3 _windownOffset;
-
-    private Vector3 _windownOrigin;
-
-
-    [SerializeField]
-    [Range(0f, 1f)]
+    [Range(0f, 0.1f)]
     private float _camWindownSpeed;
 
-    private Vector2 dir;
-
     [SerializeField]
-    [Range(0f,1f)]
+    [Range(0f, 0.1f)]
     private float _camSpeed;
 
+    private Player _player;
+    private Vector3 _windowCenter;
+    private Vector3 _windowOrigin;
+    private Vector2 dir;
     private bool _inScreen;
-
-
-    [Header("Debug Camera")]
-    [SerializeField]
-    private bool _activeCameraDebug;
 
 
     public void Start()
     {
-       
-        _windownOrigin = _windownCenter +(_windownSize/2f);
-        _player = _playerGO.GetComponent<Player>();
+        _windowOrigin = _windowCenter + (Vector3)(_windowSize / 2f);
+        _player = _mainTarget.GetComponent<Player>();
 
     }
 
     private void FixedUpdate()
     {
-        dir = _player.MoveDir.x != 0 ? _player.MoveDir : dir;
-        _windownCenter = Vector3.Lerp(_windownCenter, transform.position + - dir.normalized.x * _windownOffset, _camWindownSpeed);
-    //    _windownCenter = transform.position + _player.MoveDir.x * _windownOffset;
-        _windownCenter.z = _playerGO.transform.position.z;
-        _windownOrigin = _windownCenter - (_windownSize / 2f);
-        _inScreen = WindownCamContains(_playerGO.transform.position);
-        Debug.Log(_inScreen);
+       if(_camState == CameraBehaviorState.FollowTarget) UpdateFollowMode();
+    }
 
-        if (!_inScreen)
+    private void UpdateFollowMode()
+    {
+
+        SetWindowPosition();
+        _inScreen = WindownCamContains(_mainTarget.transform.position);
+        FollowPlayer();
+    }
+
+    private void SetWindowPosition()
+    {
+        _windowCenter = Vector3.Lerp(_windowCenter, new Vector3(transform.position.x,0f,0f)+ (Vector3)_windowOffset, _camWindownSpeed);
+        _windowCenter.z = _mainTarget.transform.position.z;
+        _windowOrigin = _windowCenter - (Vector3)(_windowSize / 2f);
+    }
+
+    private void FollowPlayer()
+    {
+        if (!WindownCamContains(_mainTarget.transform.position))
         {
-            Vector3 target = new Vector3(_playerGO.transform.position.x, 0, 0f) - new Vector3(_windownCenter.x, 0, 0f);
-            transform.position += Vector3.Lerp(Vector3.zero, target,_camSpeed);
-
+            Vector3 target = new Vector3(_mainTarget.transform.position.x, 0, 0f) - new Vector3(_windowCenter.x, 0, 0f);
+            transform.position += Vector3.Lerp(Vector3.zero, target, _camSpeed);
         }
     }
-
-
-    private bool IsPlayerInCameraWindown()
-    {
-        Vector3 screnPos = Camera.main.WorldToScreenPoint(_playerGO.transform.position);
-        return _windown.Contains(screnPos);
-    }
-
-   
 
 
     private void OnDrawGizmos()
     {
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(_windownOrigin, _windownOrigin + new Vector3(_windownSize.x, 0f, 0f));
-        Gizmos.DrawLine(_windownOrigin + new Vector3(_windownSize.x, 0f, 0f), _windownOrigin + _windownSize);
-        Gizmos.DrawLine(_windownOrigin + _windownSize, _windownOrigin + new Vector3(0, _windownSize.y, 0f));
-        Gizmos.DrawLine(_windownOrigin + new Vector3(0, _windownSize.y, 0f),_windownOrigin);
+        if (_mainTarget == null)
+        {
+            Debug.LogError("Missing Player");
+        }
+        if (_showWindow)
+        {
+            DrawRectWindown();
+        }
 
     }
 
 
+    private void DrawRectWindown()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(_windowOrigin, _windowOrigin + new Vector3(_windowSize.x, 0f, 0f));
+        Gizmos.DrawLine(_windowOrigin + new Vector3(_windowSize.x, 0f, 0f), _windowOrigin + (Vector3)_windowSize);
+        Gizmos.DrawLine(_windowOrigin + (Vector3)_windowSize, _windowOrigin + new Vector3(0, _windowSize.y, 0f));
+        Gizmos.DrawLine(_windowOrigin + new Vector3(0, _windowSize.y, 0f), _windowOrigin);
+    }
+
     private bool WindownCamContains(Vector3 position)
     {
 
-        if (position.x < _windownOrigin.x || position.x > _windownOrigin.x + _windownSize.x) return false;
-        if (position.y < _windownOrigin.y || position.y > _windownOrigin.y + _windownSize.y) return false;
+        if (position.x < _windowOrigin.x || position.x > _windowOrigin.x + _windowSize.x) return false;
+        if (position.y < _windowOrigin.y || position.y > _windowOrigin.y + _windowSize.y) return false;
 
 
         return true;
     }
 
 
+    // Active the free mode camera
+    public void ActiveFreeMode()
+    {
+        _camState = CameraBehaviorState.FreeMovement;
+    }
+
+    public void DeactiveFreeMode()
+    {
+        _camState = CameraBehaviorState.FollowTarget;
+    }
 
 }
