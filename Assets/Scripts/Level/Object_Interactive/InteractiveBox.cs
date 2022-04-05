@@ -10,6 +10,8 @@ public class InteractiveBox : InteractiveObject
     [SerializeField]
     private LayerMask _collisionMask;
     [SerializeField]
+    private LayerMask _groundMask;
+    [SerializeField]
     private float _speedBox = 2f;
     [SerializeField]
     private float _moveTime = 1f;
@@ -21,6 +23,13 @@ public class InteractiveBox : InteractiveObject
     [SerializeField]
     private bool _activeMouvement = false;
     private Rigidbody _rigidbodyPlayer;
+
+    [Header("Box Debug")]
+    [SerializeField]
+    private bool _activeBoxDebug;
+
+    [SerializeField]
+    private int mouvementCount = 1;
 
     protected override void ActiveItem(GameObject player)
     {
@@ -47,7 +56,7 @@ public class InteractiveBox : InteractiveObject
         if (_objectActive)
         {
 
-                Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x/2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
+            Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
             if (!_activeMouvement && axis.normalized.x != 0)
             {
 
@@ -66,7 +75,7 @@ public class InteractiveBox : InteractiveObject
         Vector3 endPos = _playerGO.transform.position + _playerGO.transform.right * dir * _speedBox;
 
         Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
-        if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x/2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
             yield break;
 
 
@@ -93,5 +102,51 @@ public class InteractiveBox : InteractiveObject
         }
         _activeMouvement = false;
         _moveTimer = 0f;
+    }
+
+
+    private void Update()
+    {
+
+    }
+
+    private void ShowBoxMouvement()
+    {
+        Vector3 startPos = transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f;
+
+        for (int i = 0; i < mouvementCount; i++)
+        {
+
+            Gizmos.color = Color.green;
+            if (CheckObstacle(startPos))
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(startPos, startPos + new Vector3(1, 0, 0) * _speedBox);
+                startPos = startPos + new Vector3(1, 0, 0) * _speedBox;
+                Gizmos.DrawSphere(startPos, 0.25f);
+                break;
+            }
+            Gizmos.DrawLine(startPos, startPos + new Vector3(1, 0, 0) * _speedBox);
+
+            startPos = startPos + new Vector3(1, 0, 0) * _speedBox;
+            Gizmos.DrawSphere(startPos, 0.25f);
+        }
+    }
+
+    private bool CheckObstacle(Vector3 startPos)
+    {
+        bool frontTest = Physics.Raycast(startPos, new Vector3(1, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore);
+        if (frontTest) return true;
+        bool backTest = Physics.Raycast(startPos + new Vector3(1, 0, 0) * _speedBox, new Vector3(0, -1, 0), _speedBox, _groundMask, QueryTriggerInteraction.Ignore);
+        if (!backTest)
+            return true;
+        else
+            return false;
+
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_activeBoxDebug) ShowBoxMouvement();
     }
 }
