@@ -12,7 +12,6 @@ public class CameraSettings : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<Player>();
-        Application.targetFrameRate = 60;
     }
 
     // Update is called once per frame

@@ -33,7 +33,7 @@ public class EntityMovement : MonoBehaviour
         rayWallSize = 0.31f;
     }
 
-    private void OnDrawGizmos()
+    protected void OnDrawGizmos()
     {
         //Draw Debug line for ground
         Gizmos.color = Color.blue;

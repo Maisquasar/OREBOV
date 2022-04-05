@@ -4,20 +4,6 @@ using UnityEngine;
 using States;
 
 
-namespace States
-{
-    public enum PlayerAction
-    {
-        IDLE,
-        RUN,
-        JUMP,
-        FALL,
-        HIDE,
-        INTERACT,
-        CLIMB,
-        DEAD
-    }
-}
 public class PlayerMovement : EntityMovement
 {
     [SerializeField] private bool airControl;
@@ -26,11 +12,32 @@ public class PlayerMovement : EntityMovement
     [SerializeField] float jumpHeight;
     [SerializeField] private float jumpDistance;
 
+    float edgeDetectorDistance = 0.5f;
+    float topEdgeDetectorDistance = 0.75f;
+
     private float lastMove;
     private float jumpForce;
 
     float margeDetectionVelocity = 0.05f;
     float time;
+
+    private new void Start()
+    {
+        base.Start();
+        Physics.Raycast(transform.position + new Vector3(0, edgeDetectorDistance, 0), Vector3.right, 1);
+        Physics.Raycast(transform.position + new Vector3(0, edgeDetectorDistance, 0), Vector3.left, 1);
+    }
+
+    private new void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorDistance, 0), transform.position + new Vector3(1, edgeDetectorDistance, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorDistance, 0), transform.position + new Vector3(-1, edgeDetectorDistance, 0));
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorDistance, 0), transform.position + new Vector3(1, topEdgeDetectorDistance, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorDistance, 0), transform.position + new Vector3(-1, topEdgeDetectorDistance, 0));
+    }
 
     private void Update()
     {
@@ -59,8 +66,28 @@ public class PlayerMovement : EntityMovement
             animator.SetFloat("VelocityX", rb.velocity.x);
         else
             animator.SetFloat("VelocityX", 0);
-
         animator.SetFloat("VelocityY", rb.velocity.y);
+        animator.SetBool("Grounded", grounded);
+
+        for (int i = 0; i < 2; i++)
+        {
+            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorDistance, 0), i == 0 ? Vector3.right : Vector3.left, 1);
+            RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorDistance, 0), i == 0 ? Vector3.right : Vector3.left, 1);
+            foreach (var ray in downRay)
+            {
+                if (ray.distance < 1 && topRay.Length == 0)
+                {
+                    Debug.Log($"Edge");
+                }
+            }
+        }
+
+    }
+
+    private new void FixedUpdate()
+    {
+        base.FixedUpdate();
+
     }
 
     public void Move(float move, bool jump)
