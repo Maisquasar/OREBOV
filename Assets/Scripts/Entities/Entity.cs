@@ -4,6 +4,4 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    [SerializeField] protected Animator animator;
-    [SerializeField] protected float speed;
 }

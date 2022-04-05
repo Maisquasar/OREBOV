@@ -1,27 +1,98 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using States;
 
+
+namespace States
+{
+    public enum PlayerAction
+    {
+        IDLE,
+        RUN,
+        JUMP,
+        FALL,
+        HIDE,
+        INTERACT,
+        CLIMB,
+        DEAD
+    }
+}
 public class PlayerMovement : EntityMovement
 {
-    [SerializeField] private float jumpForce;
     [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
+    [HideInInspector] public PlayerAction PlayerActionState;
+    [SerializeField] float jumpHeight;
+    [SerializeField] private float jumpDistance;
+
+    private float lastMove;
+    private float jumpForce;
+
+    float margeDetectionVelocity = 0.05f;
     float time;
-    private Vector3 velocity = Vector3.zero;
+
+    private void Update()
+    {
+        if (rb.velocity.y < -margeDetectionVelocity)
+        {
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.FALL);
+        }
+        else if (rb.velocity.y > margeDetectionVelocity)
+        {
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.JUMP);
+        }
+        else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
+        {
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.RUN);
+        }
+        else
+        {
+            ChangeStateFunction(ref PlayerActionState, PlayerAction.IDLE);
+        }
+        if (PlayerActionState == PlayerAction.RUN)
+            animator.speed = Mathf.Abs(lastMove);
+        else
+            animator.speed = 1;
+
+        if (!DetectWall())
+            animator.SetFloat("VelocityX", rb.velocity.x);
+        else
+            animator.SetFloat("VelocityX", 0);
+
+        animator.SetFloat("VelocityY", rb.velocity.y);
+    }
 
     public void Move(float move, bool jump)
     {
-        if (grounded || airControl)
+        lastMove = move;
+        if (rb.velocity.y < 0.1f)
+            move *= speed;
+        else if (move != 0)
+            move = jumpDistance * speed * Mathf.Sign(move);
+
+        if (grounded && !jump)
         {
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
         if (grounded && jump)
         {
             grounded = false;
-            rb.AddForce((Vector3.up * (jumpForce) * 10));
+            jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         time += Time.deltaTime;
+
+        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && endOfCoroutine)
+        {
+            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+        }
     }
 
+    public void ChangeStateFunction<T>(ref T change, T state)
+    {
+        if (!change.Equals(state))
+            change = state;
+    }
 }
+

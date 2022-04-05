@@ -5,46 +5,119 @@ using UnityEngine.Events;
 
 public class EntityMovement : MonoBehaviour
 {
-    [SerializeField] protected Transform groundCheck;
-    protected float groundCheckRadius = 0.1f;
-    [SerializeField] protected Transform ceilingCheck;
-    protected float ceilingCheckRadius = 0.4f;
+    [SerializeField] protected Animator animator;
     [SerializeField] protected LayerMask GroundType;
+    [SerializeField] protected LayerMask WallType;
+    [Tooltip("Manually place rays (May lag if too much)")]
+    [SerializeField] List<float> ray;
+    [SerializeField] protected float speed;
+
+    protected float rayGroundSize = 1.1f;
+    protected float rayCeilingSize = 1f;
+    protected float rayWallSize = 0.51f;
+    protected int direction = 1;
 
     protected float globalGravity = -9.81f;
     [SerializeField] protected float gravityScale = 1;
+    float offset = 0.18f;
 
     protected Rigidbody rb;
     protected bool grounded;
+    protected bool endOfCoroutine = true;
 
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rayGroundSize = 1.1f;
+        rayCeilingSize = 1.1f;
+        rayWallSize = 0.31f;
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(groundCheck.position, groundCheckRadius);
+        //Draw Debug line for ground
+        Gizmos.color = Color.blue;
+        for (int i = 0; i < 3; i++)
+            Gizmos.DrawRay(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), new Vector3(0, -rayGroundSize, 0));
+
+        //Draw Debug line for ceiling
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(transform.position, Vector3.up * rayCeilingSize);
+
+        //Draw Debug line for Wall
+        Gizmos.color = Color.blue;
+        for (int i = 0; i < ray.Count; i++)
+        {
+            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            Gizmos.DrawRay(WallPos, Vector3.left * rayWallSize);
+            Gizmos.DrawRay(WallPos, Vector3.right * rayWallSize);
+        }
     }
 
     virtual protected void FixedUpdate()
     {
+        // Ground Detection
         grounded = false;
-
-        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, GroundType);
-        for (int i = 0; i < colliders.Length; i++)
+        for (int i = 0; i < 3; i++)
         {
-            if (colliders[i].gameObject != gameObject)
+            if (Physics.Raycast(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), Vector3.down, rayGroundSize, GroundType, QueryTriggerInteraction.Ignore))
             {
                 grounded = true;
             }
         }
+
+        // Ceiling Detection
+        if (Physics.Raycast(transform.position, Vector3.up, rayCeilingSize, GroundType, QueryTriggerInteraction.Ignore))
+        {
+            rb.velocity = new Vector3(rb.velocity.x, -2f);
+        }
+
+        // Wall Detection
+        if (!GetComponent<Player>())
+            for (int i = 0; i < ray.Count; i++)
+            {
+                // Set all Ray pos
+                Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+                if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+                {
+                    Vector3 tmp = rb.velocity;
+                    tmp.x = 0;
+                    rb.velocity = tmp;
+                }
+            }
+
         // Set Gravity.
         Vector3 gravity = globalGravity * gravityScale * Vector3.up;
         rb.AddForce(gravity, ForceMode.Acceleration);
     }
 
+
+    protected virtual bool DetectWall()
+    {
+        for (int i = 0; i < ray.Count; i++)
+        {
+            // Set all Ray pos
+            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
+    {
+        endOfCoroutine = false;
+        direction *= -1;
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.rotation = goTo;
+        endOfCoroutine = true;
+    }
 
     public virtual void Move() { }
 }

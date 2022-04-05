@@ -4,21 +4,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
+using States;
 
 
 public class Player : Entity
 {
     public PlayerMovement Controller;
-    float shadowTime;
     bool isJumping = false;
     Vector2 movementDir;
 
     // Update is called once per frame
     void Update()
     {
-        Controller.Move(movementDir.x * speed, isJumping);
+        Controller.Move(movementDir.x, isJumping);
         if (isJumping)
             isJumping = false;
+
     }
 
     public void OnMove(CallbackContext context)
@@ -30,6 +31,8 @@ public class Player : Entity
 
     public void OnJumping(CallbackContext context)
     {
-        isJumping = true;
+        if (Controller.PlayerActionState == PlayerAction.IDLE || Controller.PlayerActionState == PlayerAction.RUN)
+            if (context.performed)
+                isJumping = true;
     }
 }
