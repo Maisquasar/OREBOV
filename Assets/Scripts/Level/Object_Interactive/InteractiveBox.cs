@@ -36,8 +36,8 @@ public class InteractiveBox : InteractiveObject
         base.ActiveItem(player);
         transform.SetParent(player.transform);
         _playerGO.GetComponent<Player>().enabled = false;
+        _playerGO.GetComponent<PlayerInteraction>().LinkObject(this);
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
-        player.GetComponent<PlayerInteraction>().LinkObject(this);
         _activeMouvement = true;
         StartCoroutine(PauseBoxMouvement());
     }

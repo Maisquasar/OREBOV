@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.02235704, g: 0.014283605, b: 0.010584578, a: 1}
+  m_IndirectSpecularColor: {r: 0.02233401, g: 0.014268734, b: 0.01057741, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1391,7 +1391,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 772313569}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 2.5, z: 0}
+  m_LocalPosition: {x: 0.51, y: 2.5, z: 0}
   m_LocalScale: {x: 1, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1463,10 +1463,15 @@ MonoBehaviour:
   _collisionMask:
     serializedVersion: 2
     m_Bits: 16
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1
   _speedBox: 2
   _moveTime: 1.5
   _timeBetweenMove: 0.3
   _activeMouvement: 0
+  _activeBoxDebug: 1
+  mouvementCount: 15
 --- !u!65 &1098865986
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1537,7 +1542,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1098865984}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.5, y: 0.73, z: 0}
+  m_LocalPosition: {x: -6, y: 0.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
