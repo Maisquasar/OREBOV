@@ -20,6 +20,7 @@ public class Player : Entity
     bool _isShadow = false;
     Vector2 movementDir;
     Vector3 previousPos;
+    public Vector2 MoveDir { get { return movementDir; } }
 
     private void Start()
     {

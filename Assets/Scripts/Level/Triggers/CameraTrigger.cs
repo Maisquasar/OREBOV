@@ -9,13 +9,25 @@ public class CameraTrigger : Trigger
     [Tooltip("Ctrl + Shift + F to place the cube to camera position")]
     [SerializeField] bool reverse;
 
+    [Tooltip("In seconds at 60 fps")]
+    [SerializeField] float travelTime;
+
     List<CameraCheckPoint> switchToCamera = new List<CameraCheckPoint>();
     CameraCheckPoint InitialPos;
     bool CoroutineEnd = true;
     bool activate = false;
+    [SerializeField]
+    private bool _resetFreeMouvement;
 
-    public new void Start()
+
+    private Camera _cameraToMove;
+    private CameraBehavior _cameraBehavior;
+    private Vector3 _initialPos;
+    private Quaternion _initialRot;
+
+    public override void Start()
     {
+        InitCamera();
         for (int i = 0; i < transform.childCount; i++)
         {
             switchToCamera.Add(transform.GetChild(i).GetComponent<CameraCheckPoint>());
@@ -27,8 +39,32 @@ public class CameraTrigger : Trigger
         base.Start();
     }
 
+    private void InitCamera()
+    {
+        _cameraToMove = Camera.main;
+        _cameraBehavior = _cameraToMove.GetComponent<CameraBehavior>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Player") 
+        {
+            InitiateMouvement();
+        }
+    }
+
+    private void InitiateMouvement()
+    {
+        _cameraBehavior.ActiveFreeMode();
+        _initialPos = _cameraToMove.transform.position;
+        _initialRot = _cameraToMove.transform.rotation;
+        StartCoroutine(LerpFromTo(_initialPos, switchToCamera.transform.position, travelTime));
+        StartCoroutine(LerpFromTo(_initialRot, switchToCamera.transform.rotation, travelTime));
+        if (reverse)
+            Swap();
+    }
+
+
         if (other.gameObject.GetComponent<Player>() && CoroutineEnd && !cameraToMove.FollowPlayer)
         {
             switchToCamera[0].transform.position = cameraToMove.transform.position;
@@ -59,20 +95,27 @@ public class CameraTrigger : Trigger
     {
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            cameraToMove.transform.position = Vector3.Lerp(initial, goTo, t / duration);
+            _cameraToMove.transform.position = Vector3.Lerp(initial, goTo, t / duration);
             yield return 0;
         }
-        cameraToMove.transform.position = goTo;
+        _cameraToMove.transform.position = goTo;
     }
 
     IEnumerator LerpFromTo(Quaternion initial, Quaternion goTo, float duration)
     {
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            cameraToMove.transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
+            _cameraToMove.transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
             yield return 0;
         }
-        cameraToMove.transform.rotation = goTo;
+        _cameraToMove.transform.rotation = goTo;
+        EndMouvement();
+    }
+
+    private void EndMouvement()
+    {
+        if(_resetFreeMouvement)
+            _cameraBehavior.DeactiveFreeMode();
     }
 
     // Swap values between startPos and SwitchTo.
