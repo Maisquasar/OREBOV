@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,15 +6,15 @@ using UnityEngine.Events;
 public class EntityMovement : MonoBehaviour
 {
     [SerializeField] protected Animator animator;
-    [SerializeField] protected LayerMask GroundType;
+    [SerializeField] public LayerMask GroundType;
     [SerializeField] protected LayerMask WallType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] List<float> ray;
     [SerializeField] protected float speed;
 
     protected float rayGroundSize = 1.1f;
-    protected float rayCeilingSize = 1f;
-    protected float rayWallSize = 0.51f;
+    protected float rayCeilingSize = 1.1f;
+    protected float rayWallSize = 0.31f;
     protected int direction = 1;
 
     protected float globalGravity = -9.81f;
@@ -28,9 +28,6 @@ public class EntityMovement : MonoBehaviour
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rayGroundSize = 1.1f;
-        rayCeilingSize = 1.1f;
-        rayWallSize = 0.31f;
     }
 
     protected void OnDrawGizmos()

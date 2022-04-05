@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using States;
 
-
 public class PlayerMovement : EntityMovement
 {
     [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
-    [HideInInspector] public PlayerAction PlayerActionState;
     [SerializeField] float jumpHeight;
     [SerializeField] private float jumpDistance;
 
@@ -20,13 +18,6 @@ public class PlayerMovement : EntityMovement
 
     float margeDetectionVelocity = 0.05f;
     float time;
-
-    private new void Start()
-    {
-        base.Start();
-        Physics.Raycast(transform.position + new Vector3(0, edgeDetectorDistance, 0), Vector3.right, 1);
-        Physics.Raycast(transform.position + new Vector3(0, edgeDetectorDistance, 0), Vector3.left, 1);
-    }
 
     private new void OnDrawGizmos()
     {
@@ -42,27 +33,6 @@ public class PlayerMovement : EntityMovement
     Vector3 posAtClimb;
     private void Update()
     {
-        if (rb.velocity.y < -margeDetectionVelocity)
-        {
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.FALL);
-        }
-        else if (rb.velocity.y > margeDetectionVelocity)
-        {
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.JUMP);
-        }
-        else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
-        {
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.RUN);
-        }
-        else
-        {
-            ChangeStateFunction(ref PlayerActionState, PlayerAction.IDLE);
-        }
-        if (PlayerActionState == PlayerAction.RUN)
-            animator.speed = Mathf.Abs(lastMove);
-        else
-            animator.speed = 1;
-
         if (!DetectWall())
             animator.SetFloat("VelocityX", rb.velocity.x);
         else
@@ -90,6 +60,23 @@ public class PlayerMovement : EntityMovement
     {
         base.FixedUpdate();
 
+    public void ChangeState(ref PlayerAction State)
+    {
+        if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
+        {
+            if (rb.velocity.y < -margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.FALL);
+            else if (rb.velocity.y > margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.JUMP);
+            else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.RUN);
+            else
+                ChangeStateFunction(ref State, PlayerAction.IDLE);
+        }
+        if (State == PlayerAction.RUN)
+            animator.speed = Mathf.Abs(lastMove);
+        else
+            animator.speed = 1;
     }
 
     public void Move(float move, bool jump)
