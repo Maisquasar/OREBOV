@@ -11,6 +11,8 @@ public class CameraBehavior : MonoBehaviour
 
     [SerializeField]
     private GameObject _playerGO;
+
+    private Player _player;
     [SerializeField]
     private Rect _windown;
 
@@ -24,9 +26,14 @@ public class CameraBehavior : MonoBehaviour
     private Vector3 _windownOrigin;
 
 
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float _camWindownSpeed;
+
+    private Vector2 dir;
 
     [SerializeField]
-    [Range(0f,10f)]
+    [Range(0f,1f)]
     private float _camSpeed;
 
     private bool _inScreen;
@@ -41,23 +48,24 @@ public class CameraBehavior : MonoBehaviour
     {
        
         _windownOrigin = _windownCenter +(_windownSize/2f);
+        _player = _playerGO.GetComponent<Player>();
 
     }
 
     private void FixedUpdate()
     {
-        _windownCenter = transform.position + _windownOffset;
+        dir = _player.MoveDir.x != 0 ? _player.MoveDir : dir;
+        _windownCenter = Vector3.Lerp(_windownCenter, transform.position + - dir.normalized.x * _windownOffset, _camWindownSpeed);
+    //    _windownCenter = transform.position + _player.MoveDir.x * _windownOffset;
         _windownCenter.z = _playerGO.transform.position.z;
         _windownOrigin = _windownCenter - (_windownSize / 2f);
         _inScreen = WindownCamContains(_playerGO.transform.position);
         Debug.Log(_inScreen);
 
-
-
         if (!_inScreen)
         {
             Vector3 target = new Vector3(_playerGO.transform.position.x, 0, 0f) - new Vector3(_windownCenter.x, 0, 0f);
-            transform.position += target.normalized * _camSpeed * Time.deltaTime;
+            transform.position += Vector3.Lerp(Vector3.zero, target,_camSpeed);
 
         }
     }

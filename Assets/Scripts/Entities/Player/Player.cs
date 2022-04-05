@@ -12,7 +12,9 @@ public class Player : Entity
     public PlayerMovement Controller;
     float shadowTime;
     bool isJumping = false;
+    
     Vector2 movementDir;
+    public Vector2 MoveDir { get { return movementDir; } }
 
     // Update is called once per frame
     void Update()
