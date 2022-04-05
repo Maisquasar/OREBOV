@@ -49,7 +49,7 @@ public class PlayerMovement : EntityMovement
         if (grounded && jump)
         {
             grounded = false;
-            rb.AddForce((Vector3.up * (jumpForce) * 10));
+            rb.AddForce(jumpForce * 10 * Vector3.up);
         }
         time += Time.deltaTime;
     }

@@ -7,30 +7,27 @@ using UnityEditor.UIElements;
 public class LightManager : MonoBehaviour
 {
     [SerializeField]
-    public List<Light> TempLightsList;
+    List<Light> TempLightsList;
     private static List<Light> LightsList;
     [SerializeField]
-    public List<LightSubType> TempInteriorLightsList;
+    List<LightSubType> TempInteriorLightsList;
     private static List<LightSubType> InteriorLightsList;
     [SerializeField]
-    public List<LightSubType> TempMovableLightsList;
-    private static List<LightSubType> MovableLightsList;
+    List<LightSubType> TempUsableLightsList;
+    private static List<LightSubType> UsableLightsList;
     // Start is called before the first frame update
     void Start()
     {
-        LightsList = new List<Light>();
-        InteriorLightsList = new List<LightSubType>();
-        MovableLightsList = new List<LightSubType>();
         if (TempLightsList == null) TempLightsList = new List<Light>();
         if (TempInteriorLightsList == null)  TempInteriorLightsList = new List<LightSubType>();
-        if (TempMovableLightsList == null)  TempMovableLightsList = new List<LightSubType>();
+        if (TempUsableLightsList == null)  TempUsableLightsList = new List<LightSubType>();
         SynchronizeLists();
     }
 
     public void DetectLights()
     {
         TempLightsList.Clear();
-        TempMovableLightsList.Clear();
+        TempUsableLightsList.Clear();
         TempInteriorLightsList.Clear();
         foreach (Light item in FindObjectsOfType(typeof(Light)))
         {
@@ -39,31 +36,35 @@ public class LightManager : MonoBehaviour
             if (t != null)
             {
                 LightSubType type = (LightSubType)t;
-                if (type.Type == LightType.Interior || type.Type == LightType.InteriorMovable)
+                if (type.Type == LightType.Interior || type.Type == LightType.InteriorUsable)
                 {
                     TempInteriorLightsList.Add(type);
                 }
-                if (type.Type == LightType.Movable || type.Type == LightType.InteriorMovable)
+                if (type.Type == LightType.Usable || type.Type == LightType.InteriorUsable)
                 {
-                    TempMovableLightsList.Add(type);
+                    TempUsableLightsList.Add(type);
                 }
             }
         }
+        SynchronizeLists();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (LightsList == null)
+        {
+            Start();
+        }
     }
 
-    public void SynchronizeLists()
+    private void SynchronizeLists()
     {
-        LightsList.Clear();
+        LightsList = new List<Light>();
+        InteriorLightsList = new List<LightSubType>();
+        UsableLightsList = new List<LightSubType>();
         LightsList.AddRange(TempLightsList);
-        MovableLightsList.Clear();
-        MovableLightsList.AddRange(TempMovableLightsList);
-        InteriorLightsList.Clear();
+        UsableLightsList.AddRange(TempUsableLightsList);
         InteriorLightsList.AddRange(TempInteriorLightsList);
     }
 
@@ -81,5 +82,11 @@ public class LightManager : MonoBehaviour
         {
             item.LightObject.color = item.PrimaryColor;
         }
+    }
+
+    public static LightSubType[] GetUsableLights()
+    {
+        if (UsableLightsList == null) return new LightSubType[0];
+        return UsableLightsList.ToArray();
     }
 }

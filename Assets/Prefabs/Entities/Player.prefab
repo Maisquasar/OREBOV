@@ -14,11 +14,12 @@ GameObject:
   - component: {fileID: 7032142427468432405}
   - component: {fileID: 7032142427468432397}
   - component: {fileID: 7032142427468432396}
+  - component: {fileID: 6625135978788640298}
+  - component: {fileID: 8358667430805240082}
   - component: {fileID: 7032142427468432399}
   - component: {fileID: 7032142427468432398}
   - component: {fileID: 1919976867}
-  - component: {fileID: 1847413034}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,9 +115,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d0420c7a3e11824eb5b91d6328daca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
+  animator: {fileID: 1919976867}
   speed: 6
   Controller: {fileID: 7032142427468432396}
+  Caster: {fileID: 6625135978788640298}
+  PlayerAnimator: {fileID: 8358667430805240082}
 --- !u!114 &7032142427468432396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GroundType:
     serializedVersion: 2
-    m_Bits: 821
+    m_Bits: 949
   ray:
   - 0.5
   - 0
@@ -164,6 +167,47 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   PlayerActionState: 0
+  PlayerAction: 0
+--- !u!114 &6625135978788640298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032142427468432404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b8acef8ed73ef146acf78b24d6788dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowAllRays: 0
+  ShadowRayCastPosition:
+  - {x: 0, y: 0.9}
+  - {x: 0.5, y: 0}
+  - {x: -0.5, y: 0}
+  - {x: 0, y: -0.65}
+  HitBoxRadius: 0.5
+  ShadowHeightDeltaMin: 1
+  DoesCurrentLightEject: 0
+--- !u!114 &8358667430805240082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032142427468432404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f004cb15d671542a87257024c02ff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _FadeOutWaitTimer: 0.5
+  _FadeOutTimer: 0.5
+  _FadeInWaitTimer: 0.5
+  _FadeInTimer: 0.5
+  Renderer: {fileID: 7032142427468432402}
+  PlayerMaterial: {fileID: 2100000, guid: db2944a8f43ff0541a344c7760774d5b, type: 2}
+  PlayerFadeMaterial: {fileID: 2100000, guid: 43ebc263e6e502547b28ad7158eaec2c, type: 2}
 --- !u!114 &7032142427468432399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,9 +307,9 @@ MonoBehaviour:
     m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1847413034}
-        m_TargetAssemblyTypeName: PlayerInteraction, Assembly-CSharp
-        m_MethodName: InteractionInput
+      - m_Target: {fileID: 7032142427468432397}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnTransformAction
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -275,8 +319,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: a6ec30d3-f812-4bba-9953-520df6e408b5
-    m_ActionName: Player/Interaction[/XInputControllerWindows/buttonEast]
+    m_ActionId: ad5ecc02-1177-4c9b-9178-c93a91ea9a67
+    m_ActionName: Player/Transform[/Keyboard/enter,/SwitchProControllerHID/buttonWest]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

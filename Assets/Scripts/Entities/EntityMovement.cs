@@ -5,13 +5,13 @@ using UnityEngine.Events;
 
 public class EntityMovement : MonoBehaviour
 {
-    [SerializeField] protected LayerMask GroundType;
+    [SerializeField] public LayerMask GroundType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] List<float> ray;
 
-    protected float rayGroundSize;
-    protected float rayCeilingSize;
-    protected float rayWallSize;
+    protected float rayGroundSize = 1.1f;
+    protected float rayCeilingSize = 1.0f;
+    protected float rayWallSize = 0.51f;
 
     protected float globalGravity = -9.81f;
     [SerializeField] protected float gravityScale = 1;
@@ -22,29 +22,25 @@ public class EntityMovement : MonoBehaviour
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rayGroundSize = 1.5f;
-        rayCeilingSize = 1f;
-        rayWallSize = 0.5f;
-        rayWallSize += 0.01f;
     }
 
-    private void OnDrawGizmos()
+    protected void OnDrawGizmos()
     {
         //Draw Debug line for ground
         Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, Vector3.down);
+        Gizmos.DrawRay(transform.position, Vector3.down * rayGroundSize);
 
         //Draw Debug line for ceiling
         Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, Vector3.up);
+        Gizmos.DrawRay(transform.position, Vector3.up * rayCeilingSize);
 
         //Draw Debug line for Wall
         Gizmos.color = Color.blue;
         for (int i = 0; i < ray.Count; i++)
         {
             Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-            Gizmos.DrawRay(WallPos, Vector3.left);
-            Gizmos.DrawRay(WallPos, Vector3.right);
+            Gizmos.DrawRay(WallPos, Vector3.left * rayWallSize);
+            Gizmos.DrawRay(WallPos, Vector3.right * rayWallSize);
         }
     }
 

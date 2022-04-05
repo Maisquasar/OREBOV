@@ -7,13 +7,13 @@ using System.Threading;
 public class LookAtPointEditor : Editor
 {
     SerializedProperty lightsList;
-    SerializedProperty movableLightsList;
+    SerializedProperty usableLightsList;
     SerializedProperty interiorLightsList;
 
     void OnEnable()
     {
         lightsList = serializedObject.FindProperty("TempLightsList");
-        movableLightsList = serializedObject.FindProperty("TempMovableLightsList");
+        usableLightsList = serializedObject.FindProperty("TempUsableLightsList");
         interiorLightsList = serializedObject.FindProperty("TempInteriorLightsList");
     }
 
@@ -27,7 +27,7 @@ public class LookAtPointEditor : Editor
             EditorUtility.SetDirty(serializedObject.targetObject);
         }
         EditorGUILayout.PropertyField(lightsList);
-        EditorGUILayout.PropertyField(movableLightsList);
+        EditorGUILayout.PropertyField(usableLightsList);
         EditorGUILayout.PropertyField(interiorLightsList);
         /*
         // Special tool to help us later
