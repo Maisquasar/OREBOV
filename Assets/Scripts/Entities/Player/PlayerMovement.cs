@@ -39,6 +39,7 @@ public class PlayerMovement : EntityMovement
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorDistance, 0), transform.position + new Vector3(-1, topEdgeDetectorDistance, 0));
     }
 
+    Vector3 posAtClimb;
     private void Update()
     {
         if (rb.velocity.y < -margeDetectionVelocity)
@@ -77,11 +78,12 @@ public class PlayerMovement : EntityMovement
             {
                 if (ray.distance < 1 && topRay.Length == 0)
                 {
-                    Debug.Log($"Edge");
+                    rb.velocity = Vector3.zero;
+                    gravityScale = 0;
+                    StartCoroutine(PlayClimb());
                 }
             }
         }
-
     }
 
     private new void FixedUpdate()
@@ -110,7 +112,7 @@ public class PlayerMovement : EntityMovement
         }
         time += Time.deltaTime;
 
-        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && endOfCoroutine)
+        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && grounded && endOfCoroutine)
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
         }
@@ -120,6 +122,16 @@ public class PlayerMovement : EntityMovement
     {
         if (!change.Equals(state))
             change = state;
+    }
+
+    int endOfAnim = -1;
+    public IEnumerator PlayClimb()
+    {
+        endOfAnim = 0;
+        animator.Play("Climb");
+        float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSecondsRealtime(animationLength);
+        //transform.position = transform.position + new Vector3()
     }
 }
 
