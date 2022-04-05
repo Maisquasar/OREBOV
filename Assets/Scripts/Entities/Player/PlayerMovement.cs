@@ -24,6 +24,9 @@ public class PlayerMovement : EntityMovement
     [SerializeField] AnimationCurve velocityCurve;
     [HideInInspector] public PlayerAction PlayerActionState;
     [SerializeField] float jumpHeight;
+    [SerializeField] private float jumpDistance;
+
+    private float lastMove;
     private float jumpForce;
 
     float margeDetectionVelocity = 0.05f;
@@ -38,25 +41,37 @@ public class PlayerMovement : EntityMovement
         else if (rb.velocity.y > margeDetectionVelocity)
         {
             ChangeStateFunction(ref PlayerActionState, PlayerAction.JUMP);
-            animator.SetBool("Jump", true);
         }
         else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
         {
             ChangeStateFunction(ref PlayerActionState, PlayerAction.RUN);
-            animator.SetBool("Jump", false);
         }
         else
         {
             ChangeStateFunction(ref PlayerActionState, PlayerAction.IDLE);
-            animator.SetBool("Jump", false);
         }
-        animator.SetFloat("VelocityX", rb.velocity.x);
+        if (PlayerActionState == PlayerAction.RUN)
+            animator.speed = Mathf.Abs(lastMove);
+        else
+            animator.speed = 1;
+
+        if (!DetectWall())
+            animator.SetFloat("VelocityX", rb.velocity.x);
+        else
+            animator.SetFloat("VelocityX", 0);
+
+        animator.SetFloat("VelocityY", rb.velocity.y);
     }
 
     public void Move(float move, bool jump)
     {
-        move *= speed;
-        if (grounded)
+        lastMove = move;
+        if (rb.velocity.y < 0.1f)
+            move *= speed;
+        else if (move != 0)
+            move = jumpDistance * speed * Mathf.Sign(move);
+
+        if (grounded && !jump)
         {
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
@@ -80,3 +95,4 @@ public class PlayerMovement : EntityMovement
             change = state;
     }
 }
+

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Debug
 public class CameraSettings : MonoBehaviour
 {
     [SerializeField] public bool FollowPlayer;
@@ -11,6 +12,7 @@ public class CameraSettings : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<Player>();
+        Application.targetFrameRate = 60;
     }
 
     // Update is called once per frame

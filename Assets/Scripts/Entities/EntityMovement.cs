@@ -7,6 +7,7 @@ public class EntityMovement : MonoBehaviour
 {
     [SerializeField] protected Animator animator;
     [SerializeField] protected LayerMask GroundType;
+    [SerializeField] protected LayerMask WallType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] List<float> ray;
     [SerializeField] protected float speed;
@@ -18,7 +19,7 @@ public class EntityMovement : MonoBehaviour
 
     protected float globalGravity = -9.81f;
     [SerializeField] protected float gravityScale = 1;
-    float offset = 0.3f;
+    float offset = 0.18f;
 
     protected Rigidbody rb;
     protected bool grounded;
@@ -28,8 +29,8 @@ public class EntityMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rayGroundSize = 1.1f;
-        rayCeilingSize = 1f;
-        rayWallSize = 0.51f;
+        rayCeilingSize = 1.1f;
+        rayWallSize = 0.31f;
     }
 
     private void OnDrawGizmos()
@@ -37,7 +38,7 @@ public class EntityMovement : MonoBehaviour
         //Draw Debug line for ground
         Gizmos.color = Color.blue;
         for (int i = 0; i < 3; i++)
-            Gizmos.DrawRay(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), new Vector3(-offset + offset * i, -1, 0));
+            Gizmos.DrawRay(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), new Vector3(0, -rayGroundSize, 0));
 
         //Draw Debug line for ceiling
         Gizmos.color = Color.blue;
@@ -48,8 +49,8 @@ public class EntityMovement : MonoBehaviour
         for (int i = 0; i < ray.Count; i++)
         {
             Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-            Gizmos.DrawRay(WallPos, Vector3.left);
-            Gizmos.DrawRay(WallPos, Vector3.right);
+            Gizmos.DrawRay(WallPos, Vector3.left * rayWallSize);
+            Gizmos.DrawRay(WallPos, Vector3.right * rayWallSize);
         }
     }
 
@@ -72,21 +73,37 @@ public class EntityMovement : MonoBehaviour
         }
 
         // Wall Detection
-        for (int i = 0; i < ray.Count; i++)
-        {
-            // Set all Ray pos
-            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+        if (!GetComponent<Player>())
+            for (int i = 0; i < ray.Count; i++)
             {
-                Vector3 tmp = rb.velocity;
-                tmp.x = 0;
-                rb.velocity = tmp;
+                // Set all Ray pos
+                Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+                if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+                {
+                    Vector3 tmp = rb.velocity;
+                    tmp.x = 0;
+                    rb.velocity = tmp;
+                }
             }
-        }
 
         // Set Gravity.
         Vector3 gravity = globalGravity * gravityScale * Vector3.up;
         rb.AddForce(gravity, ForceMode.Acceleration);
+    }
+
+
+    protected virtual bool DetectWall()
+    {
+        for (int i = 0; i < ray.Count; i++)
+        {
+            // Set all Ray pos
+            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
