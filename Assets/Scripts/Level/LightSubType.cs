@@ -6,8 +6,9 @@ public enum LightType
 {
     Static = 0,
     Interior = 1,
-    Movable = 2,
-    InteriorMovable = 3,
+    Usable = 2,
+    Movable = 3,
+    InteriorUsable = 3,
 }
 
 [ExecuteInEditMode]
@@ -17,6 +18,7 @@ public class LightSubType : MonoBehaviour
     public LightType Type = LightType.Static;
     public Color PrimaryColor;
     public Color SecondaryColor;
+    public bool EjectPlayer = false;
 
     public void Start()
     {
