@@ -2,16 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using States;
+using UnityEditor;
 
 public class PlayerMovement : EntityMovement
 {
-    [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
+
+    [Space]
+    [Header("======== Jump ========")]
+    [Space]
     [SerializeField] float jumpHeight;
     [SerializeField] private float jumpDistance;
 
+    [Space]
+    [Header("======== Edge Detector ========")]
+    [Space]
+    [SerializeField] float edgeDetectorHeight = 0.6f;
+    private float topEdgeDetectorHeight = 0.75f;
     float edgeDetectorDistance = 0.5f;
-    float topEdgeDetectorDistance = 0.75f;
 
     private float lastMove;
     private float jumpForce;
@@ -19,18 +27,29 @@ public class PlayerMovement : EntityMovement
     float margeDetectionVelocity = 0.05f;
     float time;
 
+    private new void Start()
+    {
+        base.Start();
+
+        gravityScale = 3;
+        topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
+    }
+
     private new void OnDrawGizmos()
     {
         base.OnDrawGizmos();
+
+        // Draw edge Detector
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorDistance, 0), transform.position + new Vector3(1, edgeDetectorDistance, 0));
-        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorDistance, 0), transform.position + new Vector3(-1, edgeDetectorDistance, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorHeight, 0), transform.position + new Vector3(edgeDetectorDistance, edgeDetectorHeight, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, edgeDetectorHeight, 0));
+
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorDistance, 0), transform.position + new Vector3(1, topEdgeDetectorDistance, 0));
-        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorDistance, 0), transform.position + new Vector3(-1, topEdgeDetectorDistance, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(edgeDetectorDistance, topEdgeDetectorHeight, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, topEdgeDetectorHeight, 0));
     }
 
-    Vector3 posAtClimb;
+    bool isClimbing = false;
     private void Update()
     {
         if (!DetectWall())
@@ -40,18 +59,14 @@ public class PlayerMovement : EntityMovement
         animator.SetFloat("VelocityY", rb.velocity.y);
         animator.SetBool("Grounded", grounded);
 
-        for (int i = 0; i < 2; i++)
+        // Edge Detection :
+        RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        foreach (var ray in downRay)
         {
-            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorDistance, 0), i == 0 ? Vector3.right : Vector3.left, 1);
-            RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorDistance, 0), i == 0 ? Vector3.right : Vector3.left, 1);
-            foreach (var ray in downRay)
+            if (topRay.Length == 0 && !isClimbing)
             {
-                if (ray.distance < 1 && topRay.Length == 0)
-                {
-                    rb.velocity = Vector3.zero;
-                    gravityScale = 0;
-                    StartCoroutine(PlayClimb());
-                }
+                StartCoroutine(PlayClimb());
             }
         }
     }
@@ -75,30 +90,37 @@ public class PlayerMovement : EntityMovement
             animator.speed = 1;
     }
 
+    // Move the player.
     public void Move(float move, bool jump)
     {
+        // If climbing then can't move
+        if (isClimbing)
+            return;
         lastMove = move;
         if (rb.velocity.y < 0.1f)
             move *= speed;
         else if (move != 0)
             move = jumpDistance * speed * Mathf.Sign(move);
 
+        // Ground Move
         if (grounded && !jump)
         {
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
+        // Jump move
         if (grounded && jump)
         {
             grounded = false;
             jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
-        time += Time.deltaTime;
 
+        //Flip character
         if ((move > 0 && direction == -1 || move < 0 && direction == 1) && grounded && endOfCoroutine)
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
         }
+        time += Time.deltaTime;
     }
 
     public void ChangeStateFunction<T>(ref T change, T state)
@@ -107,14 +129,24 @@ public class PlayerMovement : EntityMovement
             change = state;
     }
 
-    int endOfAnim = -1;
     public IEnumerator PlayClimb()
     {
-        endOfAnim = 0;
+        isClimbing = true;
+        //Play animation
         animator.Play("Climb");
-        float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSecondsRealtime(animationLength);
-        //transform.position = transform.position + new Vector3()
+        //Lock Player pos
+        rb.velocity = Vector3.zero;
+        gravityScale = 0;
+        // Wait for end of animation
+        yield return new WaitForSeconds(1.113f);
+        // Move to animation pos.
+        transform.position = transform.position + new Vector3(0.6f * direction, 1.5f, 0);
+        // Reset Grabity scale.
+        gravityScale = 3;
+        // Transition to Idle.
+        animator.Play("Crouched To Standing"); 
+        yield return new WaitForSeconds(0.75f);
+        isClimbing = false;
     }
 }
 
