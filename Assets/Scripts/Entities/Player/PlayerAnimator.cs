@@ -7,7 +7,7 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] float _FadeOutTimer = 0.5f;
     [SerializeField] float _FadeInWaitTimer = 0.5f;
     [SerializeField] float _FadeInTimer = 0.5f;
-    [SerializeField] public MeshRenderer Renderer;
+    [SerializeField] public SkinnedMeshRenderer Renderer;
     [SerializeField] Material PlayerMaterial;
     [SerializeField] Material PlayerFadeMaterial;
     private bool _isInAmination = false;
@@ -28,7 +28,7 @@ public class PlayerAnimator : MonoBehaviour
             yield return Time.deltaTime;
         }
         Renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
-        Renderer.gameObject.layer = LayerMask.NameToLayer("Shadows");
+        gameObject.layer = LayerMask.NameToLayer("Shadows");
         _isInAmination = false;
         yield return null;
     }
@@ -37,7 +37,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         _isInAmination = true;
         Vector3 currentPos = transform.position;
-        Renderer.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         for (float timer = _FadeInWaitTimer; timer > 0; timer -= Time.deltaTime)
         {
             transform.position = Vector3.Lerp(_shadowPosition, currentPos, timer/_FadeInWaitTimer);

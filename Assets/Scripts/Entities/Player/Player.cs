@@ -12,7 +12,6 @@ public class Player : Entity
     public PlayerMovement Controller;
     bool isJumping = false;
     [HideInInspector] public PlayerAction PlayerActionState;
-    private PlayerMovement Controller;
     private ShadowCaster Caster;
     private PlayerAnimator PlayerAnimator;
     private PlayerInteraction PlayerInteraction;
@@ -34,7 +33,7 @@ public class Player : Entity
     {
         if (!PlayerAnimator.IsInAmination && PlayerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
-            Controller.Move(movementDir.x * speed, _isJumping);
+            Controller.Move(movementDir.x, _isJumping);
             Controller.ChangeState(ref PlayerActionState);
         }
         if (_isJumping)

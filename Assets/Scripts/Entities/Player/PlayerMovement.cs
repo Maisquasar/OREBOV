@@ -56,10 +56,6 @@ public class PlayerMovement : EntityMovement
         }
     }
 
-    private new void FixedUpdate()
-    {
-        base.FixedUpdate();
-
     public void ChangeState(ref PlayerAction State)
     {
         if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)

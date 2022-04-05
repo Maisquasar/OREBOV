@@ -7,7 +7,6 @@ public class EntityMovement : MonoBehaviour
 {
     [SerializeField] protected Animator animator;
     [SerializeField] public LayerMask GroundType;
-    [SerializeField] protected LayerMask WallType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] List<float> ray;
     [SerializeField] protected float speed;
@@ -75,7 +74,7 @@ public class EntityMovement : MonoBehaviour
             {
                 // Set all Ray pos
                 Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-                if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+                if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
                 {
                     Vector3 tmp = rb.velocity;
                     tmp.x = 0;
@@ -95,7 +94,7 @@ public class EntityMovement : MonoBehaviour
         {
             // Set all Ray pos
             Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
             {
                 return true;
             }

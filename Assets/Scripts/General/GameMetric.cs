@@ -22,7 +22,6 @@ public class GameMetric : MonoBehaviour
     }
 
 
-
     /// <summary>
     /// Transform game unit in Unity unit
     /// </summary>
