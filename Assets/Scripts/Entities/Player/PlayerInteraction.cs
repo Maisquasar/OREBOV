@@ -5,12 +5,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    private enum InteractionState
+    public enum InteractionState
     {
         None,
         Selected,
         Link,
-
     }
 
     [SerializeField]
@@ -18,6 +17,7 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField]
     private InteractionState _interactionState;
+    public InteractionState Interaction {get { return _interactionState; }}
 
     // ObjectManger Component
 
@@ -36,13 +36,18 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField]
     private bool _inputReset; // Use for the holding the input
+    public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
     private Vector2 _axis;
 
+    private void Start()
+    {
+        if (_objectManager == null)
+            _objectManager = new ObjectManager();
+    }
+
     private void Update()
     {
-
-
         if (_interactionState == InteractionState.Link)
         {
             _objectInteractive.UpdateItem(_axis);
@@ -94,21 +99,20 @@ public class PlayerInteraction : MonoBehaviour
             _axis = callback.ReadValue<Vector2>();
         if (callback.canceled)
             _axis = Vector2.zero;
-
-
     }
 
     private void PressInput()
     {
-        if (_debugActive) Debug.Log("Press Input");
-        _inputReset = false;
-        _objectInteractive.ItemInteraction(gameObject);
+        if (_objectInteractive != null && CanStopNow)
+        {
+            _inputReset = false;
+            _objectInteractive.ItemInteraction(gameObject);
+        }
     }
 
 
     private void HoldInput()
     {
-        if (_debugActive) Debug.Log("Hold Input");
         if (_objectInteractive != null)
         {
             _objectInteractive.HoldUpdate();
@@ -118,8 +122,7 @@ public class PlayerInteraction : MonoBehaviour
     }
     private void CancelInput()
     {
-        if (_debugActive) Debug.Log("Cancel Input");
-        _inputReset = true;
+        if (CanStopNow) _inputReset = true;
     }
     #endregion
 
@@ -130,7 +133,7 @@ public class PlayerInteraction : MonoBehaviour
         _objectInteractive = interactiveObject;
         _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);
-        _uiInteract.transform.position = _objectInteractive.transform.position + Vector3.up * 1f;
+        _uiInteract.transform.position = _objectInteractive.HintPosition;
         _interactionState = InteractionState.Selected;
     }
 

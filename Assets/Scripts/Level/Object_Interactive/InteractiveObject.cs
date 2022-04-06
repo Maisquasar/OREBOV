@@ -12,6 +12,11 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField]    
     public bool _objectActive;
 
+    [Header("UI Postion")]
+    [SerializeField]
+    private Vector3 _uiHintPosition;    
+    public Vector3 HintPosition { get { return transform.position + _uiHintPosition; } }
+    
     [Header("Sound")]
     [SerializeField]
     protected bool _activeSound = false;
@@ -19,6 +24,8 @@ public class InteractiveObject : MonoBehaviour
     protected AudioClip _soundActiveTrigger;
     [SerializeField]
     protected AudioClip _soundDeactiveTrigger;
+
+
 
     [Header("Debug")]
     [SerializeField]
@@ -32,8 +39,6 @@ public class InteractiveObject : MonoBehaviour
     public virtual void ItemInteraction(GameObject player)
     {
         _objectActive = !_objectActive;
-        if(_debug) Debug.Log("Interaction  Input");
-
         
         if (_objectActive)
         {
@@ -55,26 +60,22 @@ public class InteractiveObject : MonoBehaviour
             AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
 
         _playerGO = player;
-        if (_debug) Debug.Log("Item Active");
     }
 
     protected virtual void DeactiveItem()
     {
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundDeactiveTrigger, transform.position);
-        if (_debug) Debug.Log("Item Deactive");
     }
 
     public virtual void UpdateItem(Vector2 axis)
     {
         _axis = axis;
-        if (_debug) Debug.Log("Item Update");
     }
 
     protected virtual void UpdateItemInternally()
     {
         if (_isSelected) ItemSelected();
-        if (_debug)  Debug.Log("Item Update");
     }
 
     protected virtual void ItemSelected()
@@ -87,7 +88,11 @@ public class InteractiveObject : MonoBehaviour
 
     }
 
-
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(HintPosition, 0.112f);
+    }
 
 
 }
