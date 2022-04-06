@@ -9,17 +9,22 @@ public class PlayerMovement : EntityMovement
     [SerializeField] AnimationCurve velocityCurve;
 
     [Space]
-    [Header("======== Jump ========")]
+    [Header("Jump Settings")]
     [Space]
     [SerializeField] float jumpHeight;
     [SerializeField] private float jumpDistance;
 
     [Space]
-    [Header("======== Edge Detector ========")]
+    [Header("Edge Detector Settings")]
     [Space]
     [SerializeField] float edgeDetectorHeight = 0.6f;
     private float topEdgeDetectorHeight = 0.75f;
     float edgeDetectorDistance = 0.5f;
+
+    [Space]
+    [Header("Fall Damage Settings")]
+    [Space]
+    [SerializeField] float FallDamageHeight = 8;
 
     private float lastMove;
     private float jumpForce;
@@ -30,7 +35,6 @@ public class PlayerMovement : EntityMovement
     private new void Start()
     {
         base.Start();
-
         gravityScale = 3;
         topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
     }
@@ -50,8 +54,28 @@ public class PlayerMovement : EntityMovement
     }
 
     bool isClimbing = false;
+    bool FallDefine = false;
     private void Update()
     {
+        //Get the pos at start fall.
+        if (rb.velocity.y < -0.1f && !FallDefine && !grounded)
+        {
+            Debug.Log("Define");
+            LastPosBeforeFall = transform.position;
+            FallDefine = true;
+        }
+        //Check if fall damage.
+        if (grounded)
+        {
+            FallDefine = false;
+            if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<Player>().Dead)
+            {
+                animator.SetBool("Dead", true);
+                GetComponent<Player>().Dead = true;
+                LastPosBeforeFall = GetComponent<Player>().CheckpointPos;
+            }
+        }
+
         if (!DetectWall())
             animator.SetFloat("VelocityX", rb.velocity.x);
         else
@@ -59,24 +83,30 @@ public class PlayerMovement : EntityMovement
         animator.SetFloat("VelocityY", rb.velocity.y);
         animator.SetBool("Grounded", grounded);
 
-        // Edge Detection :
-        RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
-        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
-        foreach (var ray in downRay)
+        // Can't climb if fall damage.
+        if (LastPosBeforeFall.y - transform.position.y < GameMetric.GetGameUnit(FallDamageHeight))
         {
-            if (topRay.Length == 0 && !isClimbing)
+            // Edge Detection :
+            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+            RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+            foreach (var ray in downRay)
             {
-                StartCoroutine(PlayClimb());
+                if (topRay.Length == 0 && !isClimbing)
+                {
+                    StartCoroutine(PlayClimb());
+                }
             }
         }
     }
-
+    Vector3 LastPosBeforeFall;
     public void ChangeState(ref PlayerAction State)
     {
         if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
         {
             if (rb.velocity.y < -margeDetectionVelocity)
+            {
                 ChangeStateFunction(ref State, PlayerAction.FALL);
+            }
             else if (rb.velocity.y > margeDetectionVelocity)
                 ChangeStateFunction(ref State, PlayerAction.JUMP);
             else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
@@ -154,7 +184,7 @@ public class PlayerMovement : EntityMovement
         isClimbing = false;
     }
 
-    bool isPushing = false;
+    [HideInInspector] public bool isPushing = false;
     public IEnumerator PlayPush()
     {
         if (!isPushing)
@@ -167,12 +197,11 @@ public class PlayerMovement : EntityMovement
                 yield return null;
             }
             isPushing = false;
-            Debug.Log("End");
         }
         yield return null;
     }
 
-    bool isPulling = false;
+    [HideInInspector] public bool isPulling = false;
     public IEnumerator PlayPull()
     {
         if (!isPulling)
