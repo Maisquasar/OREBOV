@@ -18,6 +18,7 @@ public class ShadowCaster : MonoBehaviour
 
     public bool DoesCurrentLightEject = false;
     private int _mask = 0;
+    private int _maskDepth = 0;
 
     protected void OnDrawGizmos()
     {
@@ -63,7 +64,8 @@ public class ShadowCaster : MonoBehaviour
     public bool CanTransform(bool ShouldBeInFront)
     {
         _shadowDepth = 100000;
-        if (_mask == 0) _mask = 0x7fffffff - LayerMask.GetMask("TransparentFX", "Ignore Raycast", "Shadows", "NoShadows");
+        if (_mask == 0) _mask = 0x7fffffff - LayerMask.GetMask("TransparentFX", "Ignore Raycast", "NoShadows");
+        if (_maskDepth == 0) _maskDepth = 0x7fffffff - LayerMask.GetMask("TransparentFX", "Ignore Raycast", "Shadows", "NoShadows");
         if (_pointsHit == null || _pointsHit.Length != ShadowRayCastPosition.Count) _pointsHit = new bool[ShadowRayCastPosition.Count];
         for (int i = 0; i < _pointsHit.Length; i++) _pointsHit[i] = true;
         LightSubType[] lights = LightManager.GetUsableLights();
@@ -95,7 +97,7 @@ public class ShadowCaster : MonoBehaviour
                     Vector3 deltaPos = transform.position + new Vector3(DepthRayCastPosition[j].x, DepthRayCastPosition[j].y, 0);
                     Vector3 dir = (deltaPos - item.transform.position).normalized;
                     RaycastHit rayHit;
-                    if (item.spotAngle / 2 >= Vector3.Angle(item.transform.forward, dir) && Physics.Raycast(item.transform.position, dir, out rayHit, 10000, _mask, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
+                    if (item.spotAngle / 2 >= Vector3.Angle(item.transform.forward, dir) && Physics.Raycast(item.transform.position, dir, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
                     {
                         if (rayHit.point.z < _shadowDepth) _shadowDepth = rayHit.point.z;
                         if (Mathf.Abs(rayHit.point.y - _shadowHeight) > ShadowHeightDeltaMin) _shadowHeight = rayHit.point.y - DepthRayCastPosition[j].y;
@@ -121,7 +123,7 @@ public class ShadowCaster : MonoBehaviour
             {
                 float dist = (transform.position - item.transform.position).magnitude;
                 RaycastHit rayHit;
-                if (Physics.Raycast(item.transform.position, transform.position - item.transform.position, out rayHit, 10000, _mask, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
+                if (Physics.Raycast(item.transform.position, transform.position - item.transform.position, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
                 {
                     Vector3 outValue = rayHit.point + Vector3.back * HitBoxRadius;
                     if (Mathf.Abs(outValue.y-transform.position.y) < ShadowHeightDeltaMin) outValue.y = transform.position.y;
