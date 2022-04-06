@@ -72,6 +72,7 @@ public class PlayerMovement : EntityMovement
             {
                 animator.SetBool("Dead", true);
                 GetComponent<Player>().Dead = true;
+                LastPosBeforeFall = GetComponent<Player>().CheckpointPos;
             }
         }
 
