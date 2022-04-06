@@ -133,7 +133,7 @@ public class PlayerInteraction : MonoBehaviour
         _objectInteractive = interactiveObject;
         _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);
-        _uiInteract.transform.position = _objectInteractive.transform.position + Vector3.up * 1f;
+        _uiInteract.transform.position = _objectInteractive.HintPosition;
         _interactionState = InteractionState.Selected;
     }
 

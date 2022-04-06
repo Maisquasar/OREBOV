@@ -12,6 +12,11 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField]    
     public bool _objectActive;
 
+    [Header("UI Postion")]
+    [SerializeField]
+    private Vector3 _uiHintPosition;    
+    public Vector3 HintPosition { get { return transform.position + _uiHintPosition; } }
+    
     [Header("Sound")]
     [SerializeField]
     protected bool _activeSound = false;
@@ -19,6 +24,8 @@ public class InteractiveObject : MonoBehaviour
     protected AudioClip _soundActiveTrigger;
     [SerializeField]
     protected AudioClip _soundDeactiveTrigger;
+
+
 
     [Header("Debug")]
     [SerializeField]
@@ -81,7 +88,11 @@ public class InteractiveObject : MonoBehaviour
 
     }
 
-
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(HintPosition, 0.112f);
+    }
 
 
 }
