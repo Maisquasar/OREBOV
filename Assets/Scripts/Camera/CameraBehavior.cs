@@ -67,7 +67,7 @@ public class CameraBehavior : MonoBehaviour
 
     private void SetWindowPosition()
     {
-        _windowCenter = Vector3.Lerp(_windowCenter, new Vector3(transform.position.x,0f,0f)+ (Vector3)_windowOffset, _camWindownSpeed);
+        _windowCenter = Vector3.Lerp(_windowCenter, new Vector3(transform.position.x,transform.position.y,0f)+ (Vector3)_windowOffset, _camWindownSpeed);
         _windowCenter.z = _mainTarget.transform.position.z;
         _windowOrigin = _windowCenter - (Vector3)(_windowSize / 2f);
     }
@@ -76,7 +76,10 @@ public class CameraBehavior : MonoBehaviour
     {
         if (!WindownCamContains(_mainTarget.transform.position))
         {
-            Vector3 target = new Vector3(_mainTarget.transform.position.x, 0, 0f) - new Vector3(_windowCenter.x, 0, 0f);
+            Vector3 target =  Vector3.zero;
+            if (!WindownCamContainsX(_mainTarget.transform.position)) target += new Vector3(_mainTarget.transform.position.x, 0f, 0f) - new Vector3(_windowCenter.x, 0f, 0f);
+            if (!WindownCamContainsY(_mainTarget.transform.position)) target += new Vector3(0f,_mainTarget.transform.position.y, 0f) - new Vector3(0f ,_windowCenter.y, 0f);
+
             transform.position += Vector3.Lerp(Vector3.zero, target, _camSpeed);
         }
     }
@@ -116,9 +119,25 @@ public class CameraBehavior : MonoBehaviour
         return true;
     }
 
+    private bool WindownCamContainsX(Vector3 position)
+    {
 
-    // Active the free mode camera
-    public void ActiveFreeMode()
+        if (position.x < _windowOrigin.x || position.x > _windowOrigin.x + _windowSize.x) return false;
+
+
+        return true;
+    }
+
+    private bool WindownCamContainsY(Vector3 position)
+    {
+        if (position.y < _windowOrigin.y || position.y > _windowOrigin.y + _windowSize.y) return false;
+
+
+        return true;
+    }
+
+        // Active the free mode camera
+        public void ActiveFreeMode()
     {
         _camState = CameraBehaviorState.FreeMovement;
     }
