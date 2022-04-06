@@ -12,6 +12,9 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField]    
     public bool _objectActive;
 
+    [HideInInspector]
+    public bool _deactiveInteraction = false;
+
     [Header("UI Postion")]
     [SerializeField]
     private Vector3 _uiHintPosition;    

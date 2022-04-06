@@ -30,6 +30,8 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField]
     private GameObject _uiInteract;
 
+    private Quaternion _uiRot;
+
     [Header("Debug")]
     [SerializeField]
     private bool _debugActive;
@@ -42,6 +44,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Start()
     {
+
+        _uiRot = _uiInteract.transform.rotation;
         if (_objectManager == null)
             _objectManager = new ObjectManager();
     }
@@ -108,6 +112,10 @@ public class PlayerInteraction : MonoBehaviour
             _inputReset = false;
             _objectInteractive.ItemInteraction(gameObject);
         }
+        if(!CanStopNow)
+        {
+            _objectInteractive._deactiveInteraction = true;
+        }
     }
 
 
@@ -134,6 +142,7 @@ public class PlayerInteraction : MonoBehaviour
         _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractive.HintPosition;
+        _uiInteract.transform.rotation = _uiRot;
         _interactionState = InteractionState.Selected;
     }
 
