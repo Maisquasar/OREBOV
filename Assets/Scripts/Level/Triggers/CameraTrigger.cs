@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CameraTrigger : Trigger
 {
-    [SerializeField] CameraSettings cameraToMove;
+ 
     [Tooltip("Ctrl + Shift + F to place the cube to camera position")]
     [SerializeField] bool reverse;
 
@@ -13,26 +13,48 @@ public class CameraTrigger : Trigger
     CameraCheckPoint InitialPos;
     bool CoroutineEnd = true;
     bool activate = false;
+    [Tooltip("In seconds at 60 fps")]
+    [SerializeField] float travelTime;
 
-    public new void Start()
+    [SerializeField]
+    private bool _resetFreeMouvement;
+
+
+
+    private Camera _cameraToMove;
+    private CameraBehavior _cameraBehavior;
+    private Vector3 _initialPos;
+    private Quaternion _initialRot;
+
+    public override void Start()
     {
+        InitCamera();
+
         for (int i = 0; i < transform.childCount; i++)
         {
             switchToCamera.Add(transform.GetChild(i).GetComponent<CameraCheckPoint>());
         }
         InitialPos = Instantiate<CameraCheckPoint>(switchToCamera[0]);
-        InitialPos.transform.position = cameraToMove.transform.position;
-        InitialPos.transform.rotation = cameraToMove.transform.rotation;
+        InitialPos.transform.position = _cameraToMove.transform.position;
+        InitialPos.transform.rotation = _cameraToMove.transform.rotation;
         switchToCamera.Insert(0, InitialPos);
+
+
         base.Start();
+    }
+
+    private void InitCamera()
+    {
+        _cameraToMove = Camera.main;
+        _cameraBehavior = _cameraToMove.GetComponent<CameraBehavior>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Player>() && CoroutineEnd && !cameraToMove.FollowPlayer)
+        if (other.gameObject.GetComponent<Player>() && CoroutineEnd)
         {
-            switchToCamera[0].transform.position = cameraToMove.transform.position;
-            switchToCamera[0].transform.rotation = cameraToMove.transform.rotation;
+            switchToCamera[0].transform.position = _cameraToMove.transform.position;
+            switchToCamera[0].transform.rotation = _cameraToMove.transform.rotation;
             if (!activate || reverse)
                 StartCoroutine(GoTo(switchToCamera));
         }
@@ -44,40 +66,49 @@ public class CameraTrigger : Trigger
     {
         CoroutineEnd = false;
         activate = true;
+        _cameraBehavior.ActiveFreeMode();
         for (int i = 0; i < switchTo.Count - 1; i++)
         {
             StartCoroutine(LerpFromTo(switchTo[i].transform.position, switchTo[i + 1].transform.position, switchTo[i + 1].TravelTime));
             yield return StartCoroutine(LerpFromTo(switchTo[i].transform.rotation, switchTo[i + 1].transform.rotation, switchTo[i + 1].TravelTime));
+            if (reverse)
+                Swap();
+            CoroutineEnd = true;
+            EndMouvement();
         }
-        if (reverse)
-            Swap();
-        CoroutineEnd = true;
     }
-
 
     IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
     {
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            cameraToMove.transform.position = Vector3.Lerp(initial, goTo, t / duration);
+            _cameraToMove.transform.position = Vector3.Lerp(initial, goTo, t / duration);
             yield return 0;
         }
-        cameraToMove.transform.position = goTo;
+        _cameraToMove.transform.position = goTo;
     }
 
     IEnumerator LerpFromTo(Quaternion initial, Quaternion goTo, float duration)
     {
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            cameraToMove.transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
+            _cameraToMove.transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
             yield return 0;
         }
-        cameraToMove.transform.rotation = goTo;
+        _cameraToMove.transform.rotation = goTo;
+    }
+
+    private void EndMouvement()
+    {
+        if (_resetFreeMouvement)
+            _cameraBehavior.DeactiveFreeMode();
     }
 
     // Swap values between startPos and SwitchTo.
     void Swap()
     {
+
         switchToCamera.Reverse();
+
     }
 }

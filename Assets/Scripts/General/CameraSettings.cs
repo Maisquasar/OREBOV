@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Debug
 public class CameraSettings : MonoBehaviour
 {
     [SerializeField] public bool FollowPlayer;
