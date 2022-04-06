@@ -40,6 +40,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private Vector2 _axis;
 
+    private void Start()
+    {
+        if (_objectManager == null)
+            _objectManager = new ObjectManager();
+    }
+
     private void Update()
     {
         if (_interactionState == InteractionState.Link)
@@ -127,7 +133,7 @@ public class PlayerInteraction : MonoBehaviour
         _objectInteractive = interactiveObject;
         _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);
-        _uiInteract.transform.position = _objectInteractive.transform.position + Vector3.up * 1f;
+        _uiInteract.transform.position = _objectInteractive.HintPosition;
         _interactionState = InteractionState.Selected;
     }
 
