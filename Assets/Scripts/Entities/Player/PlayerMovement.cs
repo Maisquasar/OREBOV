@@ -29,14 +29,25 @@ public class PlayerMovement : EntityMovement
     private float lastMove;
     private float jumpForce;
 
+    [Header("Sounds ")]
+    [SerializeField]
+    private float _walkSoundFrequency = 0.4f;
+    private float __walkSoundFrequencyTimer;
+    [SerializeField]
+    private SoundEffectsHandler _effectsHandler;
+
     float margeDetectionVelocity = 0.05f;
     float time;
+
+
+
 
     private new void Start()
     {
         base.Start();
         gravityScale = 3;
         topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
+       
     }
 
     private new void OnDrawGizmos()
@@ -135,7 +146,13 @@ public class PlayerMovement : EntityMovement
         // Ground Move
         if (grounded && !jump)
         {
+            if(move != 0f)
+            WalkSoundManager();
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
+        }
+        else
+        {
+            __walkSoundFrequencyTimer = 0f;
         }
         // Jump move
         if (grounded && jump)
@@ -217,5 +234,23 @@ public class PlayerMovement : EntityMovement
         }
         yield return null;
     }
+
+
+    #region Sounds
+
+    private void WalkSoundManager()
+    {
+        if(__walkSoundFrequencyTimer>_walkSoundFrequency)
+        {
+            _effectsHandler.PlaySound();
+            __walkSoundFrequencyTimer = 0f;
+
+        }else
+        {
+            __walkSoundFrequencyTimer += Time.deltaTime;
+        }
+    }
+
+    #endregion
 }
 
