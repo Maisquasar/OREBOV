@@ -1827,8 +1827,6 @@ MonoBehaviour:
   - 0
   - -0.5
   speed: 3
-  gravityScale: 3
-  airControl: 1
   velocityCurve:
     serializedVersion: 2
     m_Curve:
@@ -1855,6 +1853,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   jumpHeight: 2
   jumpDistance: 1.5
+  edgeDetectorHeight: 0.6
 --- !u!114 &8288549701085702374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2017,7 +2016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23cd9f6bbc79e6b4cbcc0ad1bc730b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectDistance: 1
+  _detectDistance: 2
   _interactionState: 0
   _objectManager: {fileID: 0}
   _objectInteractive: {fileID: 0}
