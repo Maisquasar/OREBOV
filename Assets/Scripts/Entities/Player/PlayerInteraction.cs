@@ -30,12 +30,14 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField]
     private GameObject _uiInteract;
 
+    private Quaternion _uiRot;
+
     [Header("Debug")]
     [SerializeField]
     private bool _debugActive;
 
     [SerializeField]
-    private bool _inputReset; // Use for the holding the input
+    public bool _inputReset; // Use for the holding the input
     public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
     private Vector2 _axis;
@@ -44,6 +46,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (_objectManager == null)
             _objectManager = new ObjectManager();
+
+        _uiRot = _uiInteract.transform.rotation;
     }
 
     private void Update()
@@ -71,6 +75,15 @@ public class PlayerInteraction : MonoBehaviour
 
     }
 
+    public Vector3 getInteractiveObjectPos { get { return _objectInteractive.transform.position; } }
+    public Vector3 getInteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
+
+
+    private void LateUpdate()
+    {
+        
+    }
+
     private void OnDrawGizmos()
     {
         if (_debugActive)
@@ -83,12 +96,12 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     #region Input Managing
-    public void InteractionInput(InputAction.CallbackContext callback)
+    public void InteractionInput(bool started, bool canceled)
     {
-        if (callback.started)
+        if (started)
             PressInput();
 
-        if (callback.canceled)
+        if (canceled)
             CancelInput();
 
     }
@@ -134,6 +147,7 @@ public class PlayerInteraction : MonoBehaviour
         _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractive.HintPosition;
+        _uiInteract.transform.rotation = _uiRot;
         _interactionState = InteractionState.Selected;
     }
 
