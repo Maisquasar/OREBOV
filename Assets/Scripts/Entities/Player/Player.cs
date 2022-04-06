@@ -48,7 +48,7 @@ public class Player : Entity
             else
             {
                 Vector3 pos = transform.position;
-                transform.position = new Vector3(previousPos.x,transform.position.y,previousPos.z);
+                transform.position = new Vector3(previousPos.x, transform.position.y, previousPos.z);
                 if (!Caster.CanTransform())
                 {
                     transform.position = pos;
@@ -59,12 +59,26 @@ public class Player : Entity
         previousPos = transform.position;
     }
 
+    float lastMovementDir;
     public void OnMove(CallbackContext context)
     {
         movementDir = context.ReadValue<Vector2>();
         if (Mathf.Abs(movementDir.x) < 0.03f) movementDir.x = 0.0f;
         if (Mathf.Abs(movementDir.y) < 0.03f) movementDir.y = 0.0f;
         PlayerInteraction.AxisInput(context);
+        //Play animation in function of pos
+        if (PlayerActionState == PlayerAction.INTERACT)
+        {
+            Debug.Log($"{transform.position.x}, {PlayerInteraction.getInteractiveObjectPos.x}, {Controller.Direction}");
+            if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir < 0))
+            {
+                StartCoroutine(Controller.PlayPush());
+            }
+            else
+                StartCoroutine(Controller.PlayPull());
+        }
+        if (movementDir.x != 0)
+            lastMovementDir = movementDir.x;
     }
 
     public void OnJump(CallbackContext context)
@@ -92,7 +106,7 @@ public class Player : Entity
     {
         StartCoroutine(PlayerAnimator.TransformToShadowAnim());
         _isShadow = true;
-        Controller.GroundType ^= LayerMask.GetMask("Shadows","NoShadows");
+        Controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
     }
 
     public void OnTransformToPlayer()
@@ -103,10 +117,46 @@ public class Player : Entity
         Controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
     }
 
+    bool exactPos = false;
     public void OnInteract(CallbackContext context)
     {
-        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN) || PlayerAnimator.IsInAmination)
+        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination)
             return;
-        PlayerInteraction.InteractionInput(context);
+        PlayerActionState = PlayerAction.INTERACT;
+        if (exactPos)
+            PlayerInteraction.InteractionInput(context.started, context.canceled);
+        else
+            StartCoroutine(PlayAnimationBefore(context.started, context.canceled));
+        if (PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
+            PlayerActionState = PlayerAction.IDLE;
+
+    }
+
+
+    IEnumerator PlayAnimationBefore(bool started, bool canceled)
+    {
+        exactPos = true;
+        float animationDistance = 0.65f;
+        float Distance = (Vector3.Distance(transform.position, PlayerInteraction.getInteractiveObjectPos - (Vector3.right * (PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction));
+        float Distance2 = (Vector3.Distance(transform.position, PlayerInteraction.getInteractiveObjectPos - (Vector3.right * (PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction * -1));
+        if (Distance > Distance2)
+        {
+            Controller.FlipCharacter();
+            yield return StartCoroutine(LerpTo(new Vector3(PlayerInteraction.getInteractiveObjectPos.x - ((PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction * -1, transform.position.y, transform.position.z), 0.1f));
+        }
+        else if (Distance <= Distance2)
+            yield return StartCoroutine(LerpTo(new Vector3(PlayerInteraction.getInteractiveObjectPos.x - ((PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction, transform.position.y, transform.position.z), 0.1f));
+        PlayerInteraction.InteractionInput(started, canceled);
+    }
+
+    IEnumerator LerpTo(Vector3 goTo, float duration)
+    {
+        Vector3 initial = transform.position;
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.position = Vector3.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.position = goTo;
     }
 }
