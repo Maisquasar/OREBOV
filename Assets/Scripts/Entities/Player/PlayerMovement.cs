@@ -94,7 +94,7 @@ public class PlayerMovement : EntityMovement
     public void Move(float move, bool jump)
     {
         // If climbing then can't move
-        if (isClimbing)
+        if (isClimbing || isPushing || isPulling)
             return;
         lastMove = move;
         if (rb.velocity.y < 0.1f)
@@ -129,6 +129,11 @@ public class PlayerMovement : EntityMovement
             change = state;
     }
 
+    public void FlipCharacter()
+    {
+        StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+    }
+
     public IEnumerator PlayClimb()
     {
         isClimbing = true;
@@ -144,9 +149,44 @@ public class PlayerMovement : EntityMovement
         // Reset Grabity scale.
         gravityScale = 3;
         // Transition to Idle.
-        animator.Play("Crouched To Standing"); 
+        animator.Play("Crouched To Standing");
         yield return new WaitForSeconds(0.75f);
         isClimbing = false;
+    }
+
+    bool isPushing = false;
+    public IEnumerator PlayPush()
+    {
+        if (!isPushing)
+        {
+            isPushing = true;
+            animator.Play("Push");
+            yield return new WaitForSeconds(1f);
+            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            {
+                yield return null;
+            }
+            isPushing = false;
+            Debug.Log("End");
+        }
+        yield return null;
+    }
+
+    bool isPulling = false;
+    public IEnumerator PlayPull()
+    {
+        if (!isPulling)
+        {
+            isPulling = true;
+            animator.Play("Pull");
+            yield return new WaitForSeconds(1f);
+            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            {
+                yield return null;
+            }
+            isPulling = false;
+        }
+        yield return null;
     }
 }
 
