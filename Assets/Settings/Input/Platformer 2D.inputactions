@@ -19,7 +19,31 @@
                     "id": "0aa38434-47e7-42a1-9edf-189645ef2eb7",
                     "expectedControlType": "Button",
                     "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Transform",
+                    "type": "Button",
+                    "id": "ad5ecc02-1177-4c9b-9178-c93a91ea9a67",
+                    "expectedControlType": "Button",
+                    "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "PauseMenu",
+                    "type": "Button",
+                    "id": "d85fd5cb-8a2c-4913-91f2-e2e608749782",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Interract",
+                    "type": "Button",
+                    "id": "4cb51572-490e-4660-aafa-31b20882b2fd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -185,6 +209,105 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "257e65a0-4f2a-47c5-82a2-6f845e6fa115",
+                    "path": "<HID::ShanWan     GAME:PAD S-WIRED-V5.00>/button3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "01f862b3-d7ab-496f-8298-b64f329d701f",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Transform",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4841ffe8-9d7d-4471-8f38-d07c527937c2",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Transform",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ec6c274c-f4ea-4e63-b3e1-ae00315de838",
+                    "path": "<HID::ShanWan     GAME:PAD S-WIRED-V5.00>/button4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Transform",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "247cf602-7e04-4e2f-9c34-2ad90905400b",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PauseMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e92d5a34-5903-4e5c-901a-789662b42f62",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PauseMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3a0eba94-d4b2-4851-a34b-fcde4ab41069",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Interract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "094f7c74-d93e-4f94-963c-93e2c18e76d5",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7460e73a-c831-47d9-a33a-b37902c3ca71",
+                    "path": "<HID::ShanWan     GAME:PAD S-WIRED-V5.00>/button2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
