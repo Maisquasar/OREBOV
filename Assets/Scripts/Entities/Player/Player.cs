@@ -149,7 +149,7 @@ public class Player : Entity
     bool exactPos = false;
     public void OnInteract(CallbackContext context)
     {
-        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination)
+        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
             return;
         PlayerActionState = PlayerAction.INTERACT;
         if (exactPos)
