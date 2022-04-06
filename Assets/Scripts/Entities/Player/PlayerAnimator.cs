@@ -7,19 +7,22 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] float _FadeOutTimer = 0.5f;
     [SerializeField] float _FadeInWaitTimer = 0.5f;
     [SerializeField] float _FadeInTimer = 0.5f;
+    [SerializeField] float _MoveTimer = 0.1f;
     [SerializeField] public SkinnedMeshRenderer Renderer;
     [SerializeField] Material PlayerMaterial;
     [SerializeField] Material PlayerFadeMaterial;
     private bool _isInAmination = false;
+    private bool _isInMovement = false;
     public bool IsInAmination { get { return _isInAmination; } }
     private Vector3 _shadowPosition;
+    public bool IsInMovement { get { return _isInMovement; } }
     public Vector3 ShadowPosition { get { return _shadowPosition; } set { _shadowPosition = value; } }
 
     public IEnumerator TransformToShadowAnim()
     {
         _isInAmination = true;
-        Renderer.material = PlayerFadeMaterial;
         yield return new WaitForSeconds(_FadeOutWaitTimer);
+        Renderer.material = PlayerFadeMaterial;
         Color playerColor = PlayerFadeMaterial.color;
         for (float timer = _FadeOutTimer; timer > 0; timer-= Time.deltaTime)
         {
@@ -55,6 +58,24 @@ public class PlayerAnimator : MonoBehaviour
         }
         Renderer.material = PlayerMaterial;
         _isInAmination = false;
+        yield return null;
+    }
+
+    public void MovePlayerDepthTo(Vector2 deltaPos)
+    {
+        _isInMovement = true;
+        StartCoroutine(MovePlayerDepth(deltaPos));
+    }
+    private IEnumerator MovePlayerDepth(Vector2 deltaPos)
+    {
+        Vector2 currentPos = new Vector2(transform.position.y,transform.position.z);
+        for (float timer = _MoveTimer; timer > 0; timer -= Time.deltaTime)
+        {
+            Vector2 local = Vector2.Lerp(deltaPos, currentPos, timer / _MoveTimer);
+            transform.position = new Vector3(transform.position.x, local.x, local.y);
+            yield return Time.deltaTime;
+        }
+        _isInMovement = false;
         yield return null;
     }
 }
