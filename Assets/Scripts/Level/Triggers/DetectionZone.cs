@@ -6,6 +6,13 @@ using UnityEngine.Events;
 public class DetectionZone : Trigger
 {
     public UnityEvent DetectedEvent;
+    public StaticEnemy Enemy;
+    [HideInInspector] public bool Detect;
+
+    private void OnDrawGizmos()
+    {
+        transform.position = Enemy.transform.position;
+    }
 
     public override void Start()
     {
@@ -21,6 +28,17 @@ public class DetectionZone : Trigger
         if (other.gameObject.GetComponent<Player>())
         {
             DetectedEvent.Invoke();
+            Detect = true;
+        }
+        else
+            Detect = false;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.GetComponent<Player>())
+        {
+            Detect = false;
         }
     }
 

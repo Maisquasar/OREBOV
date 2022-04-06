@@ -70,9 +70,7 @@ public class PlayerMovement : EntityMovement
             FallDefine = false;
             if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<Player>().Dead)
             {
-                animator.SetBool("Dead", true);
-                GetComponent<Player>().Dead = true;
-                LastPosBeforeFall = GetComponent<Player>().CheckpointPos;
+                SetDead();
             }
         }
 
@@ -99,6 +97,14 @@ public class PlayerMovement : EntityMovement
         }
     }
     Vector3 LastPosBeforeFall;
+
+    public void SetDead()
+    {
+        animator.SetBool("Dead", true);
+        GetComponent<Player>().Dead = true;
+        LastPosBeforeFall = GetComponent<Player>().CheckpointPos;
+    }
+
     public void ChangeState(ref PlayerAction State)
     {
         if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
