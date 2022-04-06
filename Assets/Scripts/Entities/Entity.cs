@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace States
 {
     public enum PlayerAction
@@ -12,6 +11,7 @@ namespace States
         JUMP,
         FALL,
         HIDE,
+        PUSHING,
         INTERACT,
         CLIMB,
         DEAD

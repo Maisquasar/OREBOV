@@ -2,4 +2,6 @@
 
 ## 29 - 03 - 2022 - First Commit
 
-- Added CHANGELOG
+- Created **dev-main** branch
+- Created **sound-design** branch
+- Created **dev-test** branch

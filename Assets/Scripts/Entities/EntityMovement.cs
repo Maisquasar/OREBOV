@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,19 +6,24 @@ using UnityEngine.Events;
 public class EntityMovement : MonoBehaviour
 {
     [SerializeField] protected Animator animator;
-    [SerializeField] protected LayerMask GroundType;
-    [SerializeField] protected LayerMask WallType;
+    [Space]
+    [Header("======== Collision ========")]
+    [Space]
+    [SerializeField] public LayerMask GroundType;
     [Tooltip("Manually place rays (May lag if too much)")]
-    [SerializeField] List<float> ray;
+    [SerializeField] private List<float> ray;
+    [Space]
+    [Header("======== Velocity ========")]
+    [Space]
     [SerializeField] protected float speed;
 
     protected float rayGroundSize = 1.1f;
-    protected float rayCeilingSize = 1f;
-    protected float rayWallSize = 0.51f;
-    protected int direction = 1;
+    protected float rayCeilingSize = 1.1f;
+    protected float rayWallSize = 0.31f;
+    protected float direction = 1;
 
     protected float globalGravity = -9.81f;
-    [SerializeField] protected float gravityScale = 1;
+    protected float gravityScale = 1;
     float offset = 0.18f;
 
     protected Rigidbody rb;
@@ -28,9 +33,6 @@ public class EntityMovement : MonoBehaviour
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rayGroundSize = 1.1f;
-        rayCeilingSize = 1.1f;
-        rayWallSize = 0.31f;
     }
 
     protected void OnDrawGizmos()
@@ -78,7 +80,7 @@ public class EntityMovement : MonoBehaviour
             {
                 // Set all Ray pos
                 Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-                if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+                if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
                 {
                     Vector3 tmp = rb.velocity;
                     tmp.x = 0;
@@ -98,7 +100,7 @@ public class EntityMovement : MonoBehaviour
         {
             // Set all Ray pos
             Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, WallType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
+            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
             {
                 return true;
             }
