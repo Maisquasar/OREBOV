@@ -44,6 +44,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Start()
     {
+
+        _uiRot = _uiInteract.transform.rotation;
         if (_objectManager == null)
             _objectManager = new ObjectManager();
 
@@ -120,6 +122,10 @@ public class PlayerInteraction : MonoBehaviour
         {
             _inputReset = false;
             _objectInteractive.ItemInteraction(gameObject);
+        }
+        if(!CanStopNow)
+        {
+            _objectInteractive._deactiveInteraction = true;
         }
     }
 

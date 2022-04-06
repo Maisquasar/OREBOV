@@ -75,7 +75,11 @@ public class InteractiveBox : InteractiveObject
         Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
         Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
         if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
+        {
+            StartCoroutine(PauseBoxMouvement());
             yield break;
+        }
+            
 
 
         while (_moveTimer < _moveTime)
@@ -92,6 +96,7 @@ public class InteractiveBox : InteractiveObject
 
     private IEnumerator PauseBoxMouvement()
     {
+        PlayerInteract.CanStopNow = true;
         while (_moveTimer < _timeBetweenMove)
         {
 
@@ -99,15 +104,11 @@ public class InteractiveBox : InteractiveObject
             yield return Time.deltaTime;
         }
         _activeMouvement = false;
-        PlayerInteract.CanStopNow = true;
         _moveTimer = 0f;
     }
 
 
-    private void Update()
-    {
 
-    }
 
     private void ShowBoxMouvement()
     {
