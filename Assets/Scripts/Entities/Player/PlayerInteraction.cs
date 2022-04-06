@@ -40,6 +40,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private Vector2 _axis;
 
+    private void Start()
+    {
+        if (_objectManager == null)
+            _objectManager = new ObjectManager();
+    }
+
     private void Update()
     {
         if (_interactionState == InteractionState.Link)
