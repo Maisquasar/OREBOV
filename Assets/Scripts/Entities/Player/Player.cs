@@ -39,20 +39,30 @@ public class Player : Entity
         }
         if (_isJumping)
             _isJumping = false;
-        if (_isShadow && !Caster.CanTransform())
+        if (_isShadow)
         {
-            if (Caster.DoesCurrentLightEject)
+            if (!Caster.CanTransform(false))
             {
-                OnTransformToPlayer();
+                if (Caster.DoesCurrentLightEject)
+                {
+                    OnTransformToPlayer();
+                }
+                else
+                {
+                    Vector3 pos = transform.position;
+                    transform.position = new Vector3(previousPos.x, transform.position.y, previousPos.z);
+                    if (!Caster.CanTransform(false))
+                    {
+                        transform.position = pos;
+                        OnTransformToPlayer();
+                    }
+                }
             }
             else
             {
-                Vector3 pos = transform.position;
-                transform.position = new Vector3(previousPos.x, transform.position.y, previousPos.z);
-                if (!Caster.CanTransform())
+                if (Caster.ShadowDepth < transform.position.z - 0.2f && !PlayerAnimator.IsInMovement && !PlayerAnimator.IsInAmination)
                 {
-                    transform.position = pos;
-                    OnTransformToPlayer();
+                    PlayerAnimator.MovePlayerDepthTo(new Vector2(Caster.ShadowHeight, Caster.ShadowDepth));
                 }
             }
         }
@@ -98,7 +108,7 @@ public class Player : Entity
         }
         else
         {
-            if (Caster.CanTransform()) OnTransformToShadow();
+            if (Caster.CanTransform(true)) OnTransformToShadow();
         }
     }
 
