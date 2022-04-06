@@ -30,6 +30,8 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField]
     private GameObject _uiInteract;
 
+    private Quaternion _uiRot;
+
     [Header("Debug")]
     [SerializeField]
     private bool _debugActive;
@@ -44,6 +46,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (_objectManager == null)
             _objectManager = new ObjectManager();
+
+        _uiRot = _uiInteract.transform.rotation;
     }
 
     private void Update()
@@ -69,6 +73,12 @@ public class PlayerInteraction : MonoBehaviour
         }
 
 
+    }
+
+
+    private void LateUpdate()
+    {
+        
     }
 
     private void OnDrawGizmos()
@@ -134,6 +144,7 @@ public class PlayerInteraction : MonoBehaviour
         _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractive.HintPosition;
+        _uiInteract.transform.rotation = _uiRot;
         _interactionState = InteractionState.Selected;
     }
 
