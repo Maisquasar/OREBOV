@@ -1,57 +1,221 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-namespace PlayerStates
-{
-    public enum PlayerAction
-    {
-        IDLE,
-        RUN,
-        JUMP,
-        FALL,
-        HIDE,
-        INTERACT,
-        CLIMB,
-        DEAD
-    }
-}
+using States;
+using UnityEditor;
 
 public class PlayerMovement : EntityMovement
 {
-    [SerializeField] private float jumpForce;
-    [SerializeField] private bool airControl;
     [SerializeField] AnimationCurve velocityCurve;
-    [HideInInspector] public PlayerStates.PlayerAction PlayerAction;
 
-    float margeDetectionVelocity = 0.2f;
+    [Space]
+    [Header("Jump Settings")]
+    [Space]
+    [SerializeField] float jumpHeight;
+    [SerializeField] private float jumpDistance;
+
+    [Space]
+    [Header("Edge Detector Settings")]
+    [Space]
+    [SerializeField] float edgeDetectorHeight = 0.6f;
+    private float topEdgeDetectorHeight = 0.75f;
+    float edgeDetectorDistance = 0.5f;
+
+    [Space]
+    [Header("Fall Damage Settings")]
+    [Space]
+    [SerializeField] float FallDamageHeight = 8;
+
+    private float lastMove;
+    private float jumpForce;
+
+    float margeDetectionVelocity = 0.05f;
     float time;
 
-    private void Update()
+    private new void Start()
     {
-        if (rb.velocity.y < -margeDetectionVelocity)
-            PlayerAction = PlayerStates.PlayerAction.FALL;
-        else if (rb.velocity.y > margeDetectionVelocity)
-            PlayerAction = PlayerStates.PlayerAction.JUMP;
-        else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
-            PlayerAction = PlayerStates.PlayerAction.RUN;
-        else
-            PlayerAction = PlayerStates.PlayerAction.IDLE;
+        base.Start();
+        gravityScale = 3;
+        topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
     }
 
+    private new void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+
+        // Draw edge Detector
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorHeight, 0), transform.position + new Vector3(edgeDetectorDistance, edgeDetectorHeight, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, edgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, edgeDetectorHeight, 0));
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(edgeDetectorDistance, topEdgeDetectorHeight, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, topEdgeDetectorHeight, 0));
+    }
+
+    bool isClimbing = false;
+    bool FallDefine = false;
+    private void Update()
+    {
+        //Get the pos at start fall.
+        if (rb.velocity.y < -0.1f && !FallDefine && !grounded)
+        {
+            Debug.Log("Define");
+            LastPosBeforeFall = transform.position;
+            FallDefine = true;
+        }
+        //Check if fall damage.
+        if (grounded)
+        {
+            FallDefine = false;
+            if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<Player>().Dead)
+            {
+                animator.SetBool("Dead", true);
+                GetComponent<Player>().Dead = true;
+                LastPosBeforeFall = GetComponent<Player>().CheckpointPos;
+            }
+        }
+
+        if (!DetectWall())
+            animator.SetFloat("VelocityX", rb.velocity.x);
+        else
+            animator.SetFloat("VelocityX", 0);
+        animator.SetFloat("VelocityY", rb.velocity.y);
+        animator.SetBool("Grounded", grounded);
+
+        // Can't climb if fall damage.
+        if (LastPosBeforeFall.y - transform.position.y < GameMetric.GetGameUnit(FallDamageHeight))
+        {
+            // Edge Detection :
+            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+            RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+            foreach (var ray in downRay)
+            {
+                if (topRay.Length == 0 && !isClimbing)
+                {
+                    StartCoroutine(PlayClimb());
+                }
+            }
+        }
+    }
+    Vector3 LastPosBeforeFall;
+    public void ChangeState(ref PlayerAction State)
+    {
+        if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
+        {
+            if (rb.velocity.y < -margeDetectionVelocity)
+            {
+                ChangeStateFunction(ref State, PlayerAction.FALL);
+            }
+            else if (rb.velocity.y > margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.JUMP);
+            else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
+                ChangeStateFunction(ref State, PlayerAction.RUN);
+            else
+                ChangeStateFunction(ref State, PlayerAction.IDLE);
+        }
+        if (State == PlayerAction.RUN)
+            animator.speed = Mathf.Abs(lastMove);
+        else
+            animator.speed = 1;
+    }
+
+    // Move the player.
     public void Move(float move, bool jump)
     {
-        if (grounded || airControl)
+        // If climbing then can't move
+        if (isClimbing || isPushing || isPulling)
+            return;
+        lastMove = move;
+        if (rb.velocity.y < 0.1f)
+            move *= speed;
+        else if (move != 0)
+            move = jumpDistance * speed * Mathf.Sign(move);
+
+        // Ground Move
+        if (grounded && !jump)
         {
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
+        // Jump move
         if (grounded && jump)
         {
             grounded = false;
-            rb.AddForce((Vector3.up * (jumpForce) * 10));
+            jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+
+        //Flip character
+        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && grounded && endOfCoroutine)
+        {
+            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
         }
         time += Time.deltaTime;
     }
 
+    public void ChangeStateFunction<T>(ref T change, T state)
+    {
+        if (!change.Equals(state))
+            change = state;
+    }
+
+    public void FlipCharacter()
+    {
+        StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+    }
+
+    public IEnumerator PlayClimb()
+    {
+        isClimbing = true;
+        //Play animation
+        animator.Play("Climb");
+        //Lock Player pos
+        rb.velocity = Vector3.zero;
+        gravityScale = 0;
+        // Wait for end of animation
+        yield return new WaitForSeconds(1.113f);
+        // Move to animation pos.
+        transform.position = transform.position + new Vector3(0.6f * direction, 1.5f, 0);
+        // Reset Grabity scale.
+        gravityScale = 3;
+        // Transition to Idle.
+        animator.Play("Crouched To Standing");
+        yield return new WaitForSeconds(0.75f);
+        isClimbing = false;
+    }
+
+    [HideInInspector] public bool isPushing = false;
+    public IEnumerator PlayPush()
+    {
+        if (!isPushing)
+        {
+            isPushing = true;
+            animator.Play("Push");
+            yield return new WaitForSeconds(1f);
+            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            {
+                yield return null;
+            }
+            isPushing = false;
+        }
+        yield return null;
+    }
+
+    [HideInInspector] public bool isPulling = false;
+    public IEnumerator PlayPull()
+    {
+        if (!isPulling)
+        {
+            isPulling = true;
+            animator.Play("Pull");
+            yield return new WaitForSeconds(1f);
+            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            {
+                yield return null;
+            }
+            isPulling = false;
+        }
+        yield return null;
+    }
 }
+

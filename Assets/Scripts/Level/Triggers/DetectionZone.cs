@@ -1,23 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DetectionZone : Trigger
 {
-    [HideInInspector] public bool Detected;
+    public UnityEvent DetectedEvent;
 
-    private void Update()
+    public override void Start()
     {
-        if (Detected)
-            Detected = false;
+        base.Start();
+        if (DetectedEvent == null)
+        {
+            DetectedEvent.AddListener(LogDetected);
+        }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            Detected = true;
-            Debug.Log(Detected);
+            DetectedEvent.Invoke();
         }
+    }
+
+    public static void LogDetected()
+    {
+        Debug.Log("Detected");
     }
 }

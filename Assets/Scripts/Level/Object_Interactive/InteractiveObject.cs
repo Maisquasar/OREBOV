@@ -6,11 +6,23 @@ public class InteractiveObject : MonoBehaviour
 {
 
 
-
+    [Header("Object State")]
     [SerializeField]
     public bool _isSelected;
-    protected bool _objectActive;
+    [SerializeField]    
+    public bool _objectActive;
+    [SerializeField]
+    public bool _useOnlyInShadow;
 
+
+    [HideInInspector]
+    public bool _deactiveInteraction = false;
+
+    [Header("UI Postion")]
+    [SerializeField]
+    private Vector3 _uiHintPosition;    
+    public Vector3 HintPosition { get { return transform.position + _uiHintPosition; } }
+    
     [Header("Sound")]
     [SerializeField]
     protected bool _activeSound = false;
@@ -21,38 +33,55 @@ public class InteractiveObject : MonoBehaviour
 
 
 
-    public virtual void ItemInteraction()
+    [Header("Debug")]
+    [SerializeField]
+    protected bool _debug;
+
+
+    protected GameObject _playerGO;
+    protected Vector2 _axis;
+
+
+    public virtual void ItemInteraction(GameObject player)
     {
         _objectActive = !_objectActive;
-        Debug.Log("Interaction  Input");
-
-        if (_objectActive) ActiveItem();
-        if (!_objectActive) DeactiveItem();
+        
+        if (_objectActive)
+        {
+            ActiveItem(player);
+            return;
+        }
+        if (!_objectActive)
+        {
+            DeactiveItem();
+            return;
+        }
     }
 
-    protected virtual void ActiveItem()
+
+
+    protected virtual void ActiveItem(GameObject player)
     {
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
-        Debug.Log("Item Active");
+
+        _playerGO = player;
     }
 
     protected virtual void DeactiveItem()
     {
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundDeactiveTrigger, transform.position);
-        Debug.Log("Item Deactive");
     }
 
-    public virtual void UpdateItem()
+    public virtual void UpdateItem(Vector2 axis)
     {
-        Debug.Log("Item Update");
+        _axis = axis;
     }
 
     protected virtual void UpdateItemInternally()
     {
         if (_isSelected) ItemSelected();
-        Debug.Log("Item Update");
     }
 
     protected virtual void ItemSelected()
@@ -60,7 +89,16 @@ public class InteractiveObject : MonoBehaviour
 
     }
 
+    public virtual void HoldUpdate()
+    {
 
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(HintPosition, 0.112f);
+    }
 
 
 }
