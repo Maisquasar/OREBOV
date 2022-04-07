@@ -22,6 +22,7 @@ public class Player : Entity
 
     public bool Dead { get { return _isDead; } set { _isDead = value; } }
     bool _isJumping = false;
+    public bool IsShadow { get { return _isShadow; } }
     bool _isShadow = false;
     Vector2 movementDir;
     Vector3 previousPos;
