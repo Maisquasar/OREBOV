@@ -11,6 +11,9 @@ public class InteractiveObject : MonoBehaviour
     public bool _isSelected;
     [SerializeField]    
     public bool _objectActive;
+    [SerializeField]
+    public bool _useOnlyInShadow;
+
 
     [HideInInspector]
     public bool _deactiveInteraction = false;

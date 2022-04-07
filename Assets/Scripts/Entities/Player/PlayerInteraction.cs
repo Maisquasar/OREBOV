@@ -17,7 +17,7 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField]
     private InteractionState _interactionState;
-    public InteractionState Interaction {get { return _interactionState; }}
+    public InteractionState Interaction { get { return _interactionState; } }
 
     // ObjectManger Component
 
@@ -41,10 +41,11 @@ public class PlayerInteraction : MonoBehaviour
     public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
     private Vector2 _axis;
+    private Player _playerStatus;
 
     private void Start()
     {
-
+        _playerStatus = GetComponent<Player>();
         _uiRot = _uiInteract.transform.rotation;
         if (_objectManager == null)
             _objectManager = new ObjectManager();
@@ -65,8 +66,21 @@ public class PlayerInteraction : MonoBehaviour
             if (_objectManager.ObjectsInRange(transform.position, _detectDistance) != null)
             {
                 InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, _detectDistance);
-                UnselectObject(objectClose);
-                ChangeSelectedObject(objectClose);
+                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow)
+                {
+                    UnselectObject(objectClose);
+                    ChangeSelectedObject(objectClose);
+                }
+                else if (!_playerStatus.IsShadow)
+                {
+                    UnselectObject(objectClose);
+                    _uiInteract.SetActive(false);
+                }
+                if (!objectClose._useOnlyInShadow)
+                {
+                    UnselectObject(objectClose);
+                    ChangeSelectedObject(objectClose); 
+                }
             }
             else
             {
@@ -83,7 +97,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void LateUpdate()
     {
-        
+
     }
 
     private void OnDrawGizmos()
@@ -123,7 +137,7 @@ public class PlayerInteraction : MonoBehaviour
             _inputReset = false;
             _objectInteractive.ItemInteraction(gameObject);
         }
-        if(!CanStopNow)
+        if (!CanStopNow)
         {
             _objectInteractive._deactiveInteraction = true;
         }
@@ -149,6 +163,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void ChangeSelectedObject(InteractiveObject interactiveObject)
     {
+
         _objectInteractive = interactiveObject;
         _objectInteractive._isSelected = true;
         _uiInteract.SetActive(true);

@@ -20,6 +20,8 @@ public class InteractiveBox : InteractiveObject
     [SerializeField]
     private float _timeBetweenMove = 0.7f;
 
+
+
     [SerializeField]
     private bool _activeMouvement = false;
     private Rigidbody _rigidbodyPlayer;
@@ -31,12 +33,14 @@ public class InteractiveBox : InteractiveObject
     [SerializeField]
     private int mouvementCount = 1;
     PlayerInteraction PlayerInteract;
+    Player _playerStatus;
 
     protected override void ActiveItem(GameObject player)
     {
         base.ActiveItem(player);
         transform.SetParent(player.transform);
         PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
+        _playerStatus = _playerGO.GetComponent<Player>();
         PlayerInteract.LinkObject(this);
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
         _activeMouvement = true;
@@ -57,11 +61,21 @@ public class InteractiveBox : InteractiveObject
         {
 
             Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
-            if (!_activeMouvement && axis.normalized.x != 0)
+            if (_useOnlyInShadow )
             {
 
-                StartCoroutine(MoveBox(axis.normalized.x));
+                if (!_activeMouvement && axis.normalized.x != 0 && _playerStatus.IsShadow)
+                {
+                    StartCoroutine(MoveBox(axis.normalized.x));
 
+                }
+            }else
+            {
+                if (!_activeMouvement && axis.normalized.x != 0)
+                {
+                    StartCoroutine(MoveBox(axis.normalized.x));
+
+                }
             }
         }
     }
@@ -79,7 +93,7 @@ public class InteractiveBox : InteractiveObject
             StartCoroutine(PauseBoxMouvement());
             yield break;
         }
-            
+
 
 
         while (_moveTimer < _moveTime)
