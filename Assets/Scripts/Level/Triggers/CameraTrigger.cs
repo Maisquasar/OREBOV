@@ -59,6 +59,7 @@ public class CameraTrigger : Trigger
     {
         if (other.gameObject.GetComponent<Player>() && CoroutineEnd)
         {
+            _resetTrigger = true;
             Player _playerStatus = other.gameObject.GetComponent<Player>();
             if (_checkPlayerState)
             {
@@ -88,6 +89,23 @@ public class CameraTrigger : Trigger
                     ActiveCameraMove();
                     _resetTrigger = false;
                 }
+                else
+                {
+                    _resetTrigger = true;
+                }
+            }
+        }
+
+        if (other.gameObject.GetComponent<Player>()  && CoroutineEnd)
+        {
+            Player _playerStatus = other.gameObject.GetComponent<Player>();
+            if (_checkPlayerState)
+            {
+                if (_playerStatus.IsShadow != _isShadow)
+                {
+                    _resetTrigger = true;
+                }
+               
             }
         }
     }
@@ -149,6 +167,8 @@ public class CameraTrigger : Trigger
     {
         if (_resetFreeMouvement)
             _cameraBehavior.DeactiveFreeMode();
+
+        activate = false;
     }
 
     // Swap values between startPos and SwitchTo.
