@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class UIPauseMenu : MonoBehaviour
 {
     [SerializeField]
     private GameObject _UIPauseMenu;
+    [SerializeField]
+    private EventSystem _eventSystem;
     private bool _pauseMenuActive;
 
     public void CallPauseMenu(InputAction.CallbackContext context)
@@ -33,6 +37,7 @@ public class UIPauseMenu : MonoBehaviour
     {
         _pauseMenuActive = true;
         _UIPauseMenu.SetActive(_pauseMenuActive);
+        _UIPauseMenu.transform.GetChild(0).Find("Resume").GetComponent<Button>().Select();  
     }
 
     private void CloseMenu()
@@ -40,5 +45,6 @@ public class UIPauseMenu : MonoBehaviour
     {
         _pauseMenuActive = false;
         _UIPauseMenu.SetActive(_pauseMenuActive);
+        _eventSystem.SetSelectedGameObject(null);
     }
 }

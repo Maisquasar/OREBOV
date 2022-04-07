@@ -10,12 +10,17 @@ using States;
 public class Player : Entity
 {
     public PlayerMovement Controller;
-    bool isJumping = false;
     [HideInInspector] public PlayerAction PlayerActionState;
     private ShadowCaster Caster;
     private PlayerAnimator PlayerAnimator;
     private PlayerInteraction PlayerInteraction;
+
+    public Vector3 CheckpointPos;
+
     float _shadowTime;
+    bool _isDead = false;
+
+    public bool Dead { get { return _isDead; } set { _isDead = value; } }
     bool _isJumping = false;
     bool _isShadow = false;
     Vector2 movementDir;
@@ -28,10 +33,17 @@ public class Player : Entity
         Caster = gameObject.GetComponent<ShadowCaster>();
         PlayerAnimator = gameObject.GetComponent<PlayerAnimator>();
         PlayerInteraction = gameObject.GetComponent<PlayerInteraction>();
+        CheckpointPos = transform.position;
     }
     // Update is called once per frame
+    bool respawn = false;
     void Update()
     {
+        if (Dead && !respawn)
+            StartCoroutine(WaitBeforeRespawn());
+        else if (Dead)
+            return;
+
         if (!PlayerAnimator.IsInAmination && PlayerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
             Controller.Move(movementDir.x, _isJumping);
@@ -39,20 +51,30 @@ public class Player : Entity
         }
         if (_isJumping)
             _isJumping = false;
-        if (_isShadow && !Caster.CanTransform())
+        if (_isShadow)
         {
-            if (Caster.DoesCurrentLightEject)
+            if (!Caster.CanTransform(false))
             {
-                OnTransformToPlayer();
+                if (Caster.DoesCurrentLightEject)
+                {
+                    OnTransformToPlayer();
+                }
+                else
+                {
+                    Vector3 pos = transform.position;
+                    transform.position = new Vector3(previousPos.x, transform.position.y, previousPos.z);
+                    if (!Caster.CanTransform(false))
+                    {
+                        transform.position = pos;
+                        OnTransformToPlayer();
+                    }
+                }
             }
             else
             {
-                Vector3 pos = transform.position;
-                transform.position = new Vector3(previousPos.x, transform.position.y, previousPos.z);
-                if (!Caster.CanTransform())
+                if (Caster.ShadowDepth < transform.position.z - 0.2f && !PlayerAnimator.IsInMovement && !PlayerAnimator.IsInAmination)
                 {
-                    transform.position = pos;
-                    OnTransformToPlayer();
+                    PlayerAnimator.MovePlayerDepthTo(new Vector2(Caster.ShadowHeight, Caster.ShadowDepth));
                 }
             }
         }
@@ -69,7 +91,6 @@ public class Player : Entity
         //Play animation in function of pos
         if (PlayerActionState == PlayerAction.INTERACT)
         {
-            Debug.Log($"{transform.position.x}, {PlayerInteraction.getInteractiveObjectPos.x}, {Controller.Direction}");
             if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir < 0))
             {
                 StartCoroutine(Controller.PlayPush());
@@ -98,7 +119,7 @@ public class Player : Entity
         }
         else
         {
-            if (Caster.CanTransform()) OnTransformToShadow();
+            if (Caster.CanTransform(true)) OnTransformToShadow();
         }
     }
 
@@ -120,7 +141,7 @@ public class Player : Entity
     bool exactPos = false;
     public void OnInteract(CallbackContext context)
     {
-        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination)
+        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
             return;
         PlayerActionState = PlayerAction.INTERACT;
         if (exactPos)
@@ -128,8 +149,18 @@ public class Player : Entity
         else
             StartCoroutine(PlayAnimationBefore(context.started, context.canceled));
         if (PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
+        {
             PlayerActionState = PlayerAction.IDLE;
+            exactPos = false;
+        }
+    }
 
+    private void Respawn()
+    {
+        Controller.animator.SetBool("Dead", false);
+        transform.position = CheckpointPos;
+        Dead = false;
+        respawn = false;
     }
 
 
@@ -158,5 +189,13 @@ public class Player : Entity
             yield return 0;
         }
         transform.position = goTo;
+    }
+
+    IEnumerator WaitBeforeRespawn()
+    {
+        respawn = true;
+        float time = 3f;
+        yield return new WaitForSecondsRealtime(time);
+        Respawn();
     }
 }
