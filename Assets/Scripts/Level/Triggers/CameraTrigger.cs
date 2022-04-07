@@ -17,7 +17,7 @@ public class CameraTrigger : Trigger
     [SerializeField] float travelTime;
 
     [SerializeField]
-    private bool _resetFreeMouvement;
+    private bool _resetFreeMouvement = true;
 
     [Header("Player Setting")]
     [SerializeField]
@@ -26,7 +26,7 @@ public class CameraTrigger : Trigger
     private bool _isShadow;
 
 
-
+    private bool _resetTrigger = true;
     private Camera _cameraToMove;
     private CameraBehavior _cameraBehavior;
     private Vector3 _initialPos;
@@ -65,12 +65,37 @@ public class CameraTrigger : Trigger
                 if (_playerStatus.IsShadow == _isShadow)
                 {
                     ActiveCameraMove();
+                    _resetTrigger = false;
 
                 }
             }else
             {
                 ActiveCameraMove();
+               
             }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.GetComponent<Player>() && _resetTrigger && CoroutineEnd)
+        {
+            Player _playerStatus = other.gameObject.GetComponent<Player>();
+            if (_checkPlayerState)
+            {
+                if (_playerStatus.IsShadow == _isShadow)
+                {
+                    ActiveCameraMove();
+                    _resetTrigger = false;
+                }
+            }
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.GetComponent<Player>() )
+        {
+            _resetTrigger = true;
         }
     }
 
