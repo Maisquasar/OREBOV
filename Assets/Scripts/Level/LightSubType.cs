@@ -19,18 +19,23 @@ public class LightSubType : MonoBehaviour
     public Color PrimaryColor;
     public Color SecondaryColor;
     public bool EjectPlayer = false;
+    public bool IsBox = false;
+    public Vector2 BoxSize = new Vector2();
 
-    public void Start()
+    private void Update()
     {
-        Component l = gameObject.GetComponentInChildren(typeof(Light));
-        if (l != null)
+        if (LightObject == null)
         {
-            LightObject = (Light)l;
+            LightObject = (Light)gameObject.GetComponentInChildren(typeof(Light));
         }
-        Component t = gameObject.GetComponent(typeof(Light));
-        if (t != null)
+        if (LightObject != null)
         {
-            PrimaryColor = ((Light)t).color;
+            PrimaryColor = LightObject.color;
+            if (IsBox && LightObject.areaSize.magnitude > 1 && LightObject.areaSize.magnitude != BoxSize.magnitude)
+            {
+                BoxSize = LightObject.areaSize;
+                Debug.Log("S " + LightObject.areaSize);
+            }
         }
     }
 }
