@@ -60,12 +60,19 @@ public class EntityMovement : MonoBehaviour
     virtual protected void FixedUpdate()
     {
         // Ground Detection
-        grounded = false;
         for (int i = 0; i < 3; i++)
         {
             if (Physics.Raycast(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), Vector3.down, rayGroundSize, GroundType, QueryTriggerInteraction.Ignore))
             {
-                grounded = true;
+                if (!grounded)
+                {
+                    LandOnGround();
+                }
+                break;
+            }
+            if(i == 2)
+            {
+                grounded =false;
             }
         }
 
@@ -94,6 +101,12 @@ public class EntityMovement : MonoBehaviour
         rb.AddForce(gravity, ForceMode.Acceleration);
     }
 
+
+
+    protected virtual void LandOnGround()
+    { 
+        grounded = true;   
+    }
 
     protected virtual bool DetectWall()
     {
