@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CameraTrigger : Trigger
 {
- 
+
     [Tooltip("Ctrl + Shift + F to place the cube to camera position")]
     [SerializeField] bool reverse;
 
@@ -18,6 +18,12 @@ public class CameraTrigger : Trigger
 
     [SerializeField]
     private bool _resetFreeMouvement;
+
+    [Header("Player Setting")]
+    [SerializeField]
+    private bool _checkPlayerState;
+    [SerializeField]
+    private bool _isShadow;
 
 
 
@@ -53,11 +59,27 @@ public class CameraTrigger : Trigger
     {
         if (other.gameObject.GetComponent<Player>() && CoroutineEnd)
         {
-            switchToCamera[0].transform.position = _cameraToMove.transform.position;
-            switchToCamera[0].transform.rotation = _cameraToMove.transform.rotation;
-            if (!activate || reverse)
-                StartCoroutine(GoTo(switchToCamera));
+            Player _playerStatus = other.gameObject.GetComponent<Player>();
+            if (_checkPlayerState)
+            {
+                if (_playerStatus.IsShadow == _isShadow)
+                {
+                    ActiveCameraMove();
+
+                }
+            }else
+            {
+                ActiveCameraMove();
+            }
         }
+    }
+
+    private void ActiveCameraMove()
+    {
+        switchToCamera[0].transform.position = _cameraToMove.transform.position;
+        switchToCamera[0].transform.rotation = _cameraToMove.transform.rotation;
+        if (!activate || reverse)
+            StartCoroutine(GoTo(switchToCamera));
     }
 
 
