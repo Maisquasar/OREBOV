@@ -16,4 +16,9 @@ public class GeneralMenuFeature : MonoBehaviour
         Debug.Log("Quit the scene");
         Application.Quit();
     }
+
+    public void LoadScene(int index)
+    {
+        SceneManager.LoadScene(index);
+    }
 }

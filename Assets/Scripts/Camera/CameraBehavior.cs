@@ -47,6 +47,8 @@ public class CameraBehavior : MonoBehaviour
 
     public void Start()
     {
+        Vector3 naturalOffset = transform.position - _mainTarget.transform.position;
+        transform.position = new Vector3(_mainTarget.transform.position.x - _windowOffset.x ,_mainTarget.transform.position.y + naturalOffset.y, transform.position.z);
         _windowOrigin = _windowCenter + (Vector3)(_windowSize / 2f);
         _player = _mainTarget.GetComponent<Player>();
 
@@ -94,6 +96,7 @@ public class CameraBehavior : MonoBehaviour
         }
         if (_showWindow)
         {
+            SetWindowPosition();
             DrawRectWindown();
         }
 
@@ -103,6 +106,7 @@ public class CameraBehavior : MonoBehaviour
     private void DrawRectWindown()
     {
         Gizmos.color = Color.blue;
+        SetWindowPosition();
         Gizmos.DrawLine(_windowOrigin, _windowOrigin + new Vector3(_windowSize.x, 0f, 0f));
         Gizmos.DrawLine(_windowOrigin + new Vector3(_windowSize.x, 0f, 0f), _windowOrigin + (Vector3)_windowSize);
         Gizmos.DrawLine(_windowOrigin + (Vector3)_windowSize, _windowOrigin + new Vector3(0, _windowSize.y, 0f));

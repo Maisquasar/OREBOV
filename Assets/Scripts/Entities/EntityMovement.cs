@@ -5,15 +5,15 @@ using UnityEngine.Events;
 
 public class EntityMovement : MonoBehaviour
 {
-    [SerializeField] protected Animator animator;
+    [SerializeField] public Animator animator;
     [Space]
-    [Header("======== Collision ========")]
+    [Header("Collision Settings")]
     [Space]
     [SerializeField] public LayerMask GroundType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] private List<float> ray;
     [Space]
-    [Header("======== Velocity ========")]
+    [Header("Velocity Settings")]
     [Space]
     [SerializeField] protected float speed;
 
@@ -21,6 +21,7 @@ public class EntityMovement : MonoBehaviour
     protected float rayCeilingSize = 1.1f;
     protected float rayWallSize = 0.31f;
     protected float direction = 1;
+    public float Direction { get { return direction; } }
 
     protected float globalGravity = -9.81f;
     protected float gravityScale = 1;
