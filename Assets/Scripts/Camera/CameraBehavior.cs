@@ -96,6 +96,7 @@ public class CameraBehavior : MonoBehaviour
         }
         if (_showWindow)
         {
+            SetWindowPosition();
             DrawRectWindown();
         }
 
