@@ -1839,6 +1839,7 @@ GameObject:
   - component: {fileID: 1276067028}
   - component: {fileID: 1276067026}
   - component: {fileID: 1276067048}
+  - component: {fileID: 2984496935508337539}
   m_Layer: 2
   m_Name: Avatar
   m_TagString: Untagged
@@ -1907,6 +1908,7 @@ MonoBehaviour:
   Controller: {fileID: 8288549701085702375}
   PlayerActionState: 0
   CheckpointPos: {x: 0, y: 0, z: 0}
+  _shadowEffectHandler: {fileID: 2984496935508337539}
 --- !u!114 &8288549701085702375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2183,7 +2185,7 @@ AudioSource:
   m_GameObject: {fileID: 8288549701085702373}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.375
@@ -2296,6 +2298,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e15f19d651496084bb30eefd34f4d496, type: 3}
   - {fileID: 8300000, guid: 16c4cd447da9f7d4f879a3072903c5f8, type: 3}
   - {fileID: 8300000, guid: 348eae1942d01a249b0451ff2b1d8d9a, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
 --- !u!114 &1276067048
 MonoBehaviour:
@@ -2312,6 +2315,24 @@ MonoBehaviour:
   _soundName: Jump
   _audioClipArray:
   - {fileID: 8300000, guid: c8bc8062b33e0d54fb9c16199fce7cbb, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 0
+--- !u!114 &2984496935508337539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Transformation
+  _audioClipArray:
+  - {fileID: 8300000, guid: 86eb462bd3cee9042b41b40abb873f35, type: 3}
+  _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
 --- !u!1 &8498706478600403111
 GameObject:
