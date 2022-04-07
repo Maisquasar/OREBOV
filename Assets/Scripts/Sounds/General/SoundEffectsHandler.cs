@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 [RequireComponent(typeof(AudioSource))]
 public class SoundEffectsHandler : MonoBehaviour
@@ -10,8 +11,11 @@ public class SoundEffectsHandler : MonoBehaviour
 
     [SerializeField]
     private AudioClip[] _audioClipArray = new AudioClip[0];
-    private AudioSource _audioSource;
+    [SerializeField]
+    private AudioMixerGroup _mixer;
 
+    private AudioSource _audioSource;
+    
     private int _indexAudioClip = 0;
     [SerializeField]
     private bool _randomPlaySound;
@@ -35,7 +39,7 @@ public class SoundEffectsHandler : MonoBehaviour
     {
         CheckComponentIsValid();
         InitComponents();
-
+        
     }
 
     private int GetRandomIndex()
@@ -56,6 +60,7 @@ public class SoundEffectsHandler : MonoBehaviour
         }
 
         _audioSource.clip = _audioClipArray[_indexAudioClip];
+        _audioSource.outputAudioMixerGroup = _mixer;
         _audioSource.Play();
     }
 

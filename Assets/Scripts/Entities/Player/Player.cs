@@ -27,6 +27,10 @@ public class Player : Entity
     Vector3 previousPos;
     public Vector2 MoveDir { get { return movementDir; } }
 
+    [Header("Sounds")]
+    [SerializeField]
+    private SoundEffectsHandler _shadowEffectHandler;
+
     private void Start()
     {
         Controller = gameObject.GetComponent<PlayerMovement>();
@@ -119,8 +123,12 @@ public class Player : Entity
         }
         else
         {
-            if (Caster.CanTransform(true)) OnTransformToShadow();
+            if (Caster.CanTransform(true))
+            {
+                OnTransformToShadow();
+            }
         }
+        _shadowEffectHandler.PlaySound();
     }
 
     public void OnTransformToShadow()
