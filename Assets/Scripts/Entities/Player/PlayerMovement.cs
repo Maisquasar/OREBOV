@@ -31,7 +31,10 @@ public class PlayerMovement : EntityMovement
 
     [Header("Sounds ")]
     [SerializeField]
-    private SoundEffectsHandler _effectsHandler;
+    private SoundEffectsHandler _walkEffectsHandler;
+    [SerializeField]
+    private SoundEffectsHandler _jumpImpactEffectHandler;
+
     private float _xAxisValue;
 
     float margeDetectionVelocity = 0.05f;
@@ -152,7 +155,7 @@ public class PlayerMovement : EntityMovement
         // Jump move
         if (grounded && jump)
         {
-            grounded = false;
+           // grounded = false;
             jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -174,6 +177,12 @@ public class PlayerMovement : EntityMovement
     public void FlipCharacter()
     {
         StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+    }
+
+    protected override void LandOnGround()
+    {
+        base.LandOnGround();
+        _jumpImpactEffectHandler.PlaySound();
     }
 
     public IEnumerator PlayClimb()
@@ -240,7 +249,7 @@ public class PlayerMovement : EntityMovement
     {
         if (_xAxisValue != 0f)
         {
-            _effectsHandler.PlaySound();
+            _walkEffectsHandler.PlaySound();
             return true;
 
         }
