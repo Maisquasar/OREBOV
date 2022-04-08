@@ -89,13 +89,18 @@ public class Player : Entity
     float lastMovementDir;
     public void OnMove(CallbackContext context)
     {
-        movementDir = context.ReadValue<Vector2>();
-        if (Mathf.Abs(movementDir.x) < 0.03f) movementDir.x = 0.0f;
-        if (Mathf.Abs(movementDir.y) < 0.03f) movementDir.y = 0.0f;
-        PlayerInteraction.AxisInput(context);
+         
+        Vector3 moveTemp = context.ReadValue<Vector2>();
+        if (Mathf.Abs(moveTemp.x) < 0.03f) moveTemp.x = 0.0f;
+        if (Mathf.Abs(moveTemp.y) < 0.03f) moveTemp.y = 0.0f;
         //Play animation in function of pos
         if (PlayerActionState == PlayerAction.INTERACT)
         {
+            if(moveTemp.normalized.x == movementDir.normalized.x )
+            {
+                movementDir = moveTemp;
+            }
+            PlayerInteraction.AxisInput(context);
             if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir < 0))
             {
                 StartCoroutine(Controller.PlayPush());
@@ -103,6 +108,8 @@ public class Player : Entity
             else
                 StartCoroutine(Controller.PlayPull());
         }
+        movementDir = moveTemp;
+
         if (movementDir.x != 0)
             lastMovementDir = movementDir.x;
     }

@@ -15,19 +15,24 @@ public class ObjectManager : MonoBehaviour
         _interactiveObjectList = FindObjectsOfType<InteractiveObject>();
     }
 
-    public InteractiveObject ObjectsInRange(Vector3 position, float range)
+    public InteractiveObject ObjectsInRange(Vector3 position, Vector3 faceDir, float range)
     {
         InteractiveObject _item = null;
         float distanceObject = GameMetric.GetUnityValue(range);
-        
+
 
         for (int i = 0; i < _interactiveObjectList.Length; i++)
         {
-           
+
             if (Vector3.Distance(position, _interactiveObjectList[i].transform.position) < distanceObject)
             {
-                distanceObject = Vector3.Distance(position, _interactiveObjectList[i].transform.position);
-                _item = _interactiveObjectList[i];
+                Vector3 objDir = _interactiveObjectList[i].transform.position - position;
+                if (Vector3.Dot(faceDir.normalized, objDir.normalized) > 0.45f)
+                { 
+                    distanceObject = Vector3.Distance(position, _interactiveObjectList[i].transform.position);
+                    _item = _interactiveObjectList[i];
+
+                }
             }
 
         }
@@ -35,6 +40,6 @@ public class ObjectManager : MonoBehaviour
         return _item;
     }
 
-   
+
 
 }
