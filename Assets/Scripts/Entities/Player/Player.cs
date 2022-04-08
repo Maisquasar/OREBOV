@@ -15,6 +15,9 @@ public class Player : Entity
     private PlayerAnimator PlayerAnimator;
     private PlayerInteraction PlayerInteraction;
 
+    [SerializeField]
+    private UIPauseMenu _PauseMenu;
+
     public Vector3 CheckpointPos;
 
     float _shadowTime;
@@ -175,8 +178,6 @@ public class Player : Entity
     {
         Controller.animator.SetBool("Dead", false);
         transform.position = CheckpointPos;
-        Dead = false;
-        respawn = false;
     }
 
 
@@ -210,8 +211,10 @@ public class Player : Entity
     IEnumerator WaitBeforeRespawn()
     {
         respawn = true;
-        float time = 3f;
-        yield return new WaitForSecondsRealtime(time);
+        yield return _PauseMenu.ScreenfadeIn(1.0f,2.0f);
         Respawn();
+        yield return _PauseMenu.ScreenfadeOut(1.0f,2.0f);
+        Dead = false;
+        respawn = false;
     }
 }

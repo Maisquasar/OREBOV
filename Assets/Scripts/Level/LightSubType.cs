@@ -31,11 +31,12 @@ public class LightSubType : MonoBehaviour
         if (LightObject != null)
         {
             PrimaryColor = LightObject.color;
+#if UNITY_EDITOR
             if (IsBox && LightObject.areaSize.magnitude > 1 && LightObject.areaSize.magnitude != BoxSize.magnitude)
             {
                 BoxSize = LightObject.areaSize;
-                Debug.Log("S " + LightObject.areaSize);
             }
+#endif
         }
     }
 }

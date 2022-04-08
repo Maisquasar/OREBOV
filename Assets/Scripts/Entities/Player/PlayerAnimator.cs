@@ -56,6 +56,8 @@ public class PlayerAnimator : MonoBehaviour
             PlayerFadeMaterial.color = playerColor;
             yield return Time.deltaTime;
         }
+        playerColor.a = 1.0f;
+        PlayerFadeMaterial.color = playerColor;
         Renderer.material = PlayerMaterial;
         _isInAmination = false;
         yield return null;
