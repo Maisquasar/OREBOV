@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CameraTrigger : Trigger
 {
- 
+
     [Tooltip("Ctrl + Shift + F to place the cube to camera position")]
     [SerializeField] bool reverse;
 
@@ -17,10 +17,16 @@ public class CameraTrigger : Trigger
     [SerializeField] float travelTime;
 
     [SerializeField]
-    private bool _resetFreeMouvement;
+    private bool _resetFreeMouvement = true;
+
+    [Header("Player Setting")]
+    [SerializeField]
+    private bool _checkPlayerState;
+    [SerializeField]
+    private bool _isShadow;
 
 
-
+    private bool _resetTrigger = true;
     private Camera _cameraToMove;
     private CameraBehavior _cameraBehavior;
     private Vector3 _initialPos;
@@ -53,11 +59,70 @@ public class CameraTrigger : Trigger
     {
         if (other.gameObject.GetComponent<Player>() && CoroutineEnd)
         {
-            switchToCamera[0].transform.position = _cameraToMove.transform.position;
-            switchToCamera[0].transform.rotation = _cameraToMove.transform.rotation;
-            if (!activate || reverse)
-                StartCoroutine(GoTo(switchToCamera));
+            _resetTrigger = true;
+            Player _playerStatus = other.gameObject.GetComponent<Player>();
+            if (_checkPlayerState)
+            {
+                if (_playerStatus.IsShadow == _isShadow)
+                {
+                    ActiveCameraMove();
+                    _resetTrigger = false;
+
+                }
+            }else
+            {
+                ActiveCameraMove();
+               
+            }
         }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.GetComponent<Player>() && _resetTrigger && CoroutineEnd)
+        {
+            Player _playerStatus = other.gameObject.GetComponent<Player>();
+            if (_checkPlayerState)
+            {
+                if (_playerStatus.IsShadow == _isShadow)
+                {
+                    ActiveCameraMove();
+                    _resetTrigger = false;
+                }
+                else
+                {
+                    _resetTrigger = true;
+                }
+            }
+        }
+
+        if (other.gameObject.GetComponent<Player>()  && CoroutineEnd)
+        {
+            Player _playerStatus = other.gameObject.GetComponent<Player>();
+            if (_checkPlayerState)
+            {
+                if (_playerStatus.IsShadow != _isShadow)
+                {
+                    _resetTrigger = true;
+                }
+               
+            }
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.GetComponent<Player>() )
+        {
+            _resetTrigger = true;
+        }
+    }
+
+    private void ActiveCameraMove()
+    {
+        switchToCamera[0].transform.position = _cameraToMove.transform.position;
+        switchToCamera[0].transform.rotation = _cameraToMove.transform.rotation;
+        if (!activate || reverse)
+            StartCoroutine(GoTo(switchToCamera));
     }
 
 
@@ -102,6 +167,8 @@ public class CameraTrigger : Trigger
     {
         if (_resetFreeMouvement)
             _cameraBehavior.DeactiveFreeMode();
+
+        activate = false;
     }
 
     // Swap values between startPos and SwitchTo.

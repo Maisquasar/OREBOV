@@ -6,26 +6,27 @@ public class InteractiveSwitch : InteractiveObject
 {
     [Header("Light")]
     [SerializeField]
-    private Light _lightConnect;
+    private Light[] _lightConnect = new Light[0];
     [SerializeField]
-    private bool _lightState = false;
 
 
     protected override void ActiveItem(GameObject player)
     {
         base.ActiveItem(player);
-        _lightConnect.enabled = true;
+        for (int i = 0; i < _lightConnect.Length; i++)
+        {
+            _lightConnect[i].gameObject.SetActive(!_lightConnect[i].gameObject.activeSelf);
+        }
     }
+      
 
     protected override void DeactiveItem()
     {
         base.DeactiveItem();
-        _lightConnect.enabled = false;
+        for (int i = 0; i < _lightConnect.Length; i++)
+        {
+            _lightConnect[i].gameObject.SetActive(!_lightConnect[i].gameObject.activeSelf);
+        }
     }
 
-    private void Start()
-    {
-        _objectActive = _lightState;
-        _lightConnect.enabled = _lightState;
-    }
 }

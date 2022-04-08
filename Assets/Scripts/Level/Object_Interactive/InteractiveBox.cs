@@ -17,8 +17,10 @@ public class InteractiveBox : InteractiveObject
     private float _moveTime = 1f;
     private float _moveTimer = 0f;
 
-    [SerializeField]
+    [HideInInspector]
     private float _timeBetweenMove = 0.7f;
+
+
 
     [SerializeField]
     private bool _activeMouvement = false;
@@ -31,12 +33,19 @@ public class InteractiveBox : InteractiveObject
     [SerializeField]
     private int mouvementCount = 1;
     PlayerInteraction PlayerInteract;
+    Player _playerStatus;
+
+    private void Start()
+    {
+        ObjectType = "Box";
+    }
 
     protected override void ActiveItem(GameObject player)
     {
         base.ActiveItem(player);
         transform.SetParent(player.transform);
         PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
+        _playerStatus = _playerGO.GetComponent<Player>();
         PlayerInteract.LinkObject(this);
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
         _activeMouvement = true;
@@ -57,11 +66,22 @@ public class InteractiveBox : InteractiveObject
         {
 
             Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
-            if (!_activeMouvement && axis.normalized.x != 0)
+            if (_useOnlyInShadow )
             {
 
-                StartCoroutine(MoveBox(axis.normalized.x));
+                if (!_activeMouvement && axis.normalized.x != 0 && _playerStatus.IsShadow)
+                {
+                    StartCoroutine(MoveBox(axis.normalized.x));
+                    _playerStatus.PlayRightAnimation(axis.x);
+                }
+            }else
+            {
+                if (!_activeMouvement && axis.normalized.x != 0)
+                {
+                    StartCoroutine(MoveBox(axis.normalized.x));
+                    _playerStatus.PlayRightAnimation(axis.x);
 
+                }
             }
         }
     }
@@ -75,7 +95,11 @@ public class InteractiveBox : InteractiveObject
         Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
         Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
         if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
+        {
+            StartCoroutine(PauseBoxMouvement());
             yield break;
+        }
+
 
 
         while (_moveTimer < _moveTime)
@@ -87,11 +111,13 @@ public class InteractiveBox : InteractiveObject
         _moveTimer = 0f;
         _rigidbodyPlayer.velocity = Vector3.zero;
         StartCoroutine(PauseBoxMouvement());
+        DeactiveItem();
 
     }
 
     private IEnumerator PauseBoxMouvement()
     {
+        PlayerInteract.CanStopNow = true;
         while (_moveTimer < _timeBetweenMove)
         {
 
@@ -99,15 +125,11 @@ public class InteractiveBox : InteractiveObject
             yield return Time.deltaTime;
         }
         _activeMouvement = false;
-        PlayerInteract.CanStopNow = true;
         _moveTimer = 0f;
     }
 
 
-    private void Update()
-    {
 
-    }
 
     private void ShowBoxMouvement()
     {

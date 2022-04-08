@@ -5,15 +5,15 @@ using UnityEngine.Events;
 
 public class EntityMovement : MonoBehaviour
 {
-    [SerializeField] protected Animator animator;
+    [SerializeField] public Animator animator;
     [Space]
-    [Header("======== Collision ========")]
+    [Header("Collision Settings")]
     [Space]
     [SerializeField] public LayerMask GroundType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] private List<float> ray;
     [Space]
-    [Header("======== Velocity ========")]
+    [Header("Velocity Settings")]
     [Space]
     [SerializeField] protected float speed;
 
@@ -30,6 +30,8 @@ public class EntityMovement : MonoBehaviour
     protected Rigidbody rb;
     protected bool grounded;
     protected bool endOfCoroutine = true;
+
+    public bool IsGrounded { get { return grounded; } }
 
     protected virtual void Start()
     {
@@ -60,12 +62,19 @@ public class EntityMovement : MonoBehaviour
     virtual protected void FixedUpdate()
     {
         // Ground Detection
-        grounded = false;
         for (int i = 0; i < 3; i++)
         {
             if (Physics.Raycast(new Vector3(transform.position.x - offset + offset * i, transform.position.y, transform.position.z), Vector3.down, rayGroundSize, GroundType, QueryTriggerInteraction.Ignore))
             {
-                grounded = true;
+                if (!grounded)
+                {
+                    LandOnGround();
+                }
+                break;
+            }
+            if(i == 2)
+            {
+                grounded =false;
             }
         }
 
@@ -95,6 +104,12 @@ public class EntityMovement : MonoBehaviour
     }
 
 
+
+    protected virtual void LandOnGround()
+    { 
+        grounded = true;   
+    }
+
     protected virtual bool DetectWall()
     {
         for (int i = 0; i < ray.Count; i++)
@@ -109,8 +124,11 @@ public class EntityMovement : MonoBehaviour
         return false;
     }
 
+    [HideInInspector] public bool canTurn = true;
     protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
     {
+        if (!canTurn)
+            yield break;
         endOfCoroutine = false;
         direction *= -1;
         for (float t = 0f; t < duration; t += Time.deltaTime)
