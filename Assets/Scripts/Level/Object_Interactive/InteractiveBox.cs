@@ -17,7 +17,7 @@ public class InteractiveBox : InteractiveObject
     private float _moveTime = 1f;
     private float _moveTimer = 0f;
 
-    [SerializeField]
+    [HideInInspector]
     private float _timeBetweenMove = 0.7f;
 
 
@@ -34,6 +34,11 @@ public class InteractiveBox : InteractiveObject
     private int mouvementCount = 1;
     PlayerInteraction PlayerInteract;
     Player _playerStatus;
+
+    private void Start()
+    {
+        ObjectType = "Box";
+    }
 
     protected override void ActiveItem(GameObject player)
     {

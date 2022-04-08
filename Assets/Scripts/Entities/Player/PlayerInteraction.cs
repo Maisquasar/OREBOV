@@ -43,6 +43,8 @@ public class PlayerInteraction : MonoBehaviour
     private Vector2 _axis;
     private Player _playerStatus;
 
+    public string getObjectType { get { return _objectInteractive.ObjectType; } }
+
     private void Start()
     {
         _playerStatus = GetComponent<Player>();

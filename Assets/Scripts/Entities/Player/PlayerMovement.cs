@@ -201,7 +201,7 @@ public class PlayerMovement : EntityMovement
         // Wait for end of animation
         yield return new WaitForSecondsRealtime(1.02f);
         // Move to animation pos.
-        transform.position = transform.position + new Vector3(0.35f * direction, 1.5f, 0);
+        transform.position = transform.position + new Vector3(0.4f * direction, 1.5f, 0);
         // Reset Grabity scale.
         gravityScale = 3;
         // Transition to Idle.

@@ -174,10 +174,16 @@ public class Player : Entity
         if (PlayerInteraction.getInteractiveObjectPos.y + 0.25f < transform.position.y)
             return;
         PlayerActionState = PlayerAction.INTERACT;
-        if (exactPos)
-            PlayerInteraction.InteractionInput(context.started, context.canceled);
+        if (PlayerInteraction.getObjectType == "Box")
+        {
+            if (exactPos)
+                PlayerInteraction.InteractionInput(context.started, context.canceled);
+            else
+                StartCoroutine(PlayAnimationBefore(context.started, context.canceled));
+        }
         else
-            StartCoroutine(PlayAnimationBefore(context.started, context.canceled));
+            PlayerInteraction.InteractionInput(context.started, context.canceled);
+
         if (PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
         {
             PlayerActionState = PlayerAction.IDLE;
