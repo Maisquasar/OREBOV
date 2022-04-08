@@ -31,6 +31,8 @@ public class EntityMovement : MonoBehaviour
     protected bool grounded;
     protected bool endOfCoroutine = true;
 
+    public bool IsGrounded { get { return grounded; } }
+
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();

@@ -97,7 +97,7 @@ public class Player : Entity
         if (Mathf.Abs(moveTemp.x) < 0.03f) moveTemp.x = 0.0f;
         if (Mathf.Abs(moveTemp.y) < 0.03f) moveTemp.y = 0.0f;
         //Play animation in function of pos
-        if (PlayerActionState == PlayerAction.INTERACT)
+        if (PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Link)
         {
             if(moveTemp.normalized.x == movementDir.normalized.x )
             {
@@ -106,10 +106,14 @@ public class Player : Entity
             PlayerInteraction.AxisInput(context);
             if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir < 0))
             {
-                StartCoroutine(Controller.PlayPush());
+                if (!Controller.isPulling)
+                    StartCoroutine(Controller.PlayPush());
             }
             else
-                StartCoroutine(Controller.PlayPull());
+            {
+                if (!Controller.isPushing)
+                    StartCoroutine(Controller.PlayPull());
+            }
         }
         movementDir = moveTemp;
 
@@ -160,7 +164,9 @@ public class Player : Entity
     bool exactPos = false;
     public void OnInteract(CallbackContext context)
     {
-        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
+        if (_isJumping || Controller.isClimbing || !Controller.IsGrounded || Controller.isPulling || Controller.isPushing || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
+            return;
+        if (PlayerInteraction.getInteractiveObjectPos.y + 0.25f < transform.position.y)
             return;
         PlayerActionState = PlayerAction.INTERACT;
         if (exactPos)

@@ -41,8 +41,6 @@ public class PlayerMovement : EntityMovement
     float time;
 
 
-
-
     private new void Start()
     {
         base.Start();
@@ -65,8 +63,9 @@ public class PlayerMovement : EntityMovement
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, topEdgeDetectorHeight, 0));
     }
 
-    bool isClimbing = false;
+    [HideInInspector] public bool isClimbing = false;
     bool FallDefine = false;
+
     private void Update()
     {
         //Get the pos at start fall.
@@ -187,6 +186,8 @@ public class PlayerMovement : EntityMovement
 
     public IEnumerator PlayClimb()
     {
+        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        StartCoroutine(LerpTo(transform.position + Vector3.right * direction * (downRay[0].distance - 0.4f), 0.1f));
         isClimbing = true;
         //Play animation
         animator.Play("Climb");
@@ -194,15 +195,25 @@ public class PlayerMovement : EntityMovement
         rb.velocity = Vector3.zero;
         gravityScale = 0;
         // Wait for end of animation
-        yield return new WaitForSeconds(1.113f);
+        yield return new WaitForSecondsRealtime(1.02f);
         // Move to animation pos.
-        transform.position = transform.position + new Vector3(0.6f * direction, 1.5f, 0);
+        transform.position = transform.position + new Vector3(0.35f * direction, 1.5f, 0);
         // Reset Grabity scale.
         gravityScale = 3;
         // Transition to Idle.
-        animator.Play("Crouched To Standing");
         yield return new WaitForSeconds(0.75f);
         isClimbing = false;
+    }
+
+    IEnumerator LerpTo(Vector3 goTo, float duration)
+    {
+        Vector3 initial = transform.position;
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.position = Vector3.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.position = goTo;
     }
 
     [HideInInspector] public bool isPushing = false;
