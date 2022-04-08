@@ -22,7 +22,7 @@ public class UIPauseMenu : MonoBehaviour
     {
         _UIGameMenu.SetActive(true);
         _FadeScreen = _UIFadeScreen.GetComponent<Image>();
-        StartCoroutine(ScreenfadeOut(1.0f, 2.0f));
+        StartCoroutine(ScreenfadeOut(1.0f, 1.0f));
     }
 
     public void CallPauseMenu(InputAction.CallbackContext context)
@@ -49,7 +49,7 @@ public class UIPauseMenu : MonoBehaviour
     {
         _pauseMenuActive = true;
         _UIPauseMenu.SetActive(_pauseMenuActive);
-        _UIPauseMenu.transform.GetChild(0).Find("Resume").GetComponent<Button>().Select();
+        _UIPauseMenu.transform.Find("Resume").GetComponent<Button>().Select();
     }
 
     private void CloseMenu()
