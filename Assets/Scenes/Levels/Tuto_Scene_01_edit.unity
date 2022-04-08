@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.97106194, g: 0.94970036, b: 1.2555714, a: 1}
+  m_IndirectSpecularColor: {r: 0.9705193, g: 0.9498544, b: 1.2565632, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3065,7 +3065,7 @@ PrefabInstance:
     - target: {fileID: 5253260931567479996, guid: 17525515b84f46844aa4749b76081c64, type: 3}
       propertyPath: _mainTarget
       value: 
-      objectReference: {fileID: 2126359017}
+      objectReference: {fileID: 0}
     - target: {fileID: 5253260931567479996, guid: 17525515b84f46844aa4749b76081c64, type: 3}
       propertyPath: _windowSize.x
       value: 2.15
@@ -18666,7 +18666,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2126359026}
+  - {fileID: 824213697}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -34051,6 +34051,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+--- !u!4 &824213697 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8668594363708895839, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+  m_PrefabInstance: {fileID: 824213696}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &827732878
 GameObject:
   m_ObjectHideFlags: 0
@@ -45417,7 +45422,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-130626
+  m_Name: pb_Mesh-4842
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -71925,7 +71930,7 @@ PrefabInstance:
     - target: {fileID: 5253260931567479996, guid: 17525515b84f46844aa4749b76081c64, type: 3}
       propertyPath: _mainTarget
       value: 
-      objectReference: {fileID: 2126359017}
+      objectReference: {fileID: 0}
     - target: {fileID: 5253260931567479996, guid: 17525515b84f46844aa4749b76081c64, type: 3}
       propertyPath: _windowSize.x
       value: 1.95
@@ -95373,16 +95378,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2125459288}
   m_Mesh: {fileID: 3942774935579010589, guid: acaa2cb72d6476343a1047da3cddfddd, type: 3}
---- !u!1 &2126359017 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8288549701085702373, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
-  m_PrefabInstance: {fileID: 824213696}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2126359026 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8668594363708895839, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
-  m_PrefabInstance: {fileID: 824213696}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2133216865
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,14 +29,26 @@ public class PlayerMovement : EntityMovement
     private float lastMove;
     private float jumpForce;
 
+    [Header("Sounds ")]
+    [SerializeField]
+    private SoundEffectsHandler _walkEffectsHandler;
+    [SerializeField]
+    private SoundEffectsHandler _jumpImpactEffectHandler;
+
+    private float _xAxisValue;
+
     float margeDetectionVelocity = 0.05f;
     float time;
+
+
+
 
     private new void Start()
     {
         base.Start();
         gravityScale = 3;
         topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
+
     }
 
     private new void OnDrawGizmos()
@@ -123,6 +135,7 @@ public class PlayerMovement : EntityMovement
     // Move the player.
     public void Move(float move, bool jump)
     {
+        _xAxisValue = move;
         // If climbing then can't move
         if (isClimbing || isPushing || isPulling)
             return;
@@ -135,12 +148,14 @@ public class PlayerMovement : EntityMovement
         // Ground Move
         if (grounded && !jump)
         {
+
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
+       
         // Jump move
         if (grounded && jump)
         {
-            grounded = false;
+           // grounded = false;
             jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -162,6 +177,12 @@ public class PlayerMovement : EntityMovement
     public void FlipCharacter()
     {
         StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+    }
+
+    protected override void LandOnGround()
+    {
+        base.LandOnGround();
+        _jumpImpactEffectHandler.PlaySound();
     }
 
     public IEnumerator PlayClimb()
@@ -217,5 +238,26 @@ public class PlayerMovement : EntityMovement
         }
         yield return null;
     }
+
+
+    #region Sounds  
+
+
+
+
+    public bool WalkSoundManager()
+    {
+        if (_xAxisValue != 0f)
+        {
+            _walkEffectsHandler.PlaySound();
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    #endregion
 }
 
