@@ -16,7 +16,6 @@ public class ShadowCaster : MonoBehaviour
     private float _shadowHeight;
     public float ShadowDepth { get { return _shadowDepth - HitBoxRadius - 1; } }
     public float ShadowHeight { get { return _shadowHeight; } }
-
     public bool DoesCurrentLightEject = false;
     private int _mask = 0;
     private int _maskDepth = 0;
