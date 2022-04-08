@@ -63,9 +63,9 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (!_inputReset)
                 HoldInput();
-            if (_objectManager.ObjectsInRange(transform.position, _detectDistance) != null)
+            if (_objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance) != null)
             {
-                InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, _detectDistance);
+                InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance);
                 if (objectClose._useOnlyInShadow && _playerStatus.IsShadow)
                 {
                     UnselectObject(objectClose);
@@ -79,7 +79,7 @@ public class PlayerInteraction : MonoBehaviour
                 if (!objectClose._useOnlyInShadow)
                 {
                     UnselectObject(objectClose);
-                    ChangeSelectedObject(objectClose); 
+                    ChangeSelectedObject(objectClose);
                 }
             }
             else
