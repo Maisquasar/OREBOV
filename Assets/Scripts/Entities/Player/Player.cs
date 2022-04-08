@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
 using States;
@@ -176,8 +176,7 @@ public class Player : Entity
 
     private void Respawn()
     {
-        Controller.animator.SetBool("Dead", false);
-        transform.position = CheckpointPos;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 
@@ -213,8 +212,5 @@ public class Player : Entity
         respawn = true;
         yield return _PauseMenu.ScreenfadeIn(1.0f,2.0f);
         Respawn();
-        yield return _PauseMenu.ScreenfadeOut(1.0f,2.0f);
-        Dead = false;
-        respawn = false;
     }
 }
