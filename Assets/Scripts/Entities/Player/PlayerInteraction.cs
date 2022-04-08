@@ -158,6 +158,7 @@ public class PlayerInteraction : MonoBehaviour
     private void CancelInput()
     {
         if (CanStopNow) _inputReset = true;
+
     }
     #endregion
 
