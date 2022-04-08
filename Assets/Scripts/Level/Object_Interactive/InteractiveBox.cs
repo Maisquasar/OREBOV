@@ -67,13 +67,14 @@ public class InteractiveBox : InteractiveObject
                 if (!_activeMouvement && axis.normalized.x != 0 && _playerStatus.IsShadow)
                 {
                     StartCoroutine(MoveBox(axis.normalized.x));
-
+                    _playerStatus.PlayRightAnimation(axis.x);
                 }
             }else
             {
                 if (!_activeMouvement && axis.normalized.x != 0)
                 {
                     StartCoroutine(MoveBox(axis.normalized.x));
+                    _playerStatus.PlayRightAnimation(axis.x);
 
                 }
             }

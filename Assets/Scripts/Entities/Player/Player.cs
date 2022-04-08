@@ -92,33 +92,38 @@ public class Player : Entity
     float lastMovementDir;
     public void OnMove(CallbackContext context)
     {
-         
         Vector3 moveTemp = context.ReadValue<Vector2>();
         if (Mathf.Abs(moveTemp.x) < 0.03f) moveTemp.x = 0.0f;
         if (Mathf.Abs(moveTemp.y) < 0.03f) moveTemp.y = 0.0f;
         //Play animation in function of pos
         if (PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Link)
         {
-            if(moveTemp.normalized.x == movementDir.normalized.x )
+            if (moveTemp.normalized.x == movementDir.normalized.x)
             {
                 movementDir = moveTemp;
             }
             PlayerInteraction.AxisInput(context);
-            if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir < 0))
-            {
-                if (!Controller.isPulling)
-                    StartCoroutine(Controller.PlayPush());
-            }
-            else
-            {
-                if (!Controller.isPushing)
-                    StartCoroutine(Controller.PlayPull());
-            }
         }
         movementDir = moveTemp;
 
         if (movementDir.x != 0)
             lastMovementDir = movementDir.x;
+    }
+
+    public void PlayRightAnimation(float axis)
+    {
+        if (axis == 0)
+            return;
+        if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && axis > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && axis < 0))
+        {
+            if (!Controller.isPulling)
+                StartCoroutine(Controller.PlayPush());
+        }
+        else
+        {
+            if (!Controller.isPushing)
+                StartCoroutine(Controller.PlayPull());
+        }
     }
 
     public void OnJump(CallbackContext context)
@@ -164,7 +169,7 @@ public class Player : Entity
     bool exactPos = false;
     public void OnInteract(CallbackContext context)
     {
-        if (_isJumping || Controller.isClimbing || !Controller.IsGrounded || Controller.isPulling || Controller.isPushing || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
+        if (_isJumping || Controller.isClimbing || !Controller.IsGrounded || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
             return;
         if (PlayerInteraction.getInteractiveObjectPos.y + 0.25f < transform.position.y)
             return;
@@ -178,6 +183,7 @@ public class Player : Entity
             PlayerActionState = PlayerAction.IDLE;
             exactPos = false;
         }
+
     }
 
     private void Respawn()
@@ -185,9 +191,10 @@ public class Player : Entity
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-
+    //Set Player to right Position
     IEnumerator PlayAnimationBefore(bool started, bool canceled)
     {
+        Controller.canTurn = false;
         exactPos = true;
         float animationDistance = 0.65f;
         float Distance = (Vector3.Distance(transform.position, PlayerInteraction.getInteractiveObjectPos - (Vector3.right * (PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction));
@@ -200,6 +207,7 @@ public class Player : Entity
         else if (Distance <= Distance2)
             yield return StartCoroutine(LerpTo(new Vector3(PlayerInteraction.getInteractiveObjectPos.x - ((PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction, transform.position.y, transform.position.z), 0.1f));
         PlayerInteraction.InteractionInput(started, canceled);
+        Controller.canTurn = true;
     }
 
     IEnumerator LerpTo(Vector3 goTo, float duration)

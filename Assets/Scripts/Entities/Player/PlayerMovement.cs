@@ -43,6 +43,7 @@ public class PlayerMovement : EntityMovement
 
     private new void Start()
     {
+        canTurn = true;
         base.Start();
         gravityScale = 3;
         topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
@@ -175,7 +176,10 @@ public class PlayerMovement : EntityMovement
 
     public void FlipCharacter()
     {
-        StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+        if (transform.rotation.eulerAngles.y == 180f)
+            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, -180, 0), 0.1f));
+        else if (transform.rotation.eulerAngles.y == 0)
+            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
     }
 
     protected override void LandOnGround()

@@ -124,8 +124,11 @@ public class EntityMovement : MonoBehaviour
         return false;
     }
 
+    [HideInInspector] public bool canTurn = true;
     protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
     {
+        if (!canTurn)
+            yield break;
         endOfCoroutine = false;
         direction *= -1;
         for (float t = 0f; t < duration; t += Time.deltaTime)
