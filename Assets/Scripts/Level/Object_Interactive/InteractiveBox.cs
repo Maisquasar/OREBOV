@@ -111,6 +111,7 @@ public class InteractiveBox : InteractiveObject
         _moveTimer = 0f;
         _rigidbodyPlayer.velocity = Vector3.zero;
         StartCoroutine(PauseBoxMouvement());
+        DeactiveItem();
 
     }
 
