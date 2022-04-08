@@ -16,6 +16,7 @@ public class ShadowCaster : MonoBehaviour
     private float _shadowHeight;
     public float ShadowDepth { get { return _shadowDepth - HitBoxRadius - 1; } }
     public float ShadowHeight { get { return _shadowHeight; } }
+
     public bool DoesCurrentLightEject = false;
     private int _mask = 0;
     private int _maskDepth = 0;
@@ -155,7 +156,7 @@ public class ShadowCaster : MonoBehaviour
             if (getLightVectors(lights[i],new Vector2(), out origin, out direction))
             {
                 RaycastHit rayHit;
-                if (Physics.Raycast(item.transform.position, transform.position - item.transform.position, out rayHit, 10000, _mask, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
+                if (Physics.Raycast(origin, direction, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
                 {
                     Vector3 outValue = rayHit.point + Vector3.back * HitBoxRadius;
                     if (Mathf.Abs(outValue.y-transform.position.y) < ShadowHeightDeltaMin) outValue.y = transform.position.y;
