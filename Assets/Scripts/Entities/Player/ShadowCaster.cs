@@ -26,7 +26,7 @@ public class ShadowCaster : MonoBehaviour
         origin = new Vector3();
         direction = new Vector3();
         Light item = obj.LightObject;
-        if (item.type == UnityEngine.LightType.Spot)
+        if (item.isActiveAndEnabled && item.type == UnityEngine.LightType.Spot)
         {
             Vector3 EVPos = transform.position + new Vector3(delta.x, delta.y, 0);
             if (obj.IsBox)
