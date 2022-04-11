@@ -70,8 +70,8 @@ public class EntityMovement : MonoBehaviour
         CeilingDetection();
 
         // Wall Detection
-        if (!GetComponent<PlayerStatus>())
-            WallDetection();
+        //if (!GetComponent<PlayerStatus>())
+        WallDetection();
         SetGravity();
     }
 

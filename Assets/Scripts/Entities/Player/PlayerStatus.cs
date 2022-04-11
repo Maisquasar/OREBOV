@@ -79,6 +79,7 @@ public class PlayerStatus : Entity
         }
         if (_isShadow)
         {
+            _caster.GetShadowPos();
             if (!_caster.CanTransform(false))
             {
                 if (_caster.DoesCurrentLightEject)
