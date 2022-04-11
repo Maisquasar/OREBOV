@@ -23,7 +23,6 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private ObjectManager _objectManager;
     [SerializeField] private InteractiveObject _objectInteractive; // ObjectInteract selected
 
-
     [Header("UI")]
     [SerializeField] private GameObject _uiInteract;
     private Quaternion _uiRot;
@@ -39,6 +38,7 @@ public class PlayerInteraction : MonoBehaviour
     public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
     public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
     public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
+    public InteractiveObject Object { get { return _objectInteractive; } }
     public InteractionState Interaction { get { return _interactionState; } }
 
     private void Start()
