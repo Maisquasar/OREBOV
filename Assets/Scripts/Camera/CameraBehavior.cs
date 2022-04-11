@@ -51,7 +51,7 @@ public class CameraBehavior : MonoBehaviour
         transform.position = new Vector3(_mainTarget.transform.position.x - _windowOffset.x ,_mainTarget.transform.position.y + naturalOffset.y, transform.position.z);
         _windowOrigin = _windowCenter + (Vector3)(_windowSize / 2f);
         _player = _mainTarget.GetComponent<Player>();
-
+    
     }
 
     private void FixedUpdate()

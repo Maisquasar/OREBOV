@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using InteractObject;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     [SerializeField] private float _detectDistance = 1f;
+    [Range(0f, 1f)]
+    [SerializeField] private float _detectionDirection = 0.1f;
+
     [SerializeField] private InteractionState _interactionState;
 
     [Header("Object Manager")]
@@ -32,7 +36,7 @@ public class PlayerInteraction : MonoBehaviour
     private Player _playerStatus;
     public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
-    public string ObjectType { get { return _objectInteractive.ObjectType; } }
+    public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
     public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
     public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
     public InteractionState Interaction { get { return _interactionState; } }
@@ -57,9 +61,11 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (!_inputReset)
                 HoldInput();
-            if (_objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance) != null)
+            
+            
+            InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance, _detectionDirection);
+            if (objectClose != null)
             {
-                InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance);
                 if (objectClose._useOnlyInShadow && _playerStatus.IsShadow)
                 {
                     UnselectObject(objectClose);
@@ -178,7 +184,7 @@ public class PlayerInteraction : MonoBehaviour
 
     #endregion
 
-
+    #region Link Object
     public void LinkObject(InteractiveObject objectToLink)
     {
         UnselectObject();
@@ -191,4 +197,7 @@ public class PlayerInteraction : MonoBehaviour
         UnselectObject();
         _interactionState = InteractionState.None;
     }
+
+    #endregion 
 }
+

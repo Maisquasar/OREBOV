@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InteractObject;
 
 public class InteractiveSwitch : InteractiveObject
 {
@@ -8,7 +9,10 @@ public class InteractiveSwitch : InteractiveObject
     [SerializeField]
     private Light[] _lightConnect = new Light[0];
     [SerializeField]
-
+    private void Start()
+    {
+        ObjectType = InteractObjects.Switch;
+    }
 
     protected override void ActiveItem(GameObject player)
     {

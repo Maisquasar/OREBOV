@@ -2,9 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using InteractObject;
+
+
+namespace InteractObject
+{
+    public enum InteractObjects
+    {
+        Box,
+        Switch,
+        Hideout,
+        OilLight
+    }
+
+}
 
 public class InteractiveObject : MonoBehaviour
 {
+    
+
     [Header("Object State")]
     [SerializeField] public bool _isSelected;
     [SerializeField] public bool _objectActive;
@@ -21,7 +37,7 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField] protected bool _activeSound = false;
     [SerializeField] protected AudioClip _soundActiveTrigger;
     [SerializeField] protected AudioClip _soundDeactiveTrigger;
-    [HideInInspector] public string ObjectType;
+    [HideInInspector] public InteractObjects ObjectType;
 
     [Header("Debug")]
     [SerializeField] protected bool _debug;

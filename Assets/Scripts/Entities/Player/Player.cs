@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
 using States;
+using InteractObject;
 
 
 public class Player : Entity
@@ -171,7 +172,7 @@ public class Player : Entity
             return;
 
         PlayerActionState = PlayerAction.INTERACT;
-        if (_playerInteraction.ObjectType == "Box")
+        if (_playerInteraction.ObjectType == InteractObjects.Box)
         {
             if (_exactPos)
                 _playerInteraction.InteractionInput(context.started, context.canceled);

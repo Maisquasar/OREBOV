@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Tools;
-
+using InteractObject;
 
 public class InteractiveBox : InteractiveObject
 {
@@ -25,7 +25,7 @@ public class InteractiveBox : InteractiveObject
 
     private void Start()
     {
-        ObjectType = "Box";
+        ObjectType = InteractObjects.Box;
     }
 
     protected override void ActiveItem(GameObject player)
