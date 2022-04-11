@@ -10,27 +10,17 @@ public class CameraTrigger : Trigger
     [SerializeField] bool reverse;
 
     List<CameraCheckPoint> switchToCamera = new List<CameraCheckPoint>();
-    CameraCheckPoint InitialPos;
-    bool CoroutineEnd = true;
-    bool activate = false;
-    [Tooltip("In seconds at 60 fps")]
-    [SerializeField] float travelTime;
-
-    [SerializeField]
-    private bool _resetFreeMouvement = true;
+    [SerializeField] private bool _resetFreeMouvement = true;
 
     [Header("Player Setting")]
-    [SerializeField]
-    private bool _checkPlayerState;
-    [SerializeField]
-    private bool _isShadow;
+    [SerializeField] private bool _checkPlayerState;
+    [SerializeField] private bool _isShadow;
 
-
-    private bool _resetTrigger = true;
     private Camera _cameraToMove;
     private CameraBehavior _cameraBehavior;
-    private Vector3 _initialPos;
-    private Quaternion _initialRot;
+    private CameraCheckPoint _initialPos;
+    private bool _isActivate = false;
+    private bool _resetTrigger = true;
 
     public override void Start()
     {
@@ -40,10 +30,10 @@ public class CameraTrigger : Trigger
         {
             switchToCamera.Add(transform.GetChild(i).GetComponent<CameraCheckPoint>());
         }
-        InitialPos = Instantiate<CameraCheckPoint>(switchToCamera[0]);
-        InitialPos.transform.position = _cameraToMove.transform.position;
-        InitialPos.transform.rotation = _cameraToMove.transform.rotation;
-        switchToCamera.Insert(0, InitialPos);
+        _initialPos = Instantiate<CameraCheckPoint>(switchToCamera[0]);
+        _initialPos.transform.position = _cameraToMove.transform.position;
+        _initialPos.transform.rotation = _cameraToMove.transform.rotation;
+        switchToCamera.Insert(0, _initialPos);
 
 
         base.Start();
@@ -57,7 +47,7 @@ public class CameraTrigger : Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Player>() && CoroutineEnd)
+        if (other.gameObject.GetComponent<Player>() && _goToEnd)
         {
             _resetTrigger = true;
             Player _playerStatus = other.gameObject.GetComponent<Player>();
@@ -67,19 +57,18 @@ public class CameraTrigger : Trigger
                 {
                     ActiveCameraMove();
                     _resetTrigger = false;
-
                 }
-            }else
+            }
+            else
             {
                 ActiveCameraMove();
-               
             }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.GetComponent<Player>() && _resetTrigger && CoroutineEnd)
+        if (other.gameObject.GetComponent<Player>() && _resetTrigger && _goToEnd)
         {
             Player _playerStatus = other.gameObject.GetComponent<Player>();
             if (_checkPlayerState)
@@ -96,7 +85,7 @@ public class CameraTrigger : Trigger
             }
         }
 
-        if (other.gameObject.GetComponent<Player>()  && CoroutineEnd)
+        if (other.gameObject.GetComponent<Player>()  && _goToEnd)
         {
             Player _playerStatus = other.gameObject.GetComponent<Player>();
             if (_checkPlayerState)
@@ -105,10 +94,10 @@ public class CameraTrigger : Trigger
                 {
                     _resetTrigger = true;
                 }
-               
             }
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.GetComponent<Player>() )
@@ -121,16 +110,15 @@ public class CameraTrigger : Trigger
     {
         switchToCamera[0].transform.position = _cameraToMove.transform.position;
         switchToCamera[0].transform.rotation = _cameraToMove.transform.rotation;
-        if (!activate || reverse)
+        if (!_isActivate || reverse)
             StartCoroutine(GoTo(switchToCamera));
     }
 
-
-
+    private bool _goToEnd = true;
     IEnumerator GoTo(List<CameraCheckPoint> switchTo)
     {
-        CoroutineEnd = false;
-        activate = true;
+        _goToEnd = false;
+        _isActivate = true;
         _cameraBehavior.ActiveFreeMode();
         for (int i = 0; i < switchTo.Count - 1; i++)
         {
@@ -138,7 +126,7 @@ public class CameraTrigger : Trigger
             yield return StartCoroutine(LerpFromTo(switchTo[i].transform.rotation, switchTo[i + 1].transform.rotation, switchTo[i + 1].TravelTime));
             if (reverse)
                 Swap();
-            CoroutineEnd = true;
+            _goToEnd = true;
             EndMouvement();
         }
     }
@@ -167,15 +155,12 @@ public class CameraTrigger : Trigger
     {
         if (_resetFreeMouvement)
             _cameraBehavior.DeactiveFreeMode();
-
-        activate = false;
+        _isActivate = false;
     }
 
     // Swap values between startPos and SwitchTo.
     void Swap()
     {
-
         switchToCamera.Reverse();
-
     }
 }

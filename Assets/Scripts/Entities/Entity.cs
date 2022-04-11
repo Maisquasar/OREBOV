@@ -24,7 +24,6 @@ namespace States
         ALERT,
         CHASE
     }
-
 }
 
 public class Entity : MonoBehaviour

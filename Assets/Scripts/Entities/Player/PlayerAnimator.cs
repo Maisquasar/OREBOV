@@ -24,7 +24,7 @@ public class PlayerAnimator : MonoBehaviour
         yield return new WaitForSeconds(_FadeOutWaitTimer);
         Renderer.material = PlayerFadeMaterial;
         Color playerColor = PlayerFadeMaterial.color;
-        for (float timer = _FadeOutTimer; timer > 0; timer-= Time.deltaTime)
+        for (float timer = _FadeOutTimer; timer > 0; timer -= Time.deltaTime)
         {
             playerColor.a = timer / _FadeOutTimer;
             PlayerFadeMaterial.color = playerColor;
@@ -43,7 +43,7 @@ public class PlayerAnimator : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         for (float timer = _FadeInWaitTimer; timer > 0; timer -= Time.deltaTime)
         {
-            transform.position = Vector3.Lerp(_shadowPosition, currentPos, timer/_FadeInWaitTimer);
+            transform.position = Vector3.Lerp(_shadowPosition, currentPos, timer / _FadeInWaitTimer);
             yield return Time.deltaTime;
         }
         Vector3 targetPos = _shadowPosition + Vector3.back;
@@ -70,7 +70,7 @@ public class PlayerAnimator : MonoBehaviour
     }
     private IEnumerator MovePlayerDepth(Vector2 deltaPos)
     {
-        Vector2 currentPos = new Vector2(transform.position.y,transform.position.z);
+        Vector2 currentPos = new Vector2(transform.position.y, transform.position.z);
         for (float timer = _MoveTimer; timer > 0; timer -= Time.deltaTime)
         {
             Vector2 local = Vector2.Lerp(deltaPos, currentPos, timer / _MoveTimer);

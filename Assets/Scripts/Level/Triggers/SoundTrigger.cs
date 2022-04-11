@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class SoundTrigger : Trigger
 {
-    [SerializeField] AudioSource sound;
+    [SerializeField] AudioSource _sound;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            if (sound != null)
+            if (_sound != null)
             {
-                Debug.Log($"Play : {sound.name}");
-                sound.Play();
+                Debug.Log($"Play : {_sound.name}");
+                _sound.Play();
             }
             else
                 Debug.Log("No sounds Set");

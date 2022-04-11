@@ -12,38 +12,30 @@ public class PlayerInteraction : MonoBehaviour
         Link,
     }
 
-    [SerializeField]
-    private float _detectDistance = 1f;
+    [SerializeField] private float _detectDistance = 1f;
+    [SerializeField] private InteractionState _interactionState;
 
-    [SerializeField]
-    private InteractionState _interactionState;
-    public InteractionState Interaction { get { return _interactionState; } }
+    [Header("Object Manager")]
+    [SerializeField] private ObjectManager _objectManager;
+    [SerializeField] private InteractiveObject _objectInteractive; // ObjectInteract selected
 
-    // ObjectManger Component
 
-    [SerializeField]
-    private ObjectManager _objectManager;
-    // ObjectInteract selected
-    [SerializeField]
-    private InteractiveObject _objectInteractive;
     [Header("UI")]
-    [SerializeField]
-    private GameObject _uiInteract;
-
+    [SerializeField] private GameObject _uiInteract;
     private Quaternion _uiRot;
 
     [Header("Debug")]
-    [SerializeField]
-    private bool _debugActive;
-
-    [SerializeField]
-    public bool _inputReset; // Use for the holding the input
-    public bool CanStopNow = true; // Used to Lock the player during pushing animation
+    [SerializeField] private bool _debugActive;
+    [SerializeField] public bool _inputReset; // Use for the holding the input
 
     private Vector2 _axis;
     private Player _playerStatus;
+    public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
-    public string getObjectType { get { return _objectInteractive.ObjectType; } }
+    public string ObjectType { get { return _objectInteractive.ObjectType; } }
+    public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
+    public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
+    public InteractionState Interaction { get { return _interactionState; } }
 
     private void Start()
     {
@@ -89,17 +81,6 @@ public class PlayerInteraction : MonoBehaviour
                 UnselectObject();
             }
         }
-
-
-    }
-
-    public Vector3 getInteractiveObjectPos { get { return _objectInteractive.transform.position; } }
-    public Vector3 getInteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
-
-
-    private void LateUpdate()
-    {
-
     }
 
     private void OnDrawGizmos()
@@ -110,7 +91,6 @@ public class PlayerInteraction : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
         }
-
     }
 
     #region Input Managing
