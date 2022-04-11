@@ -191,16 +191,19 @@ public class Player : Entity
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
+        if (CheckForObstacles())
+            Gizmos.color = Color.red;
+        else
+            Gizmos.color = Color.green;
         if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
         {
-            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0,0));
+            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0,0) * Controller.Direction);
         }
     }
 
     private bool CheckForObstacles()
     {
-        if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0)) - 0.1f , Controller.GroundType, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction) - 0.1f, Controller.GroundType, QueryTriggerInteraction.Ignore))
             return true;
         return false;
     }
