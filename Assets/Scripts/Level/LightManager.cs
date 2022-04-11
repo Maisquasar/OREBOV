@@ -21,7 +21,7 @@ public class LightManager : MonoBehaviour
         if (TempLightsList == null) TempLightsList = new List<Light>();
         if (TempInteriorLightsList == null)  TempInteriorLightsList = new List<LightSubType>();
         if (TempUsableLightsList == null)  TempUsableLightsList = new List<LightSubType>();
-        SynchronizeLists();
+        DetectLights();
     }
 
     public void DetectLights()
@@ -29,7 +29,7 @@ public class LightManager : MonoBehaviour
         TempLightsList.Clear();
         TempUsableLightsList.Clear();
         TempInteriorLightsList.Clear();
-        foreach (Light item in FindObjectsOfType(typeof(Light)))
+        foreach (Light item in FindObjectsOfType<Light>(true))
         {
             TempLightsList.Add(item);
             Component t = item.GetComponent(typeof(LightSubType));
