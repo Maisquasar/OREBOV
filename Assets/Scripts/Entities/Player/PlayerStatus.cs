@@ -15,6 +15,10 @@ public class PlayerStatus : Entity
 
     [SerializeField] private UIPauseMenu _pauseMenu;
 
+    [Header("Inputs")]
+    [Range(0f, 1f)]
+    private float deadZone;
+
     [Header("Sounds")]
     [SerializeField] private SoundEffectsHandler _shadowEffectHandler;
 
@@ -33,7 +37,15 @@ public class PlayerStatus : Entity
     private bool _exactPos = false; // To execute LerpTo only once.
 
     public Vector2 MoveDir { get { return _movementDir; } }
-    public bool Dead { get { return _isDead; } set { _isDead = value; } }
+    public bool Dead
+    {
+        get { return _isDead; }
+        set
+        {
+            _isDead = value;
+            if (value == true) PlayerDeath();
+        }
+    }
     public bool IsShadow { get { return _isShadow; } }
 
 
@@ -58,18 +70,13 @@ public class PlayerStatus : Entity
     // Update is called once per frame
     void Update()
     {
-        if (Dead && !_respawn)
-            StartCoroutine(WaitBeforeRespawn());
-        else if (Dead)
-            return;
+
 
         if (!_playerAnimator.IsInAmination && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
-            _controller.Move(_movementDir.x, _isJumping);
+            _controller.Move(_movementDir.x);
             _controller.ChangeState(ref PlayerActionState);
         }
-        if (_isJumping)
-            _isJumping = false;
         if (_isShadow)
         {
             if (!_caster.CanTransform(false))
@@ -102,20 +109,21 @@ public class PlayerStatus : Entity
 
     public void OnMove(CallbackContext context)
     {
-        Vector3 moveTemp = context.ReadValue<Vector2>();
-        if (Mathf.Abs(moveTemp.x) < 0.03f) moveTemp.x = 0.0f;
-        if (Mathf.Abs(moveTemp.y) < 0.03f) moveTemp.y = 0.0f;
+        Vector2 moveTemp = GetStickInput(context.ReadValue<Vector2>());
         //Play animation in function of pos
-        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Link)
-        {
-            if (moveTemp.normalized.x == _movementDir.normalized.x)
-            {
-                _movementDir = moveTemp;
-            }
-            _playerInteraction.AxisInput(context);
-        }
+        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Link) _playerInteraction.AxisInput(context);
+        if(moveTemp == Vector2.zero) PlayerActionState = PlayerAction.IDLE;
         _movementDir = moveTemp;
     }
+
+    private Vector2 GetStickInput(Vector2 inputs)
+    {
+        if (Mathf.Abs(inputs.x) < deadZone) inputs.x = 0.0f;
+        if (Mathf.Abs(inputs.y) < deadZone) inputs.y = 0.0f;
+        return inputs;
+    }
+
+
 
     public void PlayRightAnimation(float axis)
     {
@@ -136,8 +144,8 @@ public class PlayerStatus : Entity
     public void OnJump(CallbackContext context)
     {
         if ((PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
-            if (context.performed)
-                _isJumping = true;
+            if (context.started)
+                _controller.Jump();
     }
 
     public void OnTransformAction(CallbackContext context)
@@ -196,7 +204,7 @@ public class PlayerStatus : Entity
 
         if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
         {
-            PlayerActionState = PlayerAction.IDLE;
+           
             _exactPos = false;
         }
     }
@@ -258,6 +266,12 @@ public class PlayerStatus : Entity
             yield return 0;
         }
         transform.position = goTo;
+    }
+
+    private void PlayerDeath()
+    {
+        if (Dead && !_respawn)
+            StartCoroutine(WaitBeforeRespawn());
     }
 
     IEnumerator WaitBeforeRespawn()

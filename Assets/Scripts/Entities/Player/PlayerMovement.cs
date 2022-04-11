@@ -125,7 +125,7 @@ public class PlayerMovement : EntityMovement
     }
 
     // Move the player.
-    public void Move(float move, bool jump)
+    public void Move(float move)
     {
         // If climbing then can't move
         if (IsClimbing || IsPushing || IsPulling)
@@ -140,15 +140,8 @@ public class PlayerMovement : EntityMovement
             move = jumpDistance * speed * Mathf.Sign(move);
 
         // Ground Move
-        if (_grounded && !jump)
+        if (_grounded )
             _rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, _rb.velocity.y);
-       
-        // Jump move
-        if (_grounded && jump)
-        {
-            _jumpForce = GetJumpForce(jumpHeight);
-            _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
-        }
 
         //Flip character
         if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
@@ -158,6 +151,17 @@ public class PlayerMovement : EntityMovement
 
         time += Time.deltaTime;
     }
+
+    public void Jump()
+    {
+        if (_grounded)
+        {
+            _jumpForce = GetJumpForce(jumpHeight);
+            _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        }
+    }
+
+
 
     private float GetJumpForce(float jumpHeight)
     {
