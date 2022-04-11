@@ -203,6 +203,7 @@ public class PlayerStatus : Entity
 
     private void OnDrawGizmos()
     {
+        if (_playerInteraction == null) _playerInteraction = gameObject.GetComponent<PlayerInteraction>();
         if (CheckForObstacles())
             Gizmos.color = Color.red;
         else
