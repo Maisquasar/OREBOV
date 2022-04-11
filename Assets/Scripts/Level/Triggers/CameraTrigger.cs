@@ -89,7 +89,10 @@ public class CameraTrigger : Trigger
                 ActiveCameraMove();
                 return;
             }
-            ActiveCameraMove();
+            if (!_checkPlayerState)
+            {
+                ActiveCameraMove();
+            }
         }
     }
 
@@ -108,7 +111,7 @@ public class CameraTrigger : Trigger
             StartCoroutine(GoTo(switchToCamera));
     }
 
-   
+
 
 
     IEnumerator GoTo(List<CameraCheckPoint> switchTo)
