@@ -18,7 +18,7 @@ public class DetectionZone : Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Player>())
+        if (other.gameObject.GetComponent<PlayerStatus>())
         {
             DetectedEvent.Invoke();
         }

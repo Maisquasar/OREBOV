@@ -8,10 +8,10 @@ public class Checkpoint : Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<Player>() && !_set)
+        if (other.GetComponent<PlayerStatus>() && !_set)
         {
             _set = true;
-            other.GetComponent<Player>().CheckpointPos = transform.position + Vector3.up;
+            other.GetComponent<PlayerStatus>().CheckpointPos = transform.position + Vector3.up;
         }
     }
 }

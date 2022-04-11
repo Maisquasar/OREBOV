@@ -19,7 +19,7 @@ public class CameraTrigger : Trigger
     private Camera _cameraToMove;
     private CameraBehavior _cameraBehavior;
     private CameraCheckPoint _initialPos;
-    private Player _playerStatus;
+    private PlayerStatus _playerStatus;
 
     private bool _isActivate = false;
     private bool _resetTrigger = true;
@@ -96,7 +96,7 @@ public class CameraTrigger : Trigger
     private void GetPlayerStatus(Collider other)
     {
         if (_playerStatus == null)
-            _playerStatus = other.gameObject.GetComponent<Player>();
+            _playerStatus = other.gameObject.GetComponent<PlayerStatus>();
     }
 
     private void ActiveCameraMove()

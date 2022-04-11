@@ -7,11 +7,11 @@ public class CameraSettings : MonoBehaviour
 {
     [SerializeField] public bool FollowPlayer;
     [SerializeField] private float _ratio;
-    Player _player;
+    PlayerStatus _player;
     // Start is called before the first frame update
     void Start()
     {
-        _player = FindObjectOfType<Player>();
+        _player = FindObjectOfType<PlayerStatus>();
     }
 
     // Update is called once per frame

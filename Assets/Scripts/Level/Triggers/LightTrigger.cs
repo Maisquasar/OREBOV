@@ -9,7 +9,7 @@ public class LightTrigger : Trigger
     private void OnTriggerEnter(Collider other)
     {
         //TODO : add enemies
-        if (other.gameObject.GetComponent<Player>())
+        if (other.gameObject.GetComponent<PlayerStatus>())
         {
             _lightObject.enabled = !_lightObject.enabled;
         }

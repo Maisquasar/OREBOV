@@ -8,7 +8,7 @@ public class SoundTrigger : Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Player>())
+        if (other.gameObject.GetComponent<PlayerStatus>())
         {
             if (_sound != null)
             {

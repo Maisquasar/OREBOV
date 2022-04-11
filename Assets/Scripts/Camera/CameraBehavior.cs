@@ -38,7 +38,7 @@ public class CameraBehavior : MonoBehaviour
     [Range(0f, 0.1f)]
     private float _camSpeed;
 
-    private Player _player;
+    private PlayerStatus _player;
     private Vector3 _windowCenter;
     private Vector3 _windowOrigin;
     private Vector2 dir;
@@ -50,7 +50,7 @@ public class CameraBehavior : MonoBehaviour
         Vector3 naturalOffset = transform.position - _mainTarget.transform.position;
         transform.position = new Vector3(_mainTarget.transform.position.x - _windowOffset.x ,_mainTarget.transform.position.y + naturalOffset.y, transform.position.z);
         _windowOrigin = _windowCenter + (Vector3)(_windowSize / 2f);
-        _player = _mainTarget.GetComponent<Player>();
+        _player = _mainTarget.GetComponent<PlayerStatus>();
     
     }
 

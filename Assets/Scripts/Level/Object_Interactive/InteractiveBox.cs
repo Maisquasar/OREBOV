@@ -21,7 +21,7 @@ public class InteractiveBox : InteractiveObject
     [SerializeField] private bool _activeBoxDebug;
     [SerializeField] private int mouvementCount = 1;
     private PlayerInteraction PlayerInteract;
-    private Player _playerStatus;
+    private PlayerStatus _playerStatus;
 
     private void Start()
     {
@@ -33,7 +33,7 @@ public class InteractiveBox : InteractiveObject
         base.ActiveItem(player);
         transform.SetParent(player.transform);
         PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
-        _playerStatus = _playerGO.GetComponent<Player>();
+        _playerStatus = _playerGO.GetComponent<PlayerStatus>();
         PlayerInteract.LinkObject(this);
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
         _activeMouvement = true;

@@ -73,11 +73,11 @@ public class PlayerMovement : EntityMovement
         if (_grounded)
         {
             _fallDefine = false;
-            if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<Player>().Dead)
+            if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<PlayerStatus>().Dead)
             {
                 animator.SetBool("Dead", true);
-                GetComponent<Player>().Dead = true;
-                LastPosBeforeFall = GetComponent<Player>().CheckpointPos;
+                GetComponent<PlayerStatus>().Dead = true;
+                LastPosBeforeFall = GetComponent<PlayerStatus>().CheckpointPos;
             }
         }
 

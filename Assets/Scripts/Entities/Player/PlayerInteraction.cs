@@ -32,7 +32,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] public bool _inputReset; // Use for the holding the input
 
     private Vector2 _axis;
-    private Player _playerStatus;
+    private PlayerStatus _playerStatus;
     public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
     public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
@@ -43,7 +43,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Start()
     {
-        _playerStatus = GetComponent<Player>();
+        _playerStatus = GetComponent<PlayerStatus>();
         _uiRot = _uiInteract.transform.rotation;
     }
 
