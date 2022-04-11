@@ -12,6 +12,7 @@ public class ShadowCaster : MonoBehaviour
     [SerializeField] float ShadowHeightDeltaMin = 0.2f;
     private bool[] _pointsHit;
     private Vector3[] _pointsPos;
+    private Vector3 _oldShadowPos;
     private float _shadowDepth;
     private float _shadowHeight;
     public float ShadowDepth { get { return _shadowDepth - HitBoxRadius - 1; } }
@@ -87,6 +88,8 @@ public class ShadowCaster : MonoBehaviour
         {
             Gizmos.DrawSphere(transform.position + new Vector3(DepthRayCastPosition[j].x, DepthRayCastPosition[j].y, 0), 0.05f);
         }
+        Gizmos.color = Color.gray;
+        Gizmos.DrawSphere(GetShadowPos(), 0.5f);
     }
 
     /// <summary>
@@ -160,10 +163,11 @@ public class ShadowCaster : MonoBehaviour
                 {
                     Vector3 outValue = rayHit.point + Vector3.back * HitBoxRadius;
                     if (Mathf.Abs(outValue.y-transform.position.y) < ShadowHeightDeltaMin) outValue.y = transform.position.y;
+                    _oldShadowPos = outValue;
                     return outValue;
                 }
             }
         }
-        return new Vector3();
+        return _oldShadowPos;
     }
 }
