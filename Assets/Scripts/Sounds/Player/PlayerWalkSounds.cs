@@ -6,15 +6,11 @@ using Tools;
 public class PlayerWalkSounds : MonoBehaviour
 {
     [Header("Sounds ")]
-    [SerializeField]
-    private float _walkSoundFrequency = 0.4f;
-
-    [SerializeField]
-    private LayerMask _groundLayer;
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private float _walkSoundFrequency = 0.4f;
 
     private PlayerMovement _playerMouvement;
     private bool _canTriggerSounds = true;
-
 
     #region InitScript
 

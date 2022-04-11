@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class LightTrigger : Trigger
 {
-    [SerializeField] Light LightObject;
+    [SerializeField] private Light _lightObject;
 
     private void OnTriggerEnter(Collider other)
     {
         //TODO : add enemies
-        if (other.gameObject.GetComponent<Player>())
+        if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            LightObject.enabled = !LightObject.enabled;
+            _lightObject.enabled = !_lightObject.enabled;
         }
     }
 }

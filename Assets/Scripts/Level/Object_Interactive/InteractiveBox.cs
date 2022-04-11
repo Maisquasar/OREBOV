@@ -2,42 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Tools;
-
+using InteractObject;
 
 public class InteractiveBox : InteractiveObject
 {
     [Header("Box Setting")]
-    [SerializeField]
-    private LayerMask _collisionMask;
-    [SerializeField]
-    private LayerMask _groundMask;
-    [SerializeField]
-    private float _speedBox = 2f;
-    [SerializeField]
-    private float _moveTime = 1f;
-    private float _moveTimer = 0f;
+    [SerializeField] private LayerMask _collisionMask;
+    [SerializeField] private LayerMask _groundMask;
+    [SerializeField] private float _speedBox = 2f;
+    [SerializeField] private float _moveTime = 1f;
+    [SerializeField] private bool _activeMouvement = false;
 
-    [HideInInspector]
+    private Rigidbody _rigidbodyPlayer;
+    private float _moveTimer = 0f;
     private float _timeBetweenMove = 0.7f;
 
-
-
-    [SerializeField]
-    private bool _activeMouvement = false;
-    private Rigidbody _rigidbodyPlayer;
-
     [Header("Box Debug")]
-    [SerializeField]
-    private bool _activeBoxDebug;
-
-    [SerializeField]
-    private int mouvementCount = 1;
-    PlayerInteraction PlayerInteract;
-    Player _playerStatus;
+    [SerializeField] private bool _activeBoxDebug;
+    [SerializeField] private int mouvementCount = 1;
+    private PlayerInteraction PlayerInteract;
+    private PlayerStatus _playerStatus;
 
     private void Start()
     {
-        ObjectType = "Box";
+        ObjectType = InteractObjects.Box;
     }
 
     protected override void ActiveItem(GameObject player)
@@ -45,7 +33,7 @@ public class InteractiveBox : InteractiveObject
         base.ActiveItem(player);
         transform.SetParent(player.transform);
         PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
-        _playerStatus = _playerGO.GetComponent<Player>();
+        _playerStatus = _playerGO.GetComponent<PlayerStatus>();
         PlayerInteract.LinkObject(this);
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
         _activeMouvement = true;
@@ -86,51 +74,6 @@ public class InteractiveBox : InteractiveObject
         }
     }
 
-
-    private IEnumerator MoveBox(float dir)
-    {
-        _activeMouvement = true;
-        PlayerInteract.CanStopNow = false;
-        Vector3 startPos = _playerGO.transform.position;
-        Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
-        Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
-        if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
-        {
-            StartCoroutine(PauseBoxMouvement());
-            yield break;
-        }
-
-
-
-        while (_moveTimer < _moveTime)
-        {
-            _rigidbodyPlayer.position = Vector3.Lerp(startPos, endPos, _moveTimer / _moveTime);
-            _moveTimer += Time.deltaTime;
-            yield return Time.deltaTime;
-        }
-        _moveTimer = 0f;
-        _rigidbodyPlayer.velocity = Vector3.zero;
-        StartCoroutine(PauseBoxMouvement());
-        DeactiveItem();
-
-    }
-
-    private IEnumerator PauseBoxMouvement()
-    {
-        PlayerInteract.CanStopNow = true;
-        while (_moveTimer < _timeBetweenMove)
-        {
-
-            _moveTimer += Time.deltaTime;
-            yield return Time.deltaTime;
-        }
-        _activeMouvement = false;
-        _moveTimer = 0f;
-    }
-
-
-
-
     private void ShowBoxMouvement()
     {
         Vector3 startPos = transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f;
@@ -169,5 +112,43 @@ public class InteractiveBox : InteractiveObject
     private void OnDrawGizmosSelected()
     {
         if (_activeBoxDebug) ShowBoxMouvement();
+    }
+
+    private IEnumerator MoveBox(float dir)
+    {
+        _activeMouvement = true;
+        PlayerInteract.CanStopNow = false;
+        Vector3 startPos = _playerGO.transform.position;
+        Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
+        Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
+        if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
+        {
+            StartCoroutine(PauseBoxMouvement());
+            yield break;
+        }
+
+        while (_moveTimer < _moveTime)
+        {
+            _rigidbodyPlayer.position = Vector3.Lerp(startPos, endPos, _moveTimer / _moveTime);
+            _moveTimer += Time.deltaTime;
+            yield return Time.deltaTime;
+        }
+        _moveTimer = 0f;
+        _rigidbodyPlayer.velocity = Vector3.zero;
+        StartCoroutine(PauseBoxMouvement());
+        DeactiveItem();
+    }
+
+    private IEnumerator PauseBoxMouvement()
+    {
+        PlayerInteract.CanStopNow = true;
+        while (_moveTimer < _timeBetweenMove)
+        {
+
+            _moveTimer += Time.deltaTime;
+            yield return Time.deltaTime;
+        }
+        _activeMouvement = false;
+        _moveTimer = 0f;
     }
 }

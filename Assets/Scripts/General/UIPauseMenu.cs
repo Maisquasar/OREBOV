@@ -7,15 +7,12 @@ using UnityEngine.UI;
 
 public class UIPauseMenu : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _UIGameMenu;
-    [SerializeField]
-    private GameObject _UIPauseMenu;
-    [SerializeField]
-    private GameObject _UIFadeScreen;
+    [SerializeField] private GameObject _UIGameMenu;
+    [SerializeField] private GameObject _UIPauseMenu;
+    [SerializeField] private GameObject _UIFadeScreen;
+    [SerializeField] private EventSystem _eventSystem;
+
     private Image _FadeScreen;
-    [SerializeField]
-    private EventSystem _eventSystem;
     private bool _pauseMenuActive;
 
     public void Start()
@@ -53,7 +50,6 @@ public class UIPauseMenu : MonoBehaviour
     }
 
     private void CloseMenu()
-
     {
         _pauseMenuActive = false;
         _UIPauseMenu.SetActive(_pauseMenuActive);

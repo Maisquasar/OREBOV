@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class StaticEnemy : Entity
 {
-    private Player player;
+    private PlayerStatus player;
     [SerializeField] Trigger DetectionZone;
 
     // Start is called before the first frame update
     void Start()
     {
-        player = FindObjectOfType<Player>();
+        player = FindObjectOfType<PlayerStatus>();
     }
 
     // Update is called once per frame
