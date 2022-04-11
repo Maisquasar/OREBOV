@@ -92,7 +92,7 @@ public class PlayerMovement : EntityMovement
         if (LastPosBeforeFall.y - transform.position.y < GameMetric.GetGameUnit(FallDamageHeight))
         {
             // Edge Detection :
-            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance + 0.5f, GroundType, QueryTriggerInteraction.Ignore);
             RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
             foreach (var ray in downRay)
             {

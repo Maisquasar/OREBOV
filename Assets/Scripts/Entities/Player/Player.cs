@@ -167,7 +167,7 @@ public class Player : Entity
             return;
         if (_isJumping || Controller.IsClimbing || !Controller.IsGrounded || _playerAnimator.IsInAmination)
             return;
-        if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y)
+        if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y || CheckForObstacles())
             return;
 
         PlayerActionState = PlayerAction.INTERACT;
@@ -189,12 +189,28 @@ public class Player : Entity
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
+        {
+            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0,0));
+        }
+    }
+
+    private bool CheckForObstacles()
+    {
+        if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0)) - 0.1f , Controller.GroundType, QueryTriggerInteraction.Ignore))
+            return true;
+        return false;
+    }
+
     private void Respawn()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    //Set Player to right Position
+    //Set Player to the right Position
     IEnumerator PlayAnimationBefore(bool started, bool canceled)
     {
         Controller.canTurn = false;

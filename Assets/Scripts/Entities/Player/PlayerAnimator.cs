@@ -11,12 +11,14 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] public SkinnedMeshRenderer Renderer;
     [SerializeField] Material PlayerMaterial;
     [SerializeField] Material PlayerFadeMaterial;
+
+    private Vector3 _shadowPosition;
     private bool _isInAmination = false;
     private bool _isInMovement = false;
-    public bool IsInAmination { get { return _isInAmination; } }
-    private Vector3 _shadowPosition;
-    public bool IsInMovement { get { return _isInMovement; } }
+
     public Vector3 ShadowPosition { get { return _shadowPosition; } set { _shadowPosition = value; } }
+    public bool IsInAmination { get { return _isInAmination; } }
+    public bool IsInMovement { get { return _isInMovement; } }
 
     public IEnumerator TransformToShadowAnim()
     {
