@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
+using UnityEngine.InputSystem;
 using States;
 
 

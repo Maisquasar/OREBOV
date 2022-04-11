@@ -2,37 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StaticEnemy : Entity
+public class StaticEnemy : Enemy
 {
-    [SerializeField] public StaticEnemyMovement Controller;
-    [HideInInspector] public DetectionZone DetectionZone;
+    [SerializeField] public new StaticEnemyMovement Controller;
 
-    private Player player;
-    [SerializeField] private float _detectionTime = 10f;
-    private float _timeStamp = 0;
+    Vector3 LastPlayerPosition;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        player = FindObjectOfType<Player>();
-        DetectionZone = GetComponentInChildren<DetectionZone>();
-        _timeStamp = _detectionTime;
+        SetLastPlayerPos();
     }
 
-    // Update is called once per frame
-    void Update()
+    void SetLastPlayerPos()
     {
-        // If in zone decrease time stamp,
-        if (DetectionZone.Detect && _timeStamp > 0)
-            _timeStamp -= Time.deltaTime;
-        // else is not in zone so increase time stamp,
-        else if (_timeStamp < _detectionTime)
-            _timeStamp += Time.deltaTime;
-        // if time stamp < 0 then kill player.
-        if (_timeStamp <= 0)
-            player.Controller.SetDead();
-
-        Debug.Log((_timeStamp / _detectionTime) * 1);
+        if (PlayerDetected)
+            LastPlayerPosition = _player.transform.position;
     }
-
 }

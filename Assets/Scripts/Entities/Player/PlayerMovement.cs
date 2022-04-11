@@ -154,7 +154,6 @@ public class PlayerMovement : EntityMovement
         // Ground Move
         if (grounded && !jump)
         {
-
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
        

@@ -1,4 +1,4 @@
-    using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -72,9 +72,9 @@ public class EntityMovement : MonoBehaviour
                 }
                 break;
             }
-            if(i == 2)
+            if (i == 2)
             {
-                grounded =false;
+                grounded = false;
             }
         }
 
@@ -85,18 +85,17 @@ public class EntityMovement : MonoBehaviour
         }
 
         // Wall Detection
-        if (!GetComponent<Player>())
-            for (int i = 0; i < ray.Count; i++)
+        for (int i = 0; i < ray.Count; i++)
+        {
+            // Set all Ray pos
+            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
             {
-                // Set all Ray pos
-                Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-                if ((Physics.Raycast(WallPos, Vector3.left, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && rb.velocity.x > 0.1f))
-                {
-                    Vector3 tmp = rb.velocity;
-                    tmp.x = 0;
-                    rb.velocity = tmp;
-                }
+                Vector3 tmp = rb.velocity;
+                tmp.x = 0;
+                rb.velocity = tmp;
             }
+        }
 
         // Set Gravity.
         Vector3 gravity = globalGravity * gravityScale * Vector3.up;
@@ -106,8 +105,8 @@ public class EntityMovement : MonoBehaviour
 
 
     protected virtual void LandOnGround()
-    { 
-        grounded = true;   
+    {
+        grounded = true;
     }
 
     protected virtual bool DetectWall()

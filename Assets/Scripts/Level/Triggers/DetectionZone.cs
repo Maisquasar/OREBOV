@@ -7,15 +7,12 @@ public class DetectionZone : Trigger
 {
     public UnityEvent DetectedEvent;
     public StaticEnemy Enemy;
-    [HideInInspector] public bool Detect;
-
-    private void OnDrawGizmos()
-    {
-        transform.position = Enemy.transform.position;
-    }
+    private Player _player;
+    [HideInInspector] public float DistanceDetection = 0;
 
     public override void Start()
     {
+        _player = FindObjectOfType<Player>();
         base.Start();
         if (DetectedEvent == null)
         {
@@ -23,24 +20,34 @@ public class DetectionZone : Trigger
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            DetectedEvent.Invoke();
-            Detect = true;
+            if (CheckForObstacles())
+                return;
+            Enemy.PlayerDetected = true;
+            if (DistanceDetection > Vector3.Distance(_player.transform.position, Enemy.transform.position))
+                Enemy.TimeStamp = 0;
         }
-        else
-            Detect = false;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            Detect = false;
+            Enemy.PlayerDetected = false;
         }
     }
+
+
+    private bool CheckForObstacles()
+    {
+        if (Physics.Raycast(Enemy.transform.position, Vector3.right * Enemy.Controller.Direction, Vector3.Distance(Enemy.transform.position, _player.transform.position) - 0.1f, Enemy.Controller.GroundType, QueryTriggerInteraction.Ignore))
+            return true;
+        return false;
+    }
+
 
     public static void LogDetected()
     {
