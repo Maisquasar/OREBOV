@@ -31,7 +31,7 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField]
     protected AudioClip _soundDeactiveTrigger;
 
-
+    [HideInInspector] public string ObjectType;
 
     [Header("Debug")]
     [SerializeField]

@@ -29,14 +29,25 @@ public class PlayerMovement : EntityMovement
     private float lastMove;
     private float jumpForce;
 
+    [Header("Sounds ")]
+    [SerializeField]
+    private SoundEffectsHandler _walkEffectsHandler;
+    [SerializeField]
+    private SoundEffectsHandler _jumpImpactEffectHandler;
+
+    private float _xAxisValue;
+
     float margeDetectionVelocity = 0.05f;
     float time;
 
+
     private new void Start()
     {
+        canTurn = true;
         base.Start();
         gravityScale = 3;
         topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
+
     }
 
     private new void OnDrawGizmos()
@@ -53,8 +64,9 @@ public class PlayerMovement : EntityMovement
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, topEdgeDetectorHeight, 0));
     }
 
-    bool isClimbing = false;
+    [HideInInspector] public bool isClimbing = false;
     bool FallDefine = false;
+
     private void Update()
     {
         //Get the pos at start fall.
@@ -123,6 +135,7 @@ public class PlayerMovement : EntityMovement
     // Move the player.
     public void Move(float move, bool jump)
     {
+        _xAxisValue = move;
         // If climbing then can't move
         if (isClimbing || isPushing || isPulling)
             return;
@@ -135,12 +148,14 @@ public class PlayerMovement : EntityMovement
         // Ground Move
         if (grounded && !jump)
         {
+
             rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
         }
+       
         // Jump move
         if (grounded && jump)
         {
-            grounded = false;
+           // grounded = false;
             jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -161,11 +176,22 @@ public class PlayerMovement : EntityMovement
 
     public void FlipCharacter()
     {
-        StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+        if (transform.rotation.eulerAngles.y == 180f)
+            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, -180, 0), 0.1f));
+        else if (transform.rotation.eulerAngles.y == 0)
+            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+    }
+
+    protected override void LandOnGround()
+    {
+        base.LandOnGround();
+        _jumpImpactEffectHandler.PlaySound();
     }
 
     public IEnumerator PlayClimb()
     {
+        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        StartCoroutine(LerpTo(transform.position + Vector3.right * direction * (downRay[0].distance - 0.4f), 0.1f));
         isClimbing = true;
         //Play animation
         animator.Play("Climb");
@@ -173,15 +199,25 @@ public class PlayerMovement : EntityMovement
         rb.velocity = Vector3.zero;
         gravityScale = 0;
         // Wait for end of animation
-        yield return new WaitForSeconds(1.113f);
+        yield return new WaitForSecondsRealtime(1.02f);
         // Move to animation pos.
-        transform.position = transform.position + new Vector3(0.6f * direction, 1.5f, 0);
+        transform.position = transform.position + new Vector3(0.4f * direction, 1.7f, 0);
         // Reset Grabity scale.
         gravityScale = 3;
         // Transition to Idle.
-        animator.Play("Crouched To Standing");
         yield return new WaitForSeconds(0.75f);
         isClimbing = false;
+    }
+
+    IEnumerator LerpTo(Vector3 goTo, float duration)
+    {
+        Vector3 initial = transform.position;
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.position = Vector3.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.position = goTo;
     }
 
     [HideInInspector] public bool isPushing = false;
@@ -217,5 +253,26 @@ public class PlayerMovement : EntityMovement
         }
         yield return null;
     }
+
+
+    #region Sounds  
+
+
+
+
+    public bool WalkSoundManager()
+    {
+        if (_xAxisValue != 0f)
+        {
+            _walkEffectsHandler.PlaySound();
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    #endregion
 }
 

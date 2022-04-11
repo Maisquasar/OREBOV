@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
 using States;
@@ -15,6 +15,9 @@ public class Player : Entity
     private PlayerAnimator PlayerAnimator;
     private PlayerInteraction PlayerInteraction;
 
+    [SerializeField]
+    private UIPauseMenu _PauseMenu;
+
     public Vector3 CheckpointPos;
 
     float _shadowTime;
@@ -27,6 +30,10 @@ public class Player : Entity
     Vector2 movementDir;
     Vector3 previousPos;
     public Vector2 MoveDir { get { return movementDir; } }
+
+    [Header("Sounds")]
+    [SerializeField]
+    private SoundEffectsHandler _shadowEffectHandler;
 
     private void Start()
     {
@@ -85,22 +92,38 @@ public class Player : Entity
     float lastMovementDir;
     public void OnMove(CallbackContext context)
     {
-        movementDir = context.ReadValue<Vector2>();
-        if (Mathf.Abs(movementDir.x) < 0.03f) movementDir.x = 0.0f;
-        if (Mathf.Abs(movementDir.y) < 0.03f) movementDir.y = 0.0f;
-        PlayerInteraction.AxisInput(context);
+        Vector3 moveTemp = context.ReadValue<Vector2>();
+        if (Mathf.Abs(moveTemp.x) < 0.03f) moveTemp.x = 0.0f;
+        if (Mathf.Abs(moveTemp.y) < 0.03f) moveTemp.y = 0.0f;
         //Play animation in function of pos
-        if (PlayerActionState == PlayerAction.INTERACT)
+        if (PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Link)
         {
-            if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && lastMovementDir < 0))
+            if (moveTemp.normalized.x == movementDir.normalized.x)
             {
-                StartCoroutine(Controller.PlayPush());
+                movementDir = moveTemp;
             }
-            else
-                StartCoroutine(Controller.PlayPull());
+            PlayerInteraction.AxisInput(context);
         }
+        movementDir = moveTemp;
+
         if (movementDir.x != 0)
             lastMovementDir = movementDir.x;
+    }
+
+    public void PlayRightAnimation(float axis)
+    {
+        if (axis == 0)
+            return;
+        if (transform.position.x < PlayerInteraction.getInteractiveObjectPos.x && axis > 0 || (transform.position.x > PlayerInteraction.getInteractiveObjectPos.x && axis < 0))
+        {
+            if (!Controller.isPulling)
+                StartCoroutine(Controller.PlayPush());
+        }
+        else
+        {
+            if (!Controller.isPushing)
+                StartCoroutine(Controller.PlayPull());
+        }
     }
 
     public void OnJump(CallbackContext context)
@@ -120,8 +143,12 @@ public class Player : Entity
         }
         else
         {
-            if (Caster.CanTransform(true)) OnTransformToShadow();
+            if (Caster.CanTransform(true))
+            {
+                OnTransformToShadow();
+            }
         }
+        _shadowEffectHandler.PlaySound();
     }
 
     public void OnTransformToShadow()
@@ -142,31 +169,38 @@ public class Player : Entity
     bool exactPos = false;
     public void OnInteract(CallbackContext context)
     {
-        if (_isJumping || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
+        if (_isJumping || Controller.isClimbing || !Controller.IsGrounded || (PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || PlayerAnimator.IsInAmination || PlayerInteraction.Interaction == PlayerInteraction.InteractionState.None)
+            return;
+        if (PlayerInteraction.getInteractiveObjectPos.y + 0.25f < transform.position.y)
             return;
         PlayerActionState = PlayerAction.INTERACT;
-        if (exactPos)
-            PlayerInteraction.InteractionInput(context.started, context.canceled);
+        if (PlayerInteraction.getObjectType == "Box")
+        {
+            if (exactPos)
+                PlayerInteraction.InteractionInput(context.started, context.canceled);
+            else
+                StartCoroutine(PlayAnimationBefore(context.started, context.canceled));
+        }
         else
-            StartCoroutine(PlayAnimationBefore(context.started, context.canceled));
+            PlayerInteraction.InteractionInput(context.started, context.canceled);
+
         if (PlayerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
         {
             PlayerActionState = PlayerAction.IDLE;
             exactPos = false;
         }
+
     }
 
     private void Respawn()
     {
-        Controller.animator.SetBool("Dead", false);
-        transform.position = CheckpointPos;
-        Dead = false;
-        respawn = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-
+    //Set Player to right Position
     IEnumerator PlayAnimationBefore(bool started, bool canceled)
     {
+        Controller.canTurn = false;
         exactPos = true;
         float animationDistance = 0.65f;
         float Distance = (Vector3.Distance(transform.position, PlayerInteraction.getInteractiveObjectPos - (Vector3.right * (PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction));
@@ -179,6 +213,7 @@ public class Player : Entity
         else if (Distance <= Distance2)
             yield return StartCoroutine(LerpTo(new Vector3(PlayerInteraction.getInteractiveObjectPos.x - ((PlayerInteraction.getInteractiveObjectScale.x / 2 + animationDistance)) * Controller.Direction, transform.position.y, transform.position.z), 0.1f));
         PlayerInteraction.InteractionInput(started, canceled);
+        Controller.canTurn = true;
     }
 
     IEnumerator LerpTo(Vector3 goTo, float duration)
@@ -195,8 +230,7 @@ public class Player : Entity
     IEnumerator WaitBeforeRespawn()
     {
         respawn = true;
-        float time = 3f;
-        yield return new WaitForSecondsRealtime(time);
+        yield return _PauseMenu.ScreenfadeIn(1.0f,2.0f);
         Respawn();
     }
 }

@@ -43,6 +43,8 @@ public class PlayerInteraction : MonoBehaviour
     private Vector2 _axis;
     private Player _playerStatus;
 
+    public string getObjectType { get { return _objectInteractive.ObjectType; } }
+
     private void Start()
     {
         _playerStatus = GetComponent<Player>();
@@ -63,9 +65,9 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (!_inputReset)
                 HoldInput();
-            if (_objectManager.ObjectsInRange(transform.position, _detectDistance) != null)
+            if (_objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance) != null)
             {
-                InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, _detectDistance);
+                InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance);
                 if (objectClose._useOnlyInShadow && _playerStatus.IsShadow)
                 {
                     UnselectObject(objectClose);
@@ -79,7 +81,7 @@ public class PlayerInteraction : MonoBehaviour
                 if (!objectClose._useOnlyInShadow)
                 {
                     UnselectObject(objectClose);
-                    ChangeSelectedObject(objectClose); 
+                    ChangeSelectedObject(objectClose);
                 }
             }
             else
@@ -156,6 +158,7 @@ public class PlayerInteraction : MonoBehaviour
     private void CancelInput()
     {
         if (CanStopNow) _inputReset = true;
+
     }
     #endregion
 
