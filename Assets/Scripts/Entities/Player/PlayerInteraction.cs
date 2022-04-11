@@ -38,47 +38,33 @@ public class PlayerInteraction : MonoBehaviour
     public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
     public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
     public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
-    public InteractiveObject Object { get { return _objectInteractive; } }
+    public InteractiveObject Object { get { return _objectInteractive != null ? _objectInteractive : null; } }
     public InteractionState Interaction { get { return _interactionState; } }
 
     private void Start()
     {
         _playerStatus = GetComponent<Player>();
         _uiRot = _uiInteract.transform.rotation;
-        if (_objectManager == null)
-            _objectManager = new ObjectManager();
-
-        _uiRot = _uiInteract.transform.rotation;
     }
 
     private void Update()
     {
+        if (!_inputReset)
+            HoldInput();
+
         if (_interactionState == InteractionState.Link)
         {
             _objectInteractive.UpdateItem(_axis);
         }
         else
         {
-            if (!_inputReset)
-                HoldInput();
-            
-            
+
             InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance, _detectionDirection);
             if (objectClose != null)
             {
-                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow)
-                {
                     UnselectObject(objectClose);
-                    ChangeSelectedObject(objectClose);
-                }
-                else if (!_playerStatus.IsShadow)
+                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow || !objectClose._useOnlyInShadow)
                 {
-                    UnselectObject(objectClose);
-                    _uiInteract.SetActive(false);
-                }
-                if (!objectClose._useOnlyInShadow)
-                {
-                    UnselectObject(objectClose);
                     ChangeSelectedObject(objectClose);
                 }
             }
@@ -91,6 +77,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if(_objectManager == null)
+        {
+            Debug.LogError("Object Manager is missing in Player Interaction");
+        }
+
         if (_debugActive)
         {
             Gizmos.DrawWireSphere(transform.position, _detectDistance);

@@ -198,14 +198,17 @@ public class Player : Entity
             Gizmos.color = Color.green;
         if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
         {
-            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0,0) * Controller.Direction);
+            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction);
         }
     }
 
     private bool CheckForObstacles()
     {
-        if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction) - 0.1f, Controller.GroundType, QueryTriggerInteraction.Ignore))
-            return true;
+        if (_playerInteraction.Object != null)
+        {
+            if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction) - 0.1f, Controller.GroundType, QueryTriggerInteraction.Ignore))
+                return true;
+        }
         return false;
     }
 
@@ -248,7 +251,7 @@ public class Player : Entity
     IEnumerator WaitBeforeRespawn()
     {
         _respawn = true;
-        yield return _PauseMenu.ScreenfadeIn(1.0f,2.0f);
+        yield return _PauseMenu.ScreenfadeIn(1.0f, 2.0f);
         Respawn();
     }
 }
