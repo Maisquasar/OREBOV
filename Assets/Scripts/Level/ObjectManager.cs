@@ -23,7 +23,8 @@ public class ObjectManager : MonoBehaviour
 
         for (int i = 0; i < _interactiveObjectList.Length; i++)
         {
-
+            if (_interactiveObjectList[i] == null)
+                break;
             if (Vector3.Distance(position, _interactiveObjectList[i].transform.position) < distanceObject)
             {
                 Vector3 objDir = _interactiveObjectList[i].transform.position - position;

@@ -5,19 +5,14 @@ using UnityEngine.Events;
 
 public class DetectionZone : Trigger
 {
-    public UnityEvent DetectedEvent;
-    public StaticEnemy Enemy;
+    public Enemy Enemy;
     private Player _player;
     [HideInInspector] public float DistanceDetection = 0;
 
     public override void Start()
     {
-        _player = FindObjectOfType<Player>();
         base.Start();
-        if (DetectedEvent == null)
-        {
-            DetectedEvent.AddListener(LogDetected);
-        }
+        _player = FindObjectOfType<Player>();
     }
 
     private void OnTriggerStay(Collider other)
@@ -27,7 +22,9 @@ public class DetectionZone : Trigger
             if (CheckForObstacles() || _player.IsShadow)
                 return;
             Enemy.PlayerDetected = true;
-            if (DistanceDetection > Vector3.Distance(_player.transform.position, Enemy.transform.position))
+            if (DistanceDetection >= Vector3.Distance(_player.transform.position, Enemy.transform.position))
+                Enemy.TimeStamp = 0;
+            else if (DistanceDetection == 0)
                 Enemy.TimeStamp = 0;
         }
     }
@@ -43,14 +40,10 @@ public class DetectionZone : Trigger
 
     private bool CheckForObstacles()
     {
-        if (Physics.Raycast(Enemy.transform.position, Vector3.right * Enemy.Controller.Direction, Vector3.Distance(Enemy.transform.position, _player.transform.position) - 0.1f, Enemy.Controller.GroundType, QueryTriggerInteraction.Ignore))
+        if (Enemy.Controller == null)
+            return false;
+        if (Physics.Raycast(Enemy.transform.position, Vector3.right * Enemy.Controller.Direction, Vector3.Distance(Enemy.transform.position, _player.transform.position), Enemy.Controller.GroundType, QueryTriggerInteraction.Ignore))
             return true;
         return false;
-    }
-
-
-    public static void LogDetected()
-    {
-        Debug.Log("Detected");
     }
 }

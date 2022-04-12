@@ -5,13 +5,17 @@ using UnityEngine.InputSystem;
 
 public class Enemy : Entity
 {
-    protected EntityMovement Controller;
+    internal EntityMovement Controller;
+
+    [Header("Detection Zones")]
     [SerializeField] public DetectionZone CloseDetectionZone;
     [SerializeField] public DetectionZone FOVCone;
-    [Tooltip("The Distance to the player to kill him insant for cone, Indiced by purple line")]
+    [Tooltip("The Distance to the player to kill him instant for cone, Indiced by purple line")]
+    [Header("Range Settings")]
     [SerializeField] private float DetectionRange;
     [SerializeField] public float DetectionTime = 100f;
     [SerializeField] private float DistanceVibration = 10;
+    [Header("Gauge Settings")]
     [SerializeField] private float GaugeAdd = 25;
     [SerializeField] private float GaugeRemove = 10;
 
@@ -20,7 +24,7 @@ public class Enemy : Entity
 
     protected Player _player;
     // Start is called before the first frame update
-    void Start()
+    virtual public void Start()
     {
         _player = FindObjectOfType<Player>();
         TimeStamp = DetectionTime;
@@ -29,9 +33,12 @@ public class Enemy : Entity
 
     private void OnDrawGizmos()
     {
+        if (Controller == null)
+            return;
         Gizmos.color = Color.magenta;
         Gizmos.DrawLine(transform.position, transform.position + (Controller.Direction * DetectionRange * Vector3.left));
     }
+
 
     // Update is called once per frame
     virtual public void Update()
@@ -44,6 +51,8 @@ public class Enemy : Entity
             _player.Controller.SetDead();
 
         // Set vibration intensity.
+        if (Gamepad.current == null)
+            return;
         if (_player.Dead)
             Gamepad.current.SetMotorSpeeds(0, 0);
         else
@@ -54,4 +63,10 @@ public class Enemy : Entity
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        if (Gamepad.current == null)
+            return;
+        Gamepad.current.SetMotorSpeeds(0, 0);
+    }
 }

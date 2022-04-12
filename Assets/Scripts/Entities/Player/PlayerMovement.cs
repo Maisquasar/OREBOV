@@ -45,7 +45,7 @@ public class PlayerMovement : EntityMovement
     {
         canTurn = true;
         base.Start();
-        gravityScale = 3;
+        _gravityScale = 3;
         topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
 
     }
@@ -70,14 +70,14 @@ public class PlayerMovement : EntityMovement
     private void Update()
     {
         //Get the pos at start fall.
-        if (rb.velocity.y < -0.1f && !FallDefine && !grounded)
+        if (_rb.velocity.y < -0.1f && !FallDefine && !_grounded)
         {
             Debug.Log("Define");
             LastPosBeforeFall = transform.position;
             FallDefine = true;
         }
         //Check if fall damage.
-        if (grounded)
+        if (_grounded)
         {
             FallDefine = false;
             if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<Player>().Dead)
@@ -87,18 +87,18 @@ public class PlayerMovement : EntityMovement
         }
 
         if (!DetectWall())
-            animator.SetFloat("VelocityX", rb.velocity.x);
+            animator.SetFloat("VelocityX", _rb.velocity.x);
         else
             animator.SetFloat("VelocityX", 0);
-        animator.SetFloat("VelocityY", rb.velocity.y);
-        animator.SetBool("Grounded", grounded);
+        animator.SetFloat("VelocityY", _rb.velocity.y);
+        animator.SetBool("Grounded", _grounded);
 
         // Can't climb if fall damage.
         if (LastPosBeforeFall.y - transform.position.y < GameMetric.GetGameUnit(FallDamageHeight))
         {
             // Edge Detection :
-            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
-            RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+            RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+            RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
             foreach (var ray in downRay)
             {
                 if (topRay.Length == 0 && !isClimbing)
@@ -121,13 +121,13 @@ public class PlayerMovement : EntityMovement
     {
         if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
         {
-            if (rb.velocity.y < -margeDetectionVelocity)
+            if (_rb.velocity.y < -margeDetectionVelocity)
             {
                 ChangeStateFunction(ref State, PlayerAction.FALL);
             }
-            else if (rb.velocity.y > margeDetectionVelocity)
+            else if (_rb.velocity.y > margeDetectionVelocity)
                 ChangeStateFunction(ref State, PlayerAction.JUMP);
-            else if (rb.velocity.x < -margeDetectionVelocity || rb.velocity.x > margeDetectionVelocity)
+            else if (_rb.velocity.x < -margeDetectionVelocity || _rb.velocity.x > margeDetectionVelocity)
                 ChangeStateFunction(ref State, PlayerAction.RUN);
             else
                 ChangeStateFunction(ref State, PlayerAction.IDLE);
@@ -146,27 +146,27 @@ public class PlayerMovement : EntityMovement
         if (isClimbing || isPushing || isPulling)
             return;
         lastMove = move;
-        if (rb.velocity.y < 0.1f)
+        if (_rb.velocity.y < 0.1f)
             move *= speed;
         else if (move != 0)
             move = jumpDistance * speed * Mathf.Sign(move);
 
         // Ground Move
-        if (grounded && !jump)
+        if (_grounded && !jump)
         {
-            rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, rb.velocity.y);
+            _rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, _rb.velocity.y);
         }
        
         // Jump move
-        if (grounded && jump)
+        if (_grounded && jump)
         {
            // grounded = false;
-            jumpForce = Mathf.Sqrt(jumpHeight * -2 * (globalGravity * gravityScale));
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            jumpForce = Mathf.Sqrt(jumpHeight * -2 * (_globalGravity * _gravityScale));
+            _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
         //Flip character
-        if ((move > 0 && direction == -1 || move < 0 && direction == 1) && grounded && endOfCoroutine)
+        if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
         }
@@ -195,20 +195,20 @@ public class PlayerMovement : EntityMovement
 
     public IEnumerator PlayClimb()
     {
-        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
-        StartCoroutine(LerpTo(transform.position + Vector3.right * direction * (downRay[0].distance - 0.4f), 0.1f));
+        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        StartCoroutine(LerpTo(transform.position + Vector3.right * _direction * (downRay[0].distance - 0.4f), 0.1f));
         isClimbing = true;
         //Play animation
         animator.Play("Climb");
         //Lock Player pos
-        rb.velocity = Vector3.zero;
-        gravityScale = 0;
+        _rb.velocity = Vector3.zero;
+        _gravityScale = 0;
         // Wait for end of animation
         yield return new WaitForSecondsRealtime(1.02f);
         // Move to animation pos.
-        transform.position = transform.position + new Vector3(0.4f * direction, 1.7f, 0);
+        transform.position = transform.position + new Vector3(0.4f * _direction, 1.7f, 0);
         // Reset Grabity scale.
-        gravityScale = 3;
+        _gravityScale = 3;
         // Transition to Idle.
         yield return new WaitForSeconds(0.75f);
         isClimbing = false;
