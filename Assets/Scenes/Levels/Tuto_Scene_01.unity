@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5388713, g: 0.4957745, b: 0.59599304, a: 1}
+  m_IndirectSpecularColor: {r: 0.5385381, g: 0.4956286, b: 0.5960169, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -24020,23 +24020,6 @@ MonoBehaviour:
   _UIPauseMenu: {fileID: 705245731}
   _UIFadeScreen: {fileID: 795229394}
   _eventSystem: {fileID: 1794482679}
---- !u!114 &558164829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 558164827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _soundName: ambianceLevel
-  _audioClipArray:
-  - {fileID: 8300000, guid: 89ecdee722b39a740bfa07c0a1333295, type: 3}
-  _mixer: {fileID: 0}
-  _randomPlaySound: 0
 --- !u!82 &558164830
 AudioSource:
   m_ObjectHideFlags: 0
@@ -24046,8 +24029,8 @@ AudioSource:
   m_GameObject: {fileID: 558164827}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 2169245842093523329, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  m_audioClip: {fileID: 8300000, guid: 89ecdee722b39a740bfa07c0a1333295, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -47674,7 +47657,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-7772
+  m_Name: pb_Mesh-27412
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
