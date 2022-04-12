@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5385381, g: 0.4956286, b: 0.5960169, a: 1}
+  m_IndirectSpecularColor: {r: 0.53802943, g: 0.49551702, b: 0.5962286, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -24016,9 +24016,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168c6965b2ccc3e44bba577521993f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _UIGameMenu: {fileID: 1479125811}
-  _UIPauseMenu: {fileID: 705245731}
-  _UIFadeScreen: {fileID: 795229394}
+  _UIGameMenu: {fileID: 0}
+  _UIPauseMenu: {fileID: 0}
+  _UIFadeScreen: {fileID: 0}
   _eventSystem: {fileID: 1794482679}
 --- !u!82 &558164830
 AudioSource:
@@ -33772,11 +33772,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!1 &705245731 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7503973311066034841, guid: ee6b9e27d7ca3c74caaec08a1d942850, type: 3}
-  m_PrefabInstance: {fileID: 695875611}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &707711597
 GameObject:
   m_ObjectHideFlags: 0
@@ -35549,11 +35544,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 789820900}
   m_Mesh: {fileID: 3942774935579010589, guid: acaa2cb72d6476343a1047da3cddfddd, type: 3}
---- !u!1 &795229394 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1579116663850294323, guid: ee6b9e27d7ca3c74caaec08a1d942850, type: 3}
-  m_PrefabInstance: {fileID: 695875611}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &798718304
 GameObject:
   m_ObjectHideFlags: 0
@@ -36307,7 +36297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8668594363708895839, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.65
+      value: 51.47
       objectReference: {fileID: 0}
     - target: {fileID: 8668594363708895839, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -62907,11 +62897,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1 &1479125811 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6384844129066099039, guid: ee6b9e27d7ca3c74caaec08a1d942850, type: 3}
-  m_PrefabInstance: {fileID: 695875611}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1479429194
 GameObject:
   m_ObjectHideFlags: 0

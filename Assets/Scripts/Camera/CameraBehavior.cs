@@ -18,6 +18,7 @@ public class CameraBehavior : MonoBehaviour
     [Header("Camera Window")]
     [SerializeField]
     private GameObject _mainTarget;
+    public GameObject MainTarget { get { return _mainTarget; } }
 
     [Space]
     [SerializeField]
@@ -48,15 +49,16 @@ public class CameraBehavior : MonoBehaviour
     public void Start()
     {
         Vector3 naturalOffset = transform.position - _mainTarget.transform.position;
-        transform.position = new Vector3(_mainTarget.transform.position.x - _windowOffset.x ,_mainTarget.transform.position.y + naturalOffset.y, transform.position.z);
+        transform.position = new Vector3(_mainTarget.transform.position.x, _mainTarget.transform.position.y + naturalOffset.y, transform.position.z);
+        _windowCenter = transform.position  +(Vector3)_windowOffset;
         _windowOrigin = _windowCenter + (Vector3)(_windowSize / 2f);
         _player = _mainTarget.GetComponent<PlayerStatus>();
-    
+
     }
 
     private void FixedUpdate()
     {
-       if(_camState == CameraBehaviorState.FollowTarget) UpdateFollowMode();
+        if (_camState == CameraBehaviorState.FollowTarget) UpdateFollowMode();
     }
 
     private void UpdateFollowMode()
@@ -69,7 +71,7 @@ public class CameraBehavior : MonoBehaviour
 
     private void SetWindowPosition()
     {
-        _windowCenter = Vector3.Lerp(_windowCenter, new Vector3(transform.position.x,transform.position.y,0f)+ (Vector3)_windowOffset, _camWindownSpeed);
+        _windowCenter = Vector3.Lerp(_windowCenter, new Vector3(transform.position.x, transform.position.y, 0f) + (Vector3)_windowOffset, _camWindownSpeed);
         _windowCenter.z = _mainTarget.transform.position.z;
         _windowOrigin = _windowCenter - (Vector3)(_windowSize / 2f);
     }
@@ -78,9 +80,9 @@ public class CameraBehavior : MonoBehaviour
     {
         if (!WindownCamContains(_mainTarget.transform.position))
         {
-            Vector3 target =  Vector3.zero;
-            if (!WindownCamContainsX(_mainTarget.transform.position)) target += new Vector3(_mainTarget.transform.position.x, 0f, 0f) - new Vector3(_windowCenter.x, 0f, 0f);
-            if (!WindownCamContainsY(_mainTarget.transform.position)) target += new Vector3(0f,_mainTarget.transform.position.y, 0f) - new Vector3(0f ,_windowCenter.y, 0f);
+            Vector3 target = Vector3.zero;
+            if (!WindownCamContainsX(_mainTarget.transform.position)) target.x = _mainTarget.transform.position.x  - _windowCenter.x;
+            if (!WindownCamContainsY(_mainTarget.transform.position)) target.y = _mainTarget.transform.position.y - _windowCenter.y;
 
             transform.position += Vector3.Lerp(Vector3.zero, target, _camSpeed);
         }
@@ -140,8 +142,8 @@ public class CameraBehavior : MonoBehaviour
         return true;
     }
 
-        // Active the free mode camera
-        public void ActiveFreeMode()
+    // Active the free mode camera
+    public void ActiveFreeMode()
     {
         _camState = CameraBehaviorState.FreeMovement;
     }
