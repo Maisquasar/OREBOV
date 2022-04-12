@@ -111,7 +111,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private void PressInput()
     {
-        print(_objectInteractive.name);
         if (_objectInteractive != null && CanStopNow)
         {
             _inputReset = false;
@@ -136,7 +135,7 @@ public class PlayerInteraction : MonoBehaviour
     private void CancelInput()
     {
         if (CanStopNow) _inputReset = true;
-        _objectInteractive.CancelUpdate();
+        if (_objectInteractive != null) _objectInteractive.CancelUpdate();
 
     }
     #endregion
