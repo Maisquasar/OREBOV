@@ -10,6 +10,7 @@ public class SoundEffectsHandler : MonoBehaviour
     [SerializeField] private AudioClip[] _audioClipArray = new AudioClip[0];
     [SerializeField] private AudioMixerGroup _mixer;
     [SerializeField] private bool _randomPlaySound;
+    [SerializeField] private bool _playAtStart;
 
     private AudioSource _audioSource;
     private int _indexAudioClip = 0;
@@ -32,6 +33,7 @@ public class SoundEffectsHandler : MonoBehaviour
     {
         CheckComponentIsValid();
         InitComponents();
+        if (_playAtStart) PlaySound();
         
     }
 
