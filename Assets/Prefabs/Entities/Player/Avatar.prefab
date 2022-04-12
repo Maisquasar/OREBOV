@@ -363,7 +363,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4975040270621425237}
-  - component: {fileID: 1803301608}
   - component: {fileID: 1803301609}
   m_Layer: 2
   m_Name: GameObject
@@ -388,14 +387,6 @@ Transform:
   m_Father: {fileID: 8668594363708895839}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1803301608
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377620978177553748}
-  m_Mesh: {fileID: 0}
 --- !u!95 &1803301609
 Animator:
   serializedVersion: 3
@@ -1191,7 +1182,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: db2944a8f43ff0541a344c7760774d5b, type: 2}
+  - {fileID: 2100000, guid: ef7e9c7e73f711f4ba9417a0ce1c83d1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2111,8 +2102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23cd9f6bbc79e6b4cbcc0ad1bc730b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectDistance: 2
-  _detectionDirection: 0.1
+  _detectDistance: 1
+  _detectionDirection: -0.41
   _interactionState: 0
   _objectManager: {fileID: 0}
   _objectInteractive: {fileID: 0}

@@ -10,7 +10,7 @@ using InteractObject;
 
 public class PlayerStatus : Entity
 {
-    [HideInInspector] public PlayerAction PlayerActionState;
+    public PlayerAction PlayerActionState;
     [HideInInspector] public Vector3 CheckpointPos;
 
     [SerializeField] private UIPauseMenu _pauseMenu;
@@ -29,6 +29,7 @@ public class PlayerStatus : Entity
 
     private Vector2 _movementDir;
     private Vector3 _previousPos;
+    private Vector3 _shadowPos;
 
     private bool _isDead = false;
     private bool _isJumping = false;
@@ -70,8 +71,7 @@ public class PlayerStatus : Entity
     // Update is called once per frame
     void Update()
     {
-
-
+        _shadowPos = _caster.GetShadowPos();
         if (!_playerAnimator.IsInAmination && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
             _controller.Move(_movementDir.x);
@@ -111,8 +111,7 @@ public class PlayerStatus : Entity
     {
         Vector2 moveTemp = GetStickInput(context.ReadValue<Vector2>());
         //Play animation in function of pos
-        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Link) _playerInteraction.AxisInput(context);
-        if(moveTemp == Vector2.zero) PlayerActionState = PlayerAction.IDLE;
+        _playerInteraction.AxisInput(context);
         _movementDir = moveTemp;
     }
 
@@ -175,7 +174,7 @@ public class PlayerStatus : Entity
 
     public void OnTransformToPlayer()
     {
-        _playerAnimator.ShadowPosition = _caster.GetShadowPos();
+        _playerAnimator.ShadowPosition = _shadowPos;
         StartCoroutine(_playerAnimator.TransformToPlayerAnim());
         _isShadow = false;
         _controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
@@ -187,12 +186,18 @@ public class PlayerStatus : Entity
             return;
         if (_isJumping || _controller.IsClimbing || !_controller.IsGrounded || _playerAnimator.IsInAmination)
             return;
-        if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y || CheckForObstacles())
-            return;
 
-        PlayerActionState = PlayerAction.INTERACT;
+        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
+        {
+
+            _exactPos = false;
+        }
+
         if (_playerInteraction.ObjectType == InteractObjects.Box)
         {
+            if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y || CheckForObstacles())
+                return;
+            PlayerActionState = PlayerAction.INTERACT;
             if (_exactPos)
                 _playerInteraction.InteractionInput(context.started, context.canceled);
             else
@@ -201,12 +206,6 @@ public class PlayerStatus : Entity
         }
         else
             _playerInteraction.InteractionInput(context.started, context.canceled);
-
-        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
-        {
-           
-            _exactPos = false;
-        }
     }
 
     private void OnDrawGizmos()
