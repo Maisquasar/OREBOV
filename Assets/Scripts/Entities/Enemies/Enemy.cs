@@ -18,7 +18,6 @@ public class Enemy : Entity
     [HideInInspector] public bool PlayerDetected = false;
     [HideInInspector] public float TimeStamp = 0;
 
-    Vector3 StartPos;
     protected Player _player;
     // Start is called before the first frame update
     void Start()
@@ -26,7 +25,6 @@ public class Enemy : Entity
         _player = FindObjectOfType<Player>();
         TimeStamp = DetectionTime;
         FOVCone.DistanceDetection = DetectionRange;
-        StartPos = transform.position;
     }
 
     private void OnDrawGizmos()
@@ -36,7 +34,7 @@ public class Enemy : Entity
     }
 
     // Update is called once per frame
-    void Update()
+    virtual public void Update()
     {
         if (TimeStamp > 0 && PlayerDetected)
             TimeStamp -= Time.deltaTime * GaugeAdd;

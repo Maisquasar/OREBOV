@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class StaticEnemyMovement : EntityMovement
 {
-    AnimationCurve velocityCurve;
+    [SerializeField] AnimationCurve velocityCurve;
     float time;
-    [SerializeField] float speed;
 
-    private void Move(float move)
+    public void Move(float move)
     {
         move *= speed;
         if (grounded)

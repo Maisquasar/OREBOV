@@ -24,7 +24,7 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            if (CheckForObstacles())
+            if (CheckForObstacles() || _player.IsShadow)
                 return;
             Enemy.PlayerDetected = true;
             if (DistanceDetection > Vector3.Distance(_player.transform.position, Enemy.transform.position))

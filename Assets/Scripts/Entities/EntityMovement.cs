@@ -21,7 +21,7 @@ public class EntityMovement : MonoBehaviour
     protected float rayCeilingSize = 1.1f;
     protected float rayWallSize = 0.31f;
     protected float direction = 1;
-    public float Direction { get { return direction; } }
+    public float Direction { get { return direction; } set { direction = value; } }
 
     protected float globalGravity = -9.81f;
     protected float gravityScale = 1;
