@@ -5,27 +5,47 @@ using UnityEngine.Events;
 
 public class DetectionZone : Trigger
 {
-    public UnityEvent DetectedEvent;
+    public Enemy Enemy;
+    private PlayerAnimator _playerAnimator;
+    private PlayerStatus _playerStatus;
+    [HideInInspector] public float DistanceDetection = 0;
 
     public override void Start()
     {
         base.Start();
-        if (DetectedEvent == null)
-        {
-            DetectedEvent.AddListener(LogDetected);
-        }
+        _playerAnimator = FindObjectOfType<PlayerAnimator>();
+        _playerStatus = _playerAnimator.GetComponent<PlayerStatus>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            DetectedEvent.Invoke();
+            if (CheckForObstacles() || _playerStatus.IsShadow || _playerAnimator.IsInAmination)
+                return;
+            Enemy.PlayerDetected = true;
+            if (DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
+                Enemy.TimeStamp = 0;
+            else if (DistanceDetection == 0)
+                Enemy.TimeStamp = 0;
         }
     }
 
-    public static void LogDetected()
+    private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Detected");
+        if (other.gameObject.GetComponent<PlayerStatus>())
+        {
+            Enemy.PlayerDetected = false;
+        }
+    }
+
+
+    private bool CheckForObstacles()
+    {
+        if (Enemy.Controller == null)
+            return false;
+        if (Physics.Raycast(Enemy.transform.position, Vector3.right * Enemy.Controller.Direction, Vector3.Distance(Enemy.transform.position, _playerStatus.transform.position), Enemy.Controller.GroundType, QueryTriggerInteraction.Ignore))
+            return true;
+        return false;
     }
 }
