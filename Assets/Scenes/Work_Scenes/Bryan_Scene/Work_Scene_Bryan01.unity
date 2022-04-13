@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.003253417, g: 0.0020808969, b: 0.0015449636, a: 1}
+  m_IndirectSpecularColor: {r: 0.0032561943, g: 0.0020805933, b: 0.0015425701, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -307,7 +307,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
 --- !u!65 &95433681
 BoxCollider:
@@ -404,6 +404,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8288549701085702373, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
   m_PrefabInstance: {fileID: 1430886373}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &234863843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234863842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98290efb1d410a4438ee1deac8e1b871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerActionState: 0
+  CheckpointPos: {x: 0, y: 0, z: 0}
+  _pauseMenu: {fileID: 0}
+  _shadowEffectHandler: {fileID: 0}
 --- !u!114 &237998701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,7 +474,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
 --- !u!65 &264130795
 BoxCollider:
@@ -1036,7 +1052,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
 --- !u!65 &486579963
 BoxCollider:
@@ -1154,7 +1170,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
 --- !u!65 &633922280
 BoxCollider:
@@ -1232,6 +1248,55 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &675155419
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 675155421}
+  - component: {fileID: 675155420}
+  m_Layer: 0
+  m_Name: Light Probe Group
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!220 &675155420
+LightProbeGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675155419}
+  m_Enabled: 1
+  m_SourcePositions:
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: -1}
+  - {x: 1, y: -1, z: 1}
+  - {x: 1, y: -1, z: -1}
+  - {x: -1, y: 1, z: 1}
+  - {x: -1, y: 1, z: -1}
+  - {x: -1, y: -1, z: 1}
+  - {x: -1, y: -1, z: -1}
+  m_Dering: 1
+--- !u!4 &675155421
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675155419}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.1, y: 0.17, z: -1.23}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 22
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &748302510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,7 +1337,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
   _lightConnect:
   - {fileID: 310543259}
@@ -1496,13 +1561,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isSelected: 0
   _objectActive: 0
-  _useOnlyInShadow: 0
+  _useOnlyInShadow: 1
   _deactiveInteraction: 0
-  _uiHintPosition: {x: 0, y: 0, z: 0}
+  _uiHintPosition: {x: 0, y: 1.34, z: 0}
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
   _collisionMask:
     serializedVersion: 2
@@ -1597,7 +1662,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-406098
+  m_Name: pb_Mesh-78112
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1778,7 +1843,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1277638565}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 168c6965b2ccc3e44bba577521993f15, type: 3}
   m_Name: 
@@ -2140,7 +2205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2068371989, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5657562784316992918, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _objectManager
@@ -2286,6 +2351,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1238866321}
+    - target: {fileID: 8288549701085702360, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: _PauseMenu
+      value: 
+      objectReference: {fileID: 1277638569}
     - target: {fileID: 8668594363708895839, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -2298,7 +2367,8 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8288549701085702360, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
 --- !u!1 &1554306602
 GameObject:
@@ -2416,7 +2486,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
   _lightConnect: []
 --- !u!1 &1740805186 stripped
@@ -2492,7 +2562,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
 --- !u!65 &1912609391
 BoxCollider:
@@ -2683,7 +2753,7 @@ MonoBehaviour:
   _activeSound: 0
   _soundActiveTrigger: {fileID: 0}
   _soundDeactiveTrigger: {fileID: 0}
-  ObjectType: 
+  ObjectType: 0
   _debug: 0
 --- !u!65 &2043693890
 BoxCollider:
@@ -3117,7 +3187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8920498636436306402, guid: c6c6c68bc83524043869c5f1535acbfc, type: 3}
       propertyPath: _interactiveObjectList.Array.size
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8920498636436306402, guid: c6c6c68bc83524043869c5f1535acbfc, type: 3}
       propertyPath: _interactiveObjectList.Array.data[0]
@@ -3138,19 +3208,19 @@ PrefabInstance:
     - target: {fileID: 8920498636436306402, guid: c6c6c68bc83524043869c5f1535acbfc, type: 3}
       propertyPath: _interactiveObjectList.Array.data[4]
       value: 
-      objectReference: {fileID: 748302511}
+      objectReference: {fileID: 1098865985}
     - target: {fileID: 8920498636436306402, guid: c6c6c68bc83524043869c5f1535acbfc, type: 3}
       propertyPath: _interactiveObjectList.Array.data[5]
       value: 
-      objectReference: {fileID: 1098865985}
+      objectReference: {fileID: 1554306608}
     - target: {fileID: 8920498636436306402, guid: c6c6c68bc83524043869c5f1535acbfc, type: 3}
       propertyPath: _interactiveObjectList.Array.data[6]
       value: 
-      objectReference: {fileID: 1554306608}
+      objectReference: {fileID: 1912609390}
     - target: {fileID: 8920498636436306402, guid: c6c6c68bc83524043869c5f1535acbfc, type: 3}
       propertyPath: _interactiveObjectList.Array.data[7]
       value: 
-      objectReference: {fileID: 1912609390}
+      objectReference: {fileID: 2043693889}
     - target: {fileID: 8920498636436306402, guid: c6c6c68bc83524043869c5f1535acbfc, type: 3}
       propertyPath: _interactiveObjectList.Array.data[8]
       value: 

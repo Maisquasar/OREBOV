@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using InteractObject;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -12,75 +13,58 @@ public class PlayerInteraction : MonoBehaviour
         Link,
     }
 
-    [SerializeField]
-    private float _detectDistance = 1f;
+    [SerializeField] private float _detectDistance = 1f;
+    [Range(-1f, 1f)]
+    [SerializeField] private float _detectionDirection = 0.1f;
 
-    [SerializeField]
-    private InteractionState _interactionState;
-    public InteractionState Interaction { get { return _interactionState; } }
+    [SerializeField] private InteractionState _interactionState;
 
-    // ObjectManger Component
+    [Header("Object Manager")]
+    [SerializeField] private ObjectManager _objectManager;
+    [SerializeField] private InteractiveObject _objectInteractive; // ObjectInteract selected
 
-    [SerializeField]
-    private ObjectManager _objectManager;
-    // ObjectInteract selected
-    [SerializeField]
-    private InteractiveObject _objectInteractive;
     [Header("UI")]
-    [SerializeField]
-    private GameObject _uiInteract;
-
+    [SerializeField] private GameObject _uiInteract;
     private Quaternion _uiRot;
 
     [Header("Debug")]
-    [SerializeField]
-    private bool _debugActive;
-
-    [SerializeField]
-    public bool _inputReset; // Use for the holding the input
-    public bool CanStopNow = true; // Used to Lock the player during pushing animation
+    [SerializeField] private bool _debugActive;
+    [SerializeField] public bool _inputReset; // Use for the holding input state
 
     private Vector2 _axis;
-    private Player _playerStatus;
+    private PlayerStatus _playerStatus;
+    public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
-    public string getObjectType { get { return _objectInteractive.ObjectType; } }
+    public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
+    public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
+    public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
+    public InteractiveObject Object { get { return _objectInteractive; } }
+    public InteractionState Interaction { get { return _interactionState; } }
 
     private void Start()
     {
-        _playerStatus = GetComponent<Player>();
-        _uiRot = _uiInteract.transform.rotation;
-        if (_objectManager == null)
-            _objectManager = new ObjectManager();
-
+        _playerStatus = GetComponent<PlayerStatus>();
         _uiRot = _uiInteract.transform.rotation;
     }
 
     private void Update()
     {
+        if (!_inputReset)
+            HoldInput();
+
         if (_interactionState == InteractionState.Link)
         {
             _objectInteractive.UpdateItem(_axis);
         }
         else
         {
-            if (!_inputReset)
-                HoldInput();
-            if (_objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance) != null)
+
+            InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance, _detectionDirection);
+            if (objectClose != null)
             {
-                InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance);
-                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow)
-                {
                     UnselectObject(objectClose);
-                    ChangeSelectedObject(objectClose);
-                }
-                else if (!_playerStatus.IsShadow)
+                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow || !objectClose._useOnlyInShadow)
                 {
-                    UnselectObject(objectClose);
-                    _uiInteract.SetActive(false);
-                }
-                if (!objectClose._useOnlyInShadow)
-                {
-                    UnselectObject(objectClose);
                     ChangeSelectedObject(objectClose);
                 }
             }
@@ -89,28 +73,21 @@ public class PlayerInteraction : MonoBehaviour
                 UnselectObject();
             }
         }
-
-
-    }
-
-    public Vector3 getInteractiveObjectPos { get { return _objectInteractive.transform.position; } }
-    public Vector3 getInteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
-
-
-    private void LateUpdate()
-    {
-
     }
 
     private void OnDrawGizmos()
     {
+        if(_objectManager == null)
+        {
+            Debug.LogError("Object Manager is missing in Player Interaction");
+        }
+
         if (_debugActive)
         {
             Gizmos.DrawWireSphere(transform.position, _detectDistance);
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
         }
-
     }
 
     #region Input Managing
@@ -158,6 +135,7 @@ public class PlayerInteraction : MonoBehaviour
     private void CancelInput()
     {
         if (CanStopNow) _inputReset = true;
+        if (_objectInteractive != null) _objectInteractive.CancelUpdate();
 
     }
     #endregion
@@ -172,6 +150,7 @@ public class PlayerInteraction : MonoBehaviour
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractive.HintPosition;
         _uiInteract.transform.rotation = _uiRot;
+        _uiInteract.transform.SetParent(_objectInteractive.transform);
         _interactionState = InteractionState.Selected;
     }
 
@@ -182,6 +161,7 @@ public class PlayerInteraction : MonoBehaviour
             _objectInteractive._isSelected = false;
             _objectInteractive = null;
             _uiInteract.SetActive(false);
+            _uiInteract.transform.SetParent(transform);
             _interactionState = InteractionState.None;
         }
     }
@@ -198,7 +178,7 @@ public class PlayerInteraction : MonoBehaviour
 
     #endregion
 
-
+    #region Link Object
     public void LinkObject(InteractiveObject objectToLink)
     {
         UnselectObject();
@@ -211,4 +191,7 @@ public class PlayerInteraction : MonoBehaviour
         UnselectObject();
         _interactionState = InteractionState.None;
     }
+
+    #endregion 
 }
+
