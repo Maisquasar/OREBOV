@@ -142,7 +142,7 @@ public class PlayerStatus : Entity
 
     public void OnJump(CallbackContext context)
     {
-        if ((PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
+        if ((PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link && !_playerAnimator.IsInAmination)
             if (context.started)
                 Controller.Jump();
     }
