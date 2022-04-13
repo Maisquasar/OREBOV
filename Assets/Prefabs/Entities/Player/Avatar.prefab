@@ -20,7 +20,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2068371994
 RectTransform:
   m_ObjectHideFlags: 0
@@ -29,7 +29,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2068371988}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 2.9574928}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2.8274603, y: 2.8274603, z: 2.8274603}
   m_Children: []
   m_Father: {fileID: 8668594363708895839}
@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 25.895124, y: -1.441}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0.7497, y: 0.7953}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2068371993
@@ -2329,6 +2329,7 @@ MonoBehaviour:
   CheckpointPos: {x: 0, y: 0, z: 0}
   _pauseMenu: {fileID: 0}
   _shadowEffectHandler: {fileID: 1276067026}
+  Controller: {fileID: 0}
 --- !u!1 &8498706478600403111
 GameObject:
   m_ObjectHideFlags: 0
