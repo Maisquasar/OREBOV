@@ -6,7 +6,7 @@ using UnityEngine;
 public class MobileEnemy : Enemy
 {
     [Header("Controller")]
-    [SerializeField] new public MobileEnemyMovement Controller;
+    [HideInInspector] public MobileEnemyMovement _controller;
 
     [Tooltip("The time the enemy search the player")]
     [SerializeField] float SearchTime = 1f;
@@ -18,8 +18,11 @@ public class MobileEnemy : Enemy
     float _secondCheckStuck = 2f;
     Vector3 _precPoS;
 
+    public override EntityMovement Controller { get { return _controller; } }
+
     override public void Start()
     {
+        _controller = GetComponent<MobileEnemyMovement>();
         _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
     }
@@ -28,7 +31,6 @@ public class MobileEnemy : Enemy
     {
         yield return new WaitUntil(() => _checkpointManager != null);
         base.Start();
-        //CheckpointChange();
     }
 
     public void SetCheckpointManager(EnemyCheckpointManager manage)
@@ -47,7 +49,7 @@ public class MobileEnemy : Enemy
         base.Update();
         if (!stillWaiting)
         {
-            Controller.Move(Controller.Direction);
+            _controller.Move(_controller.Direction);
             if (!_followPlayer && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x)
             {
                 CheckpointChange();
@@ -62,7 +64,7 @@ public class MobileEnemy : Enemy
         // Check if same position every {_secondCheckStuck} in seconds.
         if (_timeStamp <= Time.time)
         {
-            if (_precPoS == transform.position && _followPlayer && !stillWaiting)
+            if (_precPoS == (Vector3)transform.position && _followPlayer)
             {
                 StopFollowingPlayer();
             }
@@ -84,7 +86,7 @@ public class MobileEnemy : Enemy
         this.lastPlayerPos = lastPlayerPos;
         Debug.Log("Follow Player");
         _followPlayer = true;
-        Controller.NewCheckpoint(lastPlayerPos);
+        _controller.NewCheckpoint(lastPlayerPos);
     }
 
     bool decrease = false;
@@ -125,14 +127,14 @@ public class MobileEnemy : Enemy
                 }
             }
         }
-        Controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
+        _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
 
     IEnumerator WaitPlayerSearch()
     {
         stillWaiting = true;
         yield return new WaitForSeconds(SearchTime);
-        Controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
+        _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
         stillWaiting = false;
     }
 

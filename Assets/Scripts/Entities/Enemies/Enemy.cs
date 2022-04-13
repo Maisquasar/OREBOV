@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Enemy : Entity
 {
-    internal EntityMovement Controller;
+    private EntityMovement _entityController;
 
     [Header("Detection Zones")]
     [SerializeField] public DetectionZone CloseDetectionZone;
@@ -15,17 +15,18 @@ public class Enemy : Entity
     [Header("Range Settings")]
     [SerializeField] private float DetectionRange;
     [SerializeField] public float DetectionTime = 100f;
-    [Range(0,1)] [SerializeField] private float _maxVibrationIntensity = 0.5f;
+    [Range(0, 1)] [SerializeField] private float _maxVibrationIntensity = 0.5f;
     [SerializeField] private float _distanceVibration = 10;
-
     [Header("Gauge Settings")]
     [SerializeField] private float GaugeAdd = 25;
     [SerializeField] private float GaugeRemove = 10;
 
     [HideInInspector] public bool PlayerDetected = false;
     [HideInInspector] public float TimeStamp = 0;
-
     protected PlayerStatus _player;
+
+    public virtual EntityMovement Controller { get { return _entityController; } }
+
     // Start is called before the first frame update
     virtual public void Start()
     {
@@ -36,10 +37,10 @@ public class Enemy : Entity
 
     private void OnDrawGizmos()
     {
-        if (Controller == null)
+        if (_entityController == null)
             return;
         Gizmos.color = Color.magenta;
-        Gizmos.DrawLine(transform.position, transform.position + (Controller.Direction * DetectionRange * Vector3.left));
+        Gizmos.DrawLine(transform.position, transform.position + (_entityController.Direction * DetectionRange * Vector3.left));
     }
 
     // Update is called once per frame
