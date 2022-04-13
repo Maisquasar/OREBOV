@@ -65,10 +65,10 @@ public class PlayerAnimator : MonoBehaviour
         yield return null;
     }
 
-    public void MovePlayerDepthTo(Vector2 deltaPos)
+    public void MovePlayerPos(Vector2 deltaPos, float deltaX)
     {
         _isInMovement = true;
-        StartCoroutine(MovePlayerDepth(deltaPos));
+        StartCoroutine(MovePlayerDeltaX(deltaPos,deltaX));
     }
     private IEnumerator MovePlayerDepth(Vector2 deltaPos)
     {
@@ -81,5 +81,17 @@ public class PlayerAnimator : MonoBehaviour
         }
         _isInMovement = false;
         yield return null;
+    }
+
+    private IEnumerator MovePlayerDeltaX(Vector2 deltaPos, float deltaX)
+    {
+        float currentPos = transform.position.x;
+        for (float timer = _MoveTimer; timer > 0; timer -= Time.deltaTime)
+        {
+            float local = Mathf.Lerp(deltaX, currentPos, timer / _MoveTimer);
+            transform.position = new Vector3(local, transform.position.y, transform.position.z);
+            yield return Time.deltaTime;
+        }
+        yield return MovePlayerDepth(deltaPos);
     }
 }
