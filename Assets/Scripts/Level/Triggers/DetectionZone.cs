@@ -35,10 +35,12 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
+            if (CheckForObstacles() || _playerStatus.IsShadow || _playerAnimator.IsInAmination)
+                return;
             Enemy.PlayerDetected = false;
+            StartCoroutine(WaitForNextFrame());
         }
     }
-
 
     private bool CheckForObstacles()
     {
@@ -47,5 +49,12 @@ public class DetectionZone : Trigger
         if (Physics.Raycast(Enemy.transform.position, Vector3.right * Enemy.Controller.Direction, Vector3.Distance(Enemy.transform.position, _playerStatus.transform.position), Enemy.Controller.GroundType, QueryTriggerInteraction.Ignore))
             return true;
         return false;
+    }
+
+    IEnumerator WaitForNextFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        if (!Enemy.PlayerDetected)
+            Enemy.GoToPlayer(_playerStatus.transform.position);
     }
 }
