@@ -11,12 +11,16 @@ public class MobileEnemy : Enemy
     [Tooltip("The time the enemy search the player")]
     [SerializeField] float SearchTime = 1f;
     EnemyCheckpointManager _checkpointManager;
-    bool followPlayer = false;
-    int currentCheckpoint;
+    bool _followPlayer = false;
+    int _currentCheckpoint;
+
+    float _timeStamp;
+    float _secondCheckStuck = 2f;
+    Vector3 _precPoS;
 
     override public void Start()
     {
-        currentCheckpoint = 0;
+        _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
     }
 
@@ -44,16 +48,34 @@ public class MobileEnemy : Enemy
         if (!stillWaiting)
         {
             Controller.Move(Controller.Direction);
-            if (!followPlayer && (int)transform.position.x == (int)_checkpointManager.Checkpoints[currentCheckpoint].transform.position.x)
+            if (!_followPlayer && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x)
             {
                 CheckpointChange();
             }
-            else if (followPlayer && (int)transform.position.x == (int)lastPlayerPos.x)
+            else if (_followPlayer && (int)transform.position.x == (int)lastPlayerPos.x)
             {
-                followPlayer = false;
-                StartCoroutine(WaitPlayerSearch());
+                StopFollowingPlayer();
             }
         }
+
+
+        // Check if same position every {_secondCheckStuck} in seconds.
+        if (_timeStamp <= Time.time)
+        {
+            if (_precPoS == transform.position && _followPlayer && !stillWaiting)
+            {
+                StopFollowingPlayer();
+            }
+            _precPoS = transform.position;
+            _timeStamp = Time.time + _secondCheckStuck;
+        }
+    }
+
+    void StopFollowingPlayer()
+    {
+        Debug.Log("Stop following Player");
+        _followPlayer = false;
+        StartCoroutine(WaitPlayerSearch());
     }
 
     Vector3 lastPlayerPos;
@@ -61,7 +83,7 @@ public class MobileEnemy : Enemy
     {
         this.lastPlayerPos = lastPlayerPos;
         Debug.Log("Follow Player");
-        followPlayer = true;
+        _followPlayer = true;
         Controller.NewCheckpoint(lastPlayerPos);
     }
 
@@ -71,53 +93,53 @@ public class MobileEnemy : Enemy
         StartCoroutine(WaitCheckpoint());
         if (!_checkpointManager.Reverse)
         {
-            if (currentCheckpoint < _checkpointManager.Checkpoints.Count - 1)
-                currentCheckpoint++;
+            if (_currentCheckpoint < _checkpointManager.Checkpoints.Count - 1)
+                _currentCheckpoint++;
             else
-                currentCheckpoint = 0;
+                _currentCheckpoint = 0;
         }
         else
         {
             if (decrease)
             {
-                if (currentCheckpoint > 0)
+                if (_currentCheckpoint > 0)
                 {
-                    currentCheckpoint--;
+                    _currentCheckpoint--;
                 }
                 else
                 {
-                    currentCheckpoint++;
+                    _currentCheckpoint++;
                     decrease = false;
                 }
             }
             else
             {
-                if (currentCheckpoint < _checkpointManager.Checkpoints.Count - 1)
+                if (_currentCheckpoint < _checkpointManager.Checkpoints.Count - 1)
                 {
-                    currentCheckpoint++;
+                    _currentCheckpoint++;
                 }
                 else
                 {
-                    currentCheckpoint--;
+                    _currentCheckpoint--;
                     decrease = true;
                 }
             }
         }
-        Controller.NewCheckpoint(_checkpointManager.Checkpoints[currentCheckpoint].transform.position);
+        Controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
 
     IEnumerator WaitPlayerSearch()
     {
         stillWaiting = true;
         yield return new WaitForSeconds(SearchTime);
-        Controller.NewCheckpoint(_checkpointManager.Checkpoints[currentCheckpoint].transform.position);
+        Controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
         stillWaiting = false;
     }
 
     bool stillWaiting = false;
     IEnumerator WaitCheckpoint()
     {
-        int indexAtStart = currentCheckpoint;
+        int indexAtStart = _currentCheckpoint;
         stillWaiting = true;
         yield return new WaitForSeconds(_checkpointManager.Checkpoints[indexAtStart].Time);
         stillWaiting = false;

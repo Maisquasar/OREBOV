@@ -6,8 +6,8 @@ public class MobileEnemyMovement : EntityMovement
 {
     [SerializeField] AnimationCurve _velocityCurve;
 
-    Vector3 GoTo;
-    float time;
+    Vector3 _goTo;
+    float _time;
 
     private new void Start()
     {
@@ -17,36 +17,36 @@ public class MobileEnemyMovement : EntityMovement
         _rayWallSize = 1;
     }
 
-    new private void OnDrawGizmos()
+new private void OnDrawGizmos()
     {
         base.OnDrawGizmos();
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(GoTo, 1);
+        Gizmos.DrawSphere(_goTo, 1);
     }
 
     public void Move(float move)
     {
-        if (GoTo == null)
+        if (_goTo == null)
             return;
         move *= speed;
-        if (GoTo.x > transform.position.x)
+        if (_goTo.x > transform.position.x)
             _direction = 1;
-        else if (GoTo.x < transform.position.x)
+        else if (_goTo.x < transform.position.x)
             _direction = -1;
 
         if (_grounded)
-            _rb.velocity = new Vector2(_velocityCurve.Evaluate(time) * move, _rb.velocity.y);
+            _rb.velocity = new Vector2(_velocityCurve.Evaluate(_time) * move, _rb.velocity.y);
 
         if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
         }
-        time += Time.deltaTime;
+        _time += Time.deltaTime;
     }
 
     public void NewCheckpoint(Vector3 to)
     {
-        GoTo = to;
+        _goTo = to;
     }
 
     override protected void WallDetection()

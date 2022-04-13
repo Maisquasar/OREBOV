@@ -9,6 +9,7 @@ public class DetectionZone : Trigger
     private PlayerAnimator _playerAnimator;
     private PlayerStatus _playerStatus;
     [HideInInspector] public float DistanceDetection = 0;
+    [SerializeField] bool hideOnLoad;
 
     public override void Start()
     {
