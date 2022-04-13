@@ -53,7 +53,6 @@ public class ShadowCaster : MonoBehaviour
         }
         return false;
     }
-
     protected void OnDrawGizmos()
     {
         LightSubType[] lights = LightManager.GetUsableLights();
