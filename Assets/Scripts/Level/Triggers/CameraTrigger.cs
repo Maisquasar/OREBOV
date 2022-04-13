@@ -62,7 +62,6 @@ public class CameraTrigger : Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        _resetTrigger = true;
         DetectPlayer(other);
     }
 
@@ -91,11 +90,13 @@ public class CameraTrigger : Trigger
             if (_checkPlayerState && _playerStatus.IsShadow == _isShadow)
             {
                 ActiveCameraMove();
+                _resetTrigger = false;
                 return;
             }
             if (!_checkPlayerState)
             {
                 ActiveCameraMove();
+                _resetTrigger = false;
             }
         }
     }
@@ -123,24 +124,27 @@ public class CameraTrigger : Trigger
         _goToEnd = false;
         _isActivate = true;
         _cameraBehavior.ActiveFreeMode();
+        Vector2 _sizeTemp = _cameraBehavior.WindowSize;
+        Vector2 _offsetTemp = _cameraBehavior.WindowOffset;
+        StartCoroutine(LerpFromToWindowSize(_cameraBehavior.WindowSize, _windowSize, switchTo[1].TravelTime));
+        StartCoroutine(LerpFromToWindowOffset(_cameraBehavior.WindowOffset, _windowOffset, switchTo[1].TravelTime));
         for (int i = 0; i < switchTo.Count - 1; i++)
         {   
-            Vector2 _sizeTemp = _cameraBehavior.WindowSize;
-            Vector2 _offsetTemp = _cameraBehavior.WindowOffset;
+            
             StartCoroutine(LerpFromTo(switchTo[i].transform.position, switchTo[i + 1].transform.position, switchTo[i + 1].TravelTime));
-            StartCoroutine(LerpFromToWindowSize(_cameraBehavior.WindowSize, _windowSize, switchTo[i + 1].TravelTime));
-            StartCoroutine(LerpFromToWindowOffset(_cameraBehavior.WindowOffset, _windowOffset, switchTo[i + 1].TravelTime));
+         
 
-            if (reverse)
-            {
-                _windowOffset = _offsetTemp;
-                _windowSize = _sizeTemp;
-            }
+            
             yield return StartCoroutine(LerpFromTo(switchTo[i].transform.rotation, switchTo[i + 1].transform.rotation, switchTo[i + 1].TravelTime));
             if (reverse)
                 Swap();
             _goToEnd = true;
             EndMouvement();
+            if (reverse)
+            {
+                _windowOffset = _offsetTemp;
+                _windowSize = _sizeTemp;
+            }
         }
     }
 
@@ -187,10 +191,7 @@ public class CameraTrigger : Trigger
     {
         if (_resetFreeMouvement) _cameraBehavior.DeactiveFreeMode();
         _isActivate = false;
-        
-
-
-
+       
     }
 
     // Swap values between startPos and SwitchTo.
