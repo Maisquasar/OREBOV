@@ -62,6 +62,8 @@ public class Enemy : Entity
         }
     }
 
+    virtual public void GoToPlayer(Vector3 lastPlayerPos) { }
+
     private void OnApplicationQuit()
     {
         if (Gamepad.current == null)

@@ -8,9 +8,10 @@ public class MobileEnemy : Enemy
     [Header("Controller")]
     [SerializeField] new public MobileEnemyMovement Controller;
 
-    [Header("Checkpoint Manager")]
-    [Space]
+    [Tooltip("The time the enemy search the player")]
+    [SerializeField] float SearchTime = 1f;
     EnemyCheckpointManager _checkpointManager;
+    bool followPlayer = false;
     int currentCheckpoint;
 
     override public void Start()
@@ -43,11 +44,25 @@ public class MobileEnemy : Enemy
         if (!stillWaiting)
         {
             Controller.Move(Controller.Direction);
-            if ((int)transform.position.x == (int)_checkpointManager.Checkpoints[currentCheckpoint].transform.position.x)
+            if (!followPlayer && (int)transform.position.x == (int)_checkpointManager.Checkpoints[currentCheckpoint].transform.position.x)
             {
                 CheckpointChange();
             }
+            else if (followPlayer && (int)transform.position.x == (int)lastPlayerPos.x)
+            {
+                followPlayer = false;
+                StartCoroutine(WaitPlayerSearch());
+            }
         }
+    }
+
+    Vector3 lastPlayerPos;
+    override public void GoToPlayer(Vector3 lastPlayerPos) 
+    {
+        this.lastPlayerPos = lastPlayerPos;
+        Debug.Log("Follow Player");
+        followPlayer = true;
+        Controller.NewCheckpoint(lastPlayerPos);
     }
 
     bool decrease = false;
@@ -89,6 +104,14 @@ public class MobileEnemy : Enemy
             }
         }
         Controller.NewCheckpoint(_checkpointManager.Checkpoints[currentCheckpoint].transform.position);
+    }
+
+    IEnumerator WaitPlayerSearch()
+    {
+        stillWaiting = true;
+        yield return new WaitForSeconds(SearchTime);
+        Controller.NewCheckpoint(_checkpointManager.Checkpoints[currentCheckpoint].transform.position);
+        stillWaiting = false;
     }
 
     bool stillWaiting = false;

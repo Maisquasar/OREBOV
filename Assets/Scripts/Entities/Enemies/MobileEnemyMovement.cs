@@ -17,6 +17,13 @@ public class MobileEnemyMovement : EntityMovement
         _rayWallSize = 1;
     }
 
+    new private void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(GoTo, 1);
+    }
+
     public void Move(float move)
     {
         if (GoTo == null)
