@@ -16,6 +16,10 @@ public class CameraTrigger : Trigger
     [SerializeField] private bool _checkPlayerState;
     [SerializeField] private bool _isShadow;
 
+    [Header("Camera Setting")]
+    [SerializeField] private Vector2 _windowSize;
+    [SerializeField] private Vector2 _windowOffset;
+
     private Camera _cameraToMove;
     private CameraBehavior _cameraBehavior;
     private CameraCheckPoint _initialPos;
@@ -120,8 +124,18 @@ public class CameraTrigger : Trigger
         _isActivate = true;
         _cameraBehavior.ActiveFreeMode();
         for (int i = 0; i < switchTo.Count - 1; i++)
-        {
+        {   
+            Vector2 _sizeTemp = _cameraBehavior.WindowSize;
+            Vector2 _offsetTemp = _cameraBehavior.WindowOffset;
             StartCoroutine(LerpFromTo(switchTo[i].transform.position, switchTo[i + 1].transform.position, switchTo[i + 1].TravelTime));
+            StartCoroutine(LerpFromToWindowSize(_cameraBehavior.WindowSize, _windowSize, switchTo[i + 1].TravelTime));
+            StartCoroutine(LerpFromToWindowOffset(_cameraBehavior.WindowOffset, _windowOffset, switchTo[i + 1].TravelTime));
+
+            if (reverse)
+            {
+                _windowOffset = _offsetTemp;
+                _windowSize = _sizeTemp;
+            }
             yield return StartCoroutine(LerpFromTo(switchTo[i].transform.rotation, switchTo[i + 1].transform.rotation, switchTo[i + 1].TravelTime));
             if (reverse)
                 Swap();
@@ -150,15 +164,51 @@ public class CameraTrigger : Trigger
         _cameraToMove.transform.rotation = goTo;
     }
 
+    IEnumerator LerpFromToWindowSize(Vector2 initial, Vector2 goTo, float duration)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            _cameraBehavior.WindowSize = Vector2.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+
+    }
+    IEnumerator LerpFromToWindowOffset(Vector2 initial, Vector2 goTo, float duration)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            _cameraBehavior.WindowOffset = Vector2.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+
+    }
+
     private void EndMouvement()
     {
         if (_resetFreeMouvement) _cameraBehavior.DeactiveFreeMode();
         _isActivate = false;
+        
+
+
+
     }
 
     // Swap values between startPos and SwitchTo.
-    void Swap()
+    private void Swap()
     {
         switchToCamera.Reverse();
+
+    }
+
+    private void SwapWindow()
+    {
+        Vector2 _sizeTemp = _cameraBehavior.WindowSize;
+        Vector2 _offsetTemp = _cameraBehavior.WindowOffset;
+       
+        if (reverse)
+        {
+            _windowOffset = _offsetTemp;
+            _windowSize = _sizeTemp;
+        }
     }
 }
