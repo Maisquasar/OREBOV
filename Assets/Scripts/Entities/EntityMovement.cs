@@ -1,4 +1,4 @@
-    using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,7 +10,7 @@ public class EntityMovement : MonoBehaviour
     [Space]    [Header("Collision Settings")]    [Space]
     [SerializeField] public LayerMask GroundType;
     [Tooltip("Manually place rays (May lag if too much)")]
-    [SerializeField] private List<float> ray;
+    [SerializeField] protected List<float> ray;
 
     [Space]    [Header("Velocity Settings")]    [Space]
     [SerializeField] protected float speed;
@@ -70,7 +70,6 @@ public class EntityMovement : MonoBehaviour
         CeilingDetection();
 
         // Wall Detection
-        //if (!GetComponent<PlayerStatus>())
         WallDetection();
         SetGravity();
     }
@@ -95,7 +94,7 @@ public class EntityMovement : MonoBehaviour
         }
     }
 
-    protected void WallDetection()
+    virtual protected void WallDetection()
     {
         for (int i = 0; i < ray.Count; i++)
         {
@@ -126,8 +125,8 @@ public class EntityMovement : MonoBehaviour
     }
 
     protected virtual void LandOnGround()
-    { 
-        _grounded = true;   
+    {
+        _grounded = true;
     }
 
     protected virtual bool DetectWall()

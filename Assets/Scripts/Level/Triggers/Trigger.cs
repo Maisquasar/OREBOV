@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Trigger : MonoBehaviour
 {
+    [SerializeField] bool ShowOnLoad;
     public virtual void Start()
     {
-        GetComponent<MeshRenderer>().enabled = false;
+        if (!ShowOnLoad)
+            GetComponent<MeshRenderer>().enabled = false;
         gameObject.layer = LayerMask.NameToLayer("Triggers");
     }
 }

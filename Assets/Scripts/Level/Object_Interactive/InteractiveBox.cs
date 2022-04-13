@@ -11,7 +11,7 @@ public class InteractiveBox : InteractiveObject
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] private float _speedBox = 2f;
     [SerializeField] private float _moveTime = 1f;
-    [SerializeField] private bool _activeMouvement = false;
+    private bool _activeMouvement = false;
 
     private Rigidbody _rigidbodyPlayer;
     private float _moveTimer = 0f;
@@ -26,25 +26,32 @@ public class InteractiveBox : InteractiveObject
     private void Start()
     {
         ObjectType = InteractObjects.Box;
+        _activeMouvement = false;
     }
 
     protected override void ActiveItem(GameObject player)
     {
-        base.ActiveItem(player);
-        transform.SetParent(player.transform);
-        PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
-        _playerStatus = _playerGO.GetComponent<PlayerStatus>();
-        PlayerInteract.LinkObject(this);
-        _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
-        _activeMouvement = true;
-        StartCoroutine(PauseBoxMouvement());
+        if (!_objectActive)
+        {
+            _objectActive = true;
+            base.ActiveItem(player);
+            PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
+            _playerStatus = _playerGO.GetComponent<PlayerStatus>();
+            PlayerInteract.LinkObject(this);
+            _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
+        }
     }
 
     protected override void DeactiveItem()
     {
-        base.DeactiveItem();
-        transform.SetParent(null);
-        _playerGO.GetComponent<PlayerInteraction>().UnlinkObject();
+        _objectActive = false;
+        if (!_activeMouvement)
+        {
+            base.DeactiveItem();
+            _playerGO.GetComponent<PlayerInteraction>().UnlinkObject();
+            _playerStatus.PlayerActionState = States.PlayerAction.IDLE;
+        }
+        
     }
 
     public override void UpdateItem(Vector2 axis)
@@ -54,22 +61,10 @@ public class InteractiveBox : InteractiveObject
         {
 
             Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
-            if (_useOnlyInShadow )
+            if (!_activeMouvement && axis.normalized.x != 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
             {
-
-                if (!_activeMouvement && axis.normalized.x != 0 && _playerStatus.IsShadow)
-                {
-                    StartCoroutine(MoveBox(axis.normalized.x));
-                    _playerStatus.PlayRightAnimation(axis.x);
-                }
-            }else
-            {
-                if (!_activeMouvement && axis.normalized.x != 0)
-                {
-                    StartCoroutine(MoveBox(axis.normalized.x));
-                    _playerStatus.PlayRightAnimation(axis.x);
-
-                }
+                StartCoroutine(MoveBox(axis.normalized.x));
+                _playerStatus.PlayRightAnimation(axis.x);
             }
         }
     }
@@ -120,6 +115,7 @@ public class InteractiveBox : InteractiveObject
         PlayerInteract.CanStopNow = false;
         Vector3 startPos = _playerGO.transform.position;
         Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
+        Vector3 delta = transform.position - startPos;
         Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
         if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
         {
@@ -130,13 +126,13 @@ public class InteractiveBox : InteractiveObject
         while (_moveTimer < _moveTime)
         {
             _rigidbodyPlayer.position = Vector3.Lerp(startPos, endPos, _moveTimer / _moveTime);
+            transform.position = _rigidbodyPlayer.position + delta;
             _moveTimer += Time.deltaTime;
             yield return Time.deltaTime;
         }
         _moveTimer = 0f;
         _rigidbodyPlayer.velocity = Vector3.zero;
         StartCoroutine(PauseBoxMouvement());
-        DeactiveItem();
     }
 
     private IEnumerator PauseBoxMouvement()
@@ -144,11 +140,11 @@ public class InteractiveBox : InteractiveObject
         PlayerInteract.CanStopNow = true;
         while (_moveTimer < _timeBetweenMove)
         {
-
             _moveTimer += Time.deltaTime;
             yield return Time.deltaTime;
         }
         _activeMouvement = false;
         _moveTimer = 0f;
+        if (!_objectActive) DeactiveItem();
     }
 }

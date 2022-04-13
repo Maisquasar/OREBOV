@@ -14,7 +14,7 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     [SerializeField] private float _detectDistance = 1f;
-    [Range(0f, 1f)]
+    [Range(-1f, 1f)]
     [SerializeField] private float _detectionDirection = 0.1f;
 
     [SerializeField] private InteractionState _interactionState;
@@ -29,7 +29,7 @@ public class PlayerInteraction : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool _debugActive;
-    [SerializeField] public bool _inputReset; // Use for the holding the input
+    [SerializeField] public bool _inputReset; // Use for the holding input state
 
     private Vector2 _axis;
     private PlayerStatus _playerStatus;
@@ -38,7 +38,7 @@ public class PlayerInteraction : MonoBehaviour
     public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
     public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
     public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
-    public InteractiveObject Object { get { return _objectInteractive != null ? _objectInteractive : null; } }
+    public InteractiveObject Object { get { return _objectInteractive; } }
     public InteractionState Interaction { get { return _interactionState; } }
 
     private void Start()
@@ -135,6 +135,7 @@ public class PlayerInteraction : MonoBehaviour
     private void CancelInput()
     {
         if (CanStopNow) _inputReset = true;
+        if (_objectInteractive != null) _objectInteractive.CancelUpdate();
 
     }
     #endregion
@@ -149,6 +150,7 @@ public class PlayerInteraction : MonoBehaviour
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractive.HintPosition;
         _uiInteract.transform.rotation = _uiRot;
+        _uiInteract.transform.SetParent(_objectInteractive.transform);
         _interactionState = InteractionState.Selected;
     }
 
@@ -159,6 +161,7 @@ public class PlayerInteraction : MonoBehaviour
             _objectInteractive._isSelected = false;
             _objectInteractive = null;
             _uiInteract.SetActive(false);
+            _uiInteract.transform.SetParent(transform);
             _interactionState = InteractionState.None;
         }
     }

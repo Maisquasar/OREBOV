@@ -10,6 +10,8 @@ public class InteractiveSwitch : InteractiveObject
     [SerializeField]
     private float _handleAmplitude = 0.0442f;
     [SerializeField]
+    private float _activationCooldown = 0.0f;
+    [SerializeField]
     private float _handleSpeed = 0.3f;
     [Header("Light")]
     [SerializeField]
@@ -23,31 +25,39 @@ public class InteractiveSwitch : InteractiveObject
 
     protected override void ActiveItem(GameObject player)
     {
-        base.ActiveItem(player);
-        StartCoroutine(activateLever());
+        if (_activationCooldown > 0) return;
+        if (_objectActive)
+        {
+            base.DeactiveItem();
+            StartCoroutine(desactivateLever());
+        }
+        else
+        {
+            base.ActiveItem(player);
+            StartCoroutine(activateLever());
+        }
+        _objectActive = !_objectActive;
     }
     
     protected override void DeactiveItem()
     {
-        base.DeactiveItem();
-        StartCoroutine(desactivateLever());
     }
 
     private IEnumerator activateLever()
     {
-        float timer = _handleSpeed;
+        _activationCooldown = _handleSpeed;
         bool active = false;
-        while (timer > 0)
+        while (_activationCooldown > 0)
         {
             Vector3 tmp = _handle.transform.localPosition;
-            tmp.z = 2 * _handleAmplitude * (timer/_handleSpeed) - _handleAmplitude;
+            tmp.z = 2 * _handleAmplitude * (_activationCooldown / _handleSpeed) - _handleAmplitude;
             _handle.transform.localPosition = tmp;
             if (!active && tmp.z < 0)
             {
                 active = true;
                 toggleLamps();
             }
-            timer -= Time.deltaTime;
+            _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
         }
         yield return null;
@@ -55,19 +65,19 @@ public class InteractiveSwitch : InteractiveObject
 
     private IEnumerator desactivateLever()
     {
-        float timer = _handleSpeed;
+        _activationCooldown = _handleSpeed;
         bool active = false;
-        while (timer > 0)
+        while (_activationCooldown > 0)
         {
             Vector3 tmp = _handle.transform.localPosition;
-            tmp.z = -2 * _handleAmplitude * (timer / _handleSpeed) + _handleAmplitude;
+            tmp.z = -2 * _handleAmplitude * (_activationCooldown / _handleSpeed) + _handleAmplitude;
             _handle.transform.localPosition = tmp;
             if (!active && tmp.z > 0)
             {
                 active = true;
                 toggleLamps();
             }
-            timer -= Time.deltaTime;
+            _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
         }
         yield return null;
