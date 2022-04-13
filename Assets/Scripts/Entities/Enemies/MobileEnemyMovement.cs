@@ -27,14 +27,8 @@ public class MobileEnemyMovement : EntityMovement
         else if (GoTo.x < transform.position.x)
             _direction = -1;
 
-
         if (_grounded)
             _rb.velocity = new Vector2(_velocityCurve.Evaluate(time) * move, _rb.velocity.y);
-
-        /*
-        if (DetectWall())
-            _direction *= -1;
-        */
 
         if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
         {
@@ -65,6 +59,7 @@ public class MobileEnemyMovement : EntityMovement
             }
         }
     }
+
     protected override bool DetectWall()
     {
         for (int i = 0; i < ray.Count; i++)
