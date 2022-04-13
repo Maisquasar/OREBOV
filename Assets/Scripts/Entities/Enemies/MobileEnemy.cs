@@ -5,21 +5,40 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyCheckpointManager))]
 public class MobileEnemy : Enemy
 {
+    [Header("Controller")]
     [SerializeField] new public MobileEnemyMovement Controller;
 
-    [Header("Checkpoint Manager")]  [Space]
-    [SerializeField] EnemyCheckpointManager _checkpointManager;
+    [Header("Checkpoint Manager")]
+    [Space]
+    EnemyCheckpointManager _checkpointManager;
     int currentCheckpoint;
 
     override public void Start()
     {
+        currentCheckpoint = 0;
+        StartCoroutine(WaitStart());
+    }
+
+    IEnumerator WaitStart()
+    {
+        yield return new WaitUntil(() => _checkpointManager != null);
         base.Start();
-        Controller.NewCheckpoint(_checkpointManager.Checkpoints[currentCheckpoint].transform.position);
+        //CheckpointChange();
+    }
+
+    public void SetCheckpointManager(EnemyCheckpointManager manage)
+    {
+        _checkpointManager = manage;
     }
 
     // Update is called once per frame
     override public void Update()
     {
+        if (_checkpointManager == null)
+        {
+            Debug.LogError("Missing Checkpoint Manager");
+            return;
+        }
         base.Update();
         if (!stillWaiting)
         {
@@ -35,19 +54,39 @@ public class MobileEnemy : Enemy
     public void CheckpointChange()
     {
         StartCoroutine(WaitCheckpoint());
-        if (!decrease)
+        if (!_checkpointManager.Reverse)
         {
             if (currentCheckpoint < _checkpointManager.Checkpoints.Count - 1)
                 currentCheckpoint++;
             else
-                decrease = true;
+                currentCheckpoint = 0;
         }
         else
         {
-            if (currentCheckpoint > 0)
-                currentCheckpoint--;
+            if (decrease)
+            {
+                if (currentCheckpoint > 0)
+                {
+                    currentCheckpoint--;
+                }
+                else
+                {
+                    currentCheckpoint++;
+                    decrease = false;
+                }
+            }
             else
-                decrease = false;
+            {
+                if (currentCheckpoint < _checkpointManager.Checkpoints.Count - 1)
+                {
+                    currentCheckpoint++;
+                }
+                else
+                {
+                    currentCheckpoint--;
+                    decrease = true;
+                }
+            }
         }
         Controller.NewCheckpoint(_checkpointManager.Checkpoints[currentCheckpoint].transform.position);
     }
@@ -57,7 +96,6 @@ public class MobileEnemy : Enemy
     {
         int indexAtStart = currentCheckpoint;
         stillWaiting = true;
-        Debug.Log($"Wait for {_checkpointManager.Checkpoints[indexAtStart].Time} seconds");
         yield return new WaitForSeconds(_checkpointManager.Checkpoints[indexAtStart].Time);
         stillWaiting = false;
     }

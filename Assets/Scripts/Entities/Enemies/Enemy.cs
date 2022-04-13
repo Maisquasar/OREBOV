@@ -39,7 +39,6 @@ public class Enemy : Entity
         Gizmos.DrawLine(transform.position, transform.position + (Controller.Direction * DetectionRange * Vector3.left));
     }
 
-
     // Update is called once per frame
     virtual public void Update()
     {
@@ -48,7 +47,7 @@ public class Enemy : Entity
         else if (TimeStamp < DetectionTime)
             TimeStamp += Time.deltaTime * GaugeRemove;
         if (TimeStamp <= 0)
-            _player.Controller.SetDead();
+            _player.Dead = true;
 
         // Set vibration intensity.
         if (Gamepad.current == null)

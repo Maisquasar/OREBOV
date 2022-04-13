@@ -71,6 +71,8 @@ public class PlayerStatus : Entity
     // Update is called once per frame
     void Update()
     {
+        if (Dead)
+            return;
         _shadowPos = _caster.GetShadowPos();
         if (!_playerAnimator.IsInAmination && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
@@ -234,6 +236,9 @@ public class PlayerStatus : Entity
     private void Respawn()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        _playerAnimator.enabled = true;
+        _playerInteraction.enabled = true;
+        Controller.enabled = true;
     }
 
     //Set Player to the right Position
@@ -269,6 +274,7 @@ public class PlayerStatus : Entity
 
     private void PlayerDeath()
     {
+        Controller.SetDead();
         if (Dead && !_respawn)
             StartCoroutine(WaitBeforeRespawn());
     }

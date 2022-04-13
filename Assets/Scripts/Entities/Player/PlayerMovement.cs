@@ -9,17 +9,23 @@ public class PlayerMovement : EntityMovement
     [SerializeField] AnimationCurve velocityCurve;
     [SerializeField] float _flipTime = 0.1f;
 
-    [Space]    [Header("Jump Settings")]    [Space]
+    [Space]
+    [Header("Jump Settings")]
+    [Space]
     [SerializeField] float jumpHeight;
     [SerializeField] private float jumpDistance;
     private float _jumpForce;
 
-    [Space]    [Header("Edge Detector Settings")]    [Space]
+    [Space]
+    [Header("Edge Detector Settings")]
+    [Space]
     [SerializeField] float edgeDetectorHeight = 0.6f;
     private float topEdgeDetectorHeight = 0.75f;
     float edgeDetectorDistance = 0.5f;
 
-    [Space]    [Header("Fall Damage Settings")]    [Space]
+    [Space]
+    [Header("Fall Damage Settings")]
+    [Space]
     [SerializeField] float FallDamageHeight = 8;
     [HideInInspector] public bool IsClimbing = false;
 
@@ -30,7 +36,9 @@ public class PlayerMovement : EntityMovement
     private float time;
     private bool _fallDefine = false;
 
-    [Space]    [Header("Sounds ")]    [Space]
+    [Space]
+    [Header("Sounds ")]
+    [Space]
     [SerializeField] private SoundEffectsHandler _walkEffectsHandler;
     [SerializeField] private SoundEffectsHandler _jumpImpactEffectHandler;
 
@@ -62,10 +70,11 @@ public class PlayerMovement : EntityMovement
 
     private void Update()
     {
+        if (GetComponent<PlayerStatus>().Dead)
+            return;
         //Get the pos at start fall.
         if (_rb.velocity.y < -0.1f && !_fallDefine && !_grounded)
         {
-            Debug.Log("Define");
             LastPosBeforeFall = transform.position;
             _fallDefine = true;
         }
@@ -75,7 +84,7 @@ public class PlayerMovement : EntityMovement
             _fallDefine = false;
             if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<PlayerStatus>().Dead)
             {
-                SetDead();
+                GetComponent<PlayerStatus>().Dead = true;
             }
         }
 
@@ -104,8 +113,8 @@ public class PlayerMovement : EntityMovement
     public void SetDead()
     {
         animator.SetBool("Dead", true);
-        GetComponent<PlayerStatus>().Dead = true;
         LastPosBeforeFall = GetComponent<PlayerStatus>().CheckpointPos;
+        animator.SetFloat("VelocityX", 0);
     }
 
     public void ChangeState(ref PlayerAction State)
@@ -145,7 +154,7 @@ public class PlayerMovement : EntityMovement
             move = jumpDistance * speed * Mathf.Sign(move);
 
         // Ground Move
-        if (_grounded )
+        if (_grounded)
             _rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, _rb.velocity.y);
 
         //Flip character
