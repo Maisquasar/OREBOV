@@ -39,7 +39,8 @@ public class CameraBehavior : MonoBehaviour
     [Range(0f, 10000f)]
     private float _camSpeed;
 
-
+    [Range(0,100f)]
+    [SerializeField] private float _stopCamDistance;
     [SerializeField] private LayerMask _camLayer;
 
     private PlayerStatus _player;
@@ -96,24 +97,27 @@ public class CameraBehavior : MonoBehaviour
         {
             Vector3 target = Vector3.zero;
 
-            if (!WindownCamContainsX(_mainTarget.transform.position))
-            {
-                target.x = _mainTarget.transform.position.x - _windowCenter.x + -Mathf.Sign(_mainTarget.transform.position.x - _windowCenter.x) * (WindowSize.x / 2f);
-            }
-
+            if (!WindownCamContainsX(_mainTarget.transform.position)) target.x = _mainTarget.transform.position.x - _windowCenter.x + -Mathf.Sign(_mainTarget.transform.position.x - _windowCenter.x) * (WindowSize.x / 2f);
             if (!WindownCamContainsY(_mainTarget.transform.position)) target.y = _mainTarget.transform.position.y - _windowCenter.y + -Mathf.Sign(_mainTarget.transform.position.y - _windowCenter.y) * (WindowSize.y / 2f);
 
-            Vector3 pos = new Vector3(_mainTarget.transform.position.x, _mainTarget.transform.position.y, _mainTarget.transform.position.z);
-            Debug.DrawRay(pos, Vector3.right * dir.x * 10f);
-            RaycastHit hit = new RaycastHit();
-            bool touch = Physics.Raycast(pos, Vector3.right * Mathf.Sign(dir.x), out hit, 10f, _camLayer, QueryTriggerInteraction.Ignore);
-            // bool touch2 = Physics.Raycast(pos, Vector3.right * Mathf.Sign(-dir.x), out hit, 10, _camLayer, QueryTriggerInteraction.Ignore);
-            if (!touch)
-                transform.position += Vector3.Lerp(Vector3.zero, target, _camSpeed);
+            if (!CheckWall())
+                    transform.position += Vector3.Lerp(Vector3.zero, target, _camSpeed);
 
         }
 
 
+    }
+
+    private bool CheckWall()
+    {
+        // Raycast from target to camera center
+        float distance = transform.position.x + _stopCamDistance - _mainTarget.transform.position.x;
+        float sign = Mathf.Sign(distance);
+        distance = -sign * Mathf.Clamp(Mathf.Abs(distance), 0, WindowOffset.x);
+        Vector3 pos = new Vector3(_mainTarget.transform.position.x, _mainTarget.transform.position.y, _mainTarget.transform.position.z);
+        Debug.DrawRay(pos, Vector3.right * distance );
+        RaycastHit hit = new RaycastHit();
+        return Physics.Raycast(pos, Vector3.right , out hit, distance, _camLayer, QueryTriggerInteraction.Ignore);
     }
 
 
