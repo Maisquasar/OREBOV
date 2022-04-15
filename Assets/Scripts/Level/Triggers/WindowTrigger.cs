@@ -6,7 +6,7 @@ using Tools;
 public class WindowTrigger : Trigger
 {
 
-
+    [SerializeField] private string _tagTrigger;
     [SerializeField] private LayerMask _triggerMask;
 
     [Header("Trigger Setting")]
@@ -39,7 +39,7 @@ public class WindowTrigger : Trigger
     private void OnTriggerEnter(Collider other)
     {
 
-        if (ToolsBox.IsInLayerMask(other.gameObject, _triggerMask))
+        if (other.tag == _tagTrigger)
         {
             if (_firstContact)
             {
@@ -53,8 +53,9 @@ public class WindowTrigger : Trigger
     private void OnTriggerStay(Collider other)
     {
 
-        if (ToolsBox.IsInLayerMask(other.gameObject, _triggerMask))
+        if (other.tag == _tagTrigger)
         {
+            Debug.Log(other.gameObject.name);
             bool _testPos = _isInFront;
 
             if (other.transform.position.x > transform.position.x + _boxCollider.center.x)
