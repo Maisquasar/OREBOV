@@ -32,7 +32,7 @@ public class PlayerMovement : EntityMovement
     Vector3 LastPosBeforeFall;
     private float _lastMove;
     private float _xAxisValue;
-    private readonly float margeDetectionVelocity = 0.05f;
+    private readonly float margeDetectionVelocity = 0.07f;
     private float time;
     private bool _fallDefine = false;
 

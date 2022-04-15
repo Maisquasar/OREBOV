@@ -32,6 +32,8 @@ public class PlayerAnimator : MonoBehaviour
             PlayerFadeMaterial.color = playerColor;
             yield return Time.deltaTime;
         }
+        playerColor.a = 0;
+        PlayerFadeMaterial.color = playerColor;
         Renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
         gameObject.layer = LayerMask.NameToLayer("Shadows");
         _isInAmination = false;
@@ -48,7 +50,7 @@ public class PlayerAnimator : MonoBehaviour
             transform.position = Vector3.Lerp(_shadowPosition, currentPos, timer / _FadeInWaitTimer);
             yield return Time.deltaTime;
         }
-        Vector3 targetPos = _shadowPosition + Vector3.back;
+        Vector3 targetPos = _shadowPosition;
         Color playerColor = PlayerFadeMaterial.color;
         Renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
         for (float timer = _FadeInTimer; timer > 0; timer -= Time.deltaTime)
@@ -68,7 +70,7 @@ public class PlayerAnimator : MonoBehaviour
     public void MovePlayerPos(Vector2 deltaPos, float deltaX)
     {
         _isInMovement = true;
-        StartCoroutine(MovePlayerDeltaX(deltaPos,deltaX));
+        StartCoroutine(MovePlayerDepth(deltaPos));
     }
     private IEnumerator MovePlayerDepth(Vector2 deltaPos)
     {
@@ -79,6 +81,7 @@ public class PlayerAnimator : MonoBehaviour
             transform.position = new Vector3(transform.position.x, local.x, local.y);
             yield return Time.deltaTime;
         }
+        transform.position = new Vector3(transform.position.x, deltaPos.x, deltaPos.y);
         _isInMovement = false;
         yield return null;
     }

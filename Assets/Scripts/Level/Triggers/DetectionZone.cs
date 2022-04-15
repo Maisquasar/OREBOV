@@ -21,12 +21,20 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            if (CheckForObstacles() || _playerStatus.IsShadow || _playerAnimator.IsInAmination)
+            if (CheckForObstacles() || _playerAnimator.IsInAmination)
                 return;
-            Enemy.PlayerDetected = true;
-            if (DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
+            if (Enemy.PlayerDetected && _playerStatus.IsShadow)
+            {
+                Enemy.PlayerDetected = true;
+            }
+            else if (_playerStatus.IsShadow)
+                return;
+
+            if (DistanceDetection == 0)
                 Enemy.TimeStamp = 0;
-            else if (DistanceDetection == 0)
+            Enemy.PlayerDetected = true;
+                
+            if (DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
                 Enemy.TimeStamp = 0;
         }
     }
@@ -35,7 +43,7 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            if (CheckForObstacles() || _playerStatus.IsShadow || _playerAnimator.IsInAmination)
+            if (CheckForObstacles() || _playerStatus.IsShadow)
                 return;
             Enemy.PlayerDetected = false;
             StartCoroutine(WaitForNextFrame());

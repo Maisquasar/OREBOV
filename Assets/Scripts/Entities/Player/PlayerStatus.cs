@@ -74,14 +74,14 @@ public class PlayerStatus : Entity
         if (Dead)
             return;
         _shadowPos = _caster.GetShadowPos();
-        if (!_playerAnimator.IsInAmination && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
+        if (_playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
             Controller.Move(_movementDir.x);
             Controller.ChangeState(ref PlayerActionState);
         }
         if (_isShadow && !_playerAnimator.IsInMovement)
         {
-            if (!_caster.CanTransform(true))
+            if (!_caster.CanTransform(false))
             {
                 if (_caster.DoesCurrentLightEject)
                 {
@@ -91,7 +91,7 @@ public class PlayerStatus : Entity
                 {
                     Vector3 pos = transform.position;
                     transform.position = new Vector3(_previousPos.x, transform.position.y, _previousPos.z);
-                    if (!_caster.CanTransform(true))
+                    if (!_caster.CanTransform(false))
                     {
                         transform.position = pos;
                         OnTransformToPlayer();
@@ -101,9 +101,8 @@ public class PlayerStatus : Entity
             else
             {
                 //if (_caster.ShadowDepth < transform.position.z - 0.2f && _movementDir.y < deadZone && !_playerAnimator.IsInAmination)
-                if (_caster.ShadowDepth < transform.position.z - 0.2f && !_playerAnimator.IsInAmination)
+                if (_caster.ShadowDepth < transform.position.z - 0.05f && !_playerAnimator.IsInAmination)
                 {
-                    print(_caster.ShadowDeltaX);
                     _playerAnimator.MovePlayerPos(new Vector2(_caster.ShadowHeight, _caster.ShadowDepth), _caster.ShadowDeltaX);
                 }
             }
@@ -144,8 +143,9 @@ public class PlayerStatus : Entity
 
     public void OnJump(CallbackContext context)
     {
+        //if (Controller.IsTouchingWall && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link && !_playerAnimator.IsInAmination)
         if ((PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link && !_playerAnimator.IsInAmination)
-            if (context.started)
+                if (context.started)
                 Controller.Jump();
     }
 
@@ -172,6 +172,7 @@ public class PlayerStatus : Entity
         StartCoroutine(_playerAnimator.TransformToShadowAnim());
         _isShadow = true;
         Controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
+        Controller.WallType ^= LayerMask.GetMask("Shadows", "NoShadows");
     }
 
     public void OnTransformToPlayer()
@@ -180,6 +181,7 @@ public class PlayerStatus : Entity
         StartCoroutine(_playerAnimator.TransformToPlayerAnim());
         _isShadow = false;
         Controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
+        Controller.WallType ^= LayerMask.GetMask("Shadows", "NoShadows");
     }
 
     public void OnInteract(CallbackContext context)
@@ -227,7 +229,7 @@ public class PlayerStatus : Entity
     {
         if (_playerInteraction.Object != null)
         {
-            if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction) - 0.1f, Controller.GroundType, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction) - 0.2f, Controller.WallType, QueryTriggerInteraction.Ignore))
                 return true;
         }
         return false;

@@ -8,7 +8,6 @@ public class MobileEnemy : Enemy
 {
     [Header("Controller")]
     [HideInInspector] public MobileEnemyMovement _controller;
-    [HideInInspector] public EnemyState State;
 
     [Tooltip("The time the enemy search the player after follow him")]
     [SerializeField] float SearchTime = 1f;
@@ -17,9 +16,10 @@ public class MobileEnemy : Enemy
     [Range(-1f, 1f)]
     [SerializeField] private float _detectionDirection = -1f;
 
+    [SerializeField] private bool _followPlayerOnDetection = true;
+
     ObjectManager _objectManager;
     EnemyCheckpointManager _checkpointManager;
-    bool _followPlayer = false;
     int _currentCheckpoint;
 
     float _timeStamp;
@@ -34,6 +34,7 @@ public class MobileEnemy : Enemy
         _objectManager = FindObjectOfType<ObjectManager>();
         _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
+        State = EnemyState.NORMAL;
     }
 
     IEnumerator WaitStart()
@@ -50,29 +51,33 @@ public class MobileEnemy : Enemy
     // Update is called once per frame
     override public void Update()
     {
+        base.Update();
+        if (_player != null && _player.Dead)
+            return;
         if (_checkpointManager == null)
         {
             Debug.LogError("Missing Checkpoint Manager");
             return;
         }
-        base.Update();
         if (!stillWaiting)
         {
-            _controller.Move(_controller.Direction);
-            if (!_followPlayer && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x)
+            if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
+                _controller.Move(_controller.Direction);
+            if (State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x)
             {
                 CheckpointChange();
             }
-            else if (_followPlayer && (int)transform.position.x == (int)lastPlayerPos.x)
+            else if (State == EnemyState.CHASE && (int)transform.position.x == (int)lastPlayerPos.x)
             {
                 StopFollowingPlayer();
             }
         }
 
+        // Enemy Interaction
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
         if (objectClose != null)
         {
-            if (objectClose.DefaultActive != objectClose._objectActive)
+            if (objectClose.DefaultActive != objectClose._objectActive && State != EnemyState.CHASE)
             {
                 State = EnemyState.INTERACT;
                 _controller.NewCheckpoint(new Vector3(objectClose.transform.position.x, transform.position.y, transform.position.z));
@@ -80,6 +85,7 @@ public class MobileEnemy : Enemy
                 {
                     objectClose.ItemInteraction(this.gameObject);
                     StartCoroutine(WaitCheckpoint(2, _checkpointManager.Checkpoints[_currentCheckpoint].transform.position));
+                    State = EnemyState.NORMAL;
                 }
             }
         }
@@ -87,9 +93,13 @@ public class MobileEnemy : Enemy
         // Check if same position every {_secondCheckStuck} in seconds.
         if (_timeStamp <= Time.time)
         {
-            if (_precPoS == (Vector3)transform.position && _followPlayer)
+            if (_precPoS == (Vector3)transform.position && State == EnemyState.CHASE)
             {
                 StopFollowingPlayer();
+            }
+            else if (_precPoS == (Vector3)transform.position && State != EnemyState.CHASE)
+            {
+                CheckpointChange();
             }
             _precPoS = transform.position;
             _timeStamp = Time.time + _secondCheckStuck;
@@ -99,16 +109,16 @@ public class MobileEnemy : Enemy
     void StopFollowingPlayer()
     {
         Debug.Log("Stop following Player");
-        _followPlayer = false;
+        State = EnemyState.NORMAL;
         StartCoroutine(WaitPlayerSearch());
     }
 
     Vector3 lastPlayerPos;
-    override public void GoToPlayer(Vector3 lastPlayerPos) 
+    override public void GoToPlayer(Vector3 lastPlayerPos)
     {
         this.lastPlayerPos = lastPlayerPos;
         Debug.Log("Follow Player");
-        _followPlayer = true;
+        State = EnemyState.CHASE;
         _controller.NewCheckpoint(lastPlayerPos);
     }
 
