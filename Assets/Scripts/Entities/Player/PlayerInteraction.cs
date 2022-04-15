@@ -96,6 +96,8 @@ public class PlayerInteraction : MonoBehaviour
         if (started)
             PressInput();
 
+      
+
         if (canceled)
             CancelInput();
 

@@ -10,7 +10,6 @@ namespace States
         RUN,
         JUMP,
         FALL,
-        HIDE,
         PUSHING,
         INTERACT,
         CLIMB,
