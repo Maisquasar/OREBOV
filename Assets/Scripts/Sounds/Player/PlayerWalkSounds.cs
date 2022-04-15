@@ -21,7 +21,7 @@ public class PlayerWalkSounds : MonoBehaviour
 
     private void InitComponents()
     {
-        _playerMouvement = GetComponentInParent<PlayerMovement>();
+        _mouvement = GetComponentInParent<PlayerMovement>();
     }
 
     #endregion
