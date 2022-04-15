@@ -137,7 +137,7 @@ public class ShadowCaster : MonoBehaviour
                 for (int j = 0; j < DepthRayCastPosition.Count; j++)
                 {
                     RaycastHit rayHit;
-                    if (getLightVectors(lights[i], DepthRayCastPosition[j], out origin, out direction) && Physics.Raycast(origin, direction, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0 && rayHit.distance < dist)
+                    if (getLightVectors(lights[i], DepthRayCastPosition[j], out origin, out direction) && Physics.Raycast(origin, direction, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0 && rayHit.distance < dist+1)
                     {
                         _shadowDeltaX = rayHit.point.x;
                         if (rayHit.point.z < _shadowDepth) _shadowDepth = rayHit.point.z;

@@ -81,6 +81,7 @@ public class PlayerAnimator : MonoBehaviour
             transform.position = new Vector3(transform.position.x, local.x, local.y);
             yield return Time.deltaTime;
         }
+        transform.position = new Vector3(transform.position.x, deltaPos.x, deltaPos.y);
         _isInMovement = false;
         yield return null;
     }
