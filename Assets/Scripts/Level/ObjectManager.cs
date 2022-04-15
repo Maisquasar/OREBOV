@@ -29,7 +29,6 @@ public class ObjectManager : MonoBehaviour
                 { 
                     distanceObject = Vector3.Distance(position, _interactiveObjectList[i].transform.position);
                     _item = _interactiveObjectList[i];
-
                 }
             }
         }
