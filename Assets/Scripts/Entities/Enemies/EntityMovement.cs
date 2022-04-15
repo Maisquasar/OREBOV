@@ -3,9 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum AmbientSoundType
+{
+    Exterior,
+    Interior,
+    Rain,
+}
+
 public class EntityMovement : MonoBehaviour
 {
     [SerializeField] public Animator animator;
+    [SerializeField] public AmbientSoundType AmbientType;
 
     [Space]    [Header("Collision Settings")]    [Space]
     [SerializeField] public LayerMask GroundType;
@@ -16,10 +24,18 @@ public class EntityMovement : MonoBehaviour
     [Space]    [Header("Velocity Settings")]    [Space]
     [SerializeField] protected float speed;
 
+    [Space]    [Header("Sounds ")]    [Space]
+    [SerializeField] private SoundEffectsHandler _walkInsideEffectsHandler;
+    [SerializeField] private SoundEffectsHandler _walkOutsideEffectsHandler;
+    [SerializeField] private SoundEffectsHandler _walkRainEffectsHandler;
+    [SerializeField] private SoundEffectsHandler _jumpImpactEffectHandler;
+
     protected float _rayGroundSize = 1.1f;
     protected float _rayCeilingSize = 1.1f;
     protected float _rayWallSize = 0.31f;
     protected float _direction = 1;
+    protected float _xAxisValue;
+
     public float Direction { get { return _direction; } }
 
     protected bool _touchWall = false;
@@ -133,6 +149,7 @@ public class EntityMovement : MonoBehaviour
     protected virtual void LandOnGround()
     {
         _grounded = true;
+        _jumpImpactEffectHandler.PlaySound();
     }
 
     protected virtual bool DetectWall()
@@ -165,5 +182,32 @@ public class EntityMovement : MonoBehaviour
         _endOfCoroutine = true;
     }
 
-    public virtual void Move() { }
+    public virtual void Move(float move)
+    {
+        _xAxisValue = move;
+    }
+
+    #region Sounds  
+    public bool WalkSoundManager()
+    {
+        if (_xAxisValue != 0f)
+        {
+            switch (AmbientType)
+            {
+                case AmbientSoundType.Exterior:
+                    _walkOutsideEffectsHandler.PlaySound();
+                    break;
+                case AmbientSoundType.Rain:
+                    _walkRainEffectsHandler.PlaySound();
+                    break;
+                default:
+                    _walkInsideEffectsHandler.PlaySound();
+                    break;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    #endregion
 }

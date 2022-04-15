@@ -49,8 +49,6 @@ public class PlayerWalkSounds : MonoBehaviour
 
     }
 
-
-
     private IEnumerator ResetSound()
     {
         yield return new WaitForSeconds(_walkSoundFrequency);

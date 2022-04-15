@@ -1828,6 +1828,8 @@ GameObject:
   - component: {fileID: 1276067027}
   - component: {fileID: 1276067028}
   - component: {fileID: 1276067026}
+  - component: {fileID: 1972867806646358642}
+  - component: {fileID: 7776304015757767147}
   - component: {fileID: 1276067048}
   - component: {fileID: 2984496935508337539}
   - component: {fileID: 1619094262952789232}
@@ -1897,6 +1899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1803301609}
+  AmbientType: 0
   GroundType:
     serializedVersion: 2
     m_Bits: 7089
@@ -1908,6 +1911,10 @@ MonoBehaviour:
   - 0
   - -0.5
   speed: 3
+  _walkInsideEffectsHandler: {fileID: 1276067026}
+  _walkOutsideEffectsHandler: {fileID: 1972867806646358642}
+  _walkRainEffectsHandler: {fileID: 7776304015757767147}
+  _jumpImpactEffectHandler: {fileID: 1276067048}
   canTurn: 1
   velocityCurve:
     serializedVersion: 2
@@ -1939,8 +1946,6 @@ MonoBehaviour:
   edgeDetectorHeight: 0.6
   FallDamageHeight: 8
   IsClimbing: 0
-  _walkEffectsHandler: {fileID: 1276067026}
-  _jumpImpactEffectHandler: {fileID: 1276067048}
   IsPushing: 0
   IsPulling: 0
 --- !u!114 &8288549701085702374
@@ -2275,12 +2280,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soundName: Walk
+  _soundName: Walk Inside
   _audioClipArray:
-  - {fileID: 8300000, guid: 010fe43486f92494bb6a04261d710d09, type: 3}
   - {fileID: 8300000, guid: e15f19d651496084bb30eefd34f4d496, type: 3}
   - {fileID: 8300000, guid: 16c4cd447da9f7d4f879a3072903c5f8, type: 3}
   - {fileID: 8300000, guid: 348eae1942d01a249b0451ff2b1d8d9a, type: 3}
+  - {fileID: 8300000, guid: 010fe43486f92494bb6a04261d710d09, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
+--- !u!114 &1972867806646358642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Walk Outside
+  _audioClipArray:
+  - {fileID: 8300000, guid: 8e0903d1fb8ff8149bf3c5b2f3dd341f, type: 3}
+  - {fileID: 8300000, guid: 588d3c10cbb9bf247b493c0a81124977, type: 3}
+  - {fileID: 8300000, guid: 6a7550d91052ca34dab1faa4f8ebb62b, type: 3}
+  - {fileID: 8300000, guid: 60ce3b718e0656b4cab5da582d4a7696, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
+--- !u!114 &7776304015757767147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Walk Rain
+  _audioClipArray:
+  - {fileID: 8300000, guid: 39cb51dde311e9742ab3ce94ff420ffb, type: 3}
+  - {fileID: 8300000, guid: f948003c0c6accf40969d178526c7fb1, type: 3}
+  - {fileID: 8300000, guid: 5639fafd0c83f8347aa90d08691f109e, type: 3}
+  - {fileID: 8300000, guid: 8a9fe7841a91adc45b277d095fbe31b3, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
