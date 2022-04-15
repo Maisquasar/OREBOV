@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Checkpoint : Trigger
 {
-    bool set = false;
+    private bool _set = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<Player>() && !set)
+        if (other.GetComponent<PlayerStatus>() && !_set)
         {
-            set = true;
-            other.GetComponent<Player>().CheckpointPos = transform.position + Vector3.up;
+            _set = true;
+            other.GetComponent<PlayerStatus>().CheckpointPos = transform.position + Vector3.up;
         }
     }
 }

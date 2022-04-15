@@ -6,19 +6,14 @@ using UnityEngine.Audio;
 [RequireComponent(typeof(AudioSource))]
 public class SoundEffectsHandler : MonoBehaviour
 {
-    [SerializeField]
-    private string _soundName;
-
-    [SerializeField]
-    private AudioClip[] _audioClipArray = new AudioClip[0];
-    [SerializeField]
-    private AudioMixerGroup _mixer;
+    [SerializeField] private string _soundName;
+    [SerializeField] private AudioClip[] _audioClipArray = new AudioClip[0];
+    [SerializeField] private AudioMixerGroup _mixer;
+    [SerializeField] private bool _randomPlaySound;
+    [SerializeField] private bool _playAtStart;
 
     private AudioSource _audioSource;
-    
     private int _indexAudioClip = 0;
-    [SerializeField]
-    private bool _randomPlaySound;
 
     private void InitComponents()
     {
@@ -34,11 +29,11 @@ public class SoundEffectsHandler : MonoBehaviour
         }
     }
 
-
     private void Start()
     {
         CheckComponentIsValid();
         InitComponents();
+        if (_playAtStart) PlaySound();
         
     }
 
@@ -56,7 +51,6 @@ public class SoundEffectsHandler : MonoBehaviour
         else
         {
             _indexAudioClip = _indexAudioClip + 1 == _audioClipArray.Length ? 0: _indexAudioClip++ ;
-           
         }
 
         _audioSource.clip = _audioClipArray[_indexAudioClip];
