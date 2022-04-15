@@ -32,6 +32,8 @@ public class PlayerAnimator : MonoBehaviour
             PlayerFadeMaterial.color = playerColor;
             yield return Time.deltaTime;
         }
+        playerColor.a = 0;
+        PlayerFadeMaterial.color = playerColor;
         Renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
         gameObject.layer = LayerMask.NameToLayer("Shadows");
         _isInAmination = false;

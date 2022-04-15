@@ -81,7 +81,7 @@ public class PlayerStatus : Entity
         }
         if (_isShadow && !_playerAnimator.IsInMovement)
         {
-            if (!_caster.CanTransform(true))
+            if (!_caster.CanTransform(false))
             {
                 if (_caster.DoesCurrentLightEject)
                 {
@@ -91,7 +91,7 @@ public class PlayerStatus : Entity
                 {
                     Vector3 pos = transform.position;
                     transform.position = new Vector3(_previousPos.x, transform.position.y, _previousPos.z);
-                    if (!_caster.CanTransform(true))
+                    if (!_caster.CanTransform(false))
                     {
                         transform.position = pos;
                         OnTransformToPlayer();
@@ -103,7 +103,6 @@ public class PlayerStatus : Entity
                 //if (_caster.ShadowDepth < transform.position.z - 0.2f && _movementDir.y < deadZone && !_playerAnimator.IsInAmination)
                 if (_caster.ShadowDepth < transform.position.z - 0.2f && !_playerAnimator.IsInAmination)
                 {
-                    print(_caster.ShadowDeltaX);
                     _playerAnimator.MovePlayerPos(new Vector2(_caster.ShadowHeight, _caster.ShadowDepth), _caster.ShadowDeltaX);
                 }
             }

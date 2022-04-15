@@ -141,7 +141,8 @@ public class ShadowCaster : MonoBehaviour
                     {
                         _shadowDeltaX = rayHit.point.x;
                         if (rayHit.point.z < _shadowDepth) _shadowDepth = rayHit.point.z;
-                        if (Mathf.Abs(rayHit.point.y - _shadowHeight) > ShadowHeightDeltaMin) _shadowHeight = rayHit.point.y - DepthRayCastPosition[j].y;
+                        if (Mathf.Abs(rayHit.point.y - transform.position.y) > ShadowHeightDeltaMin) _shadowHeight = rayHit.point.y;
+                        else _shadowHeight = transform.position.y;
                     }
                 }
                 if (!hit) return true;
