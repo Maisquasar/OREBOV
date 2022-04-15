@@ -384,6 +384,11 @@ GameObject:
   - component: {fileID: 2259630138409025840}
   - component: {fileID: 2259630138409025841}
   - component: {fileID: 507585901}
+  - component: {fileID: 7135840119147553878}
+  - component: {fileID: 4866539086905954359}
+  - component: {fileID: 2813393255359842593}
+  - component: {fileID: 8604584723923026437}
+  - component: {fileID: 6604548492344583817}
   m_Layer: 2
   m_Name: Mobile Enemy
   m_TagString: Untagged
@@ -467,6 +472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 573901417}
+  AmbientType: 0
   GroundType:
     serializedVersion: 2
     m_Bits: 4091
@@ -476,6 +482,10 @@ MonoBehaviour:
   ray:
   - 0
   speed: 2
+  _walkInsideEffectsHandler: {fileID: 4866539086905954359}
+  _walkOutsideEffectsHandler: {fileID: 2813393255359842593}
+  _walkRainEffectsHandler: {fileID: 8604584723923026437}
+  _jumpImpactEffectHandler: {fileID: 6604548492344583817}
   canTurn: 1
   _velocityCurve:
     serializedVersion: 2
@@ -515,6 +525,183 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!82 &7135840119147553878
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259630138409025847}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &4866539086905954359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259630138409025847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Walk Inside
+  _audioClipArray:
+  - {fileID: 8300000, guid: d3c69ad405b28aa4a83ef71d6ecc810d, type: 3}
+  - {fileID: 8300000, guid: 8b284f4540ce7dd439eb2cb50353d11f, type: 3}
+  - {fileID: 8300000, guid: 8cb2c60dfc69075429310a221a86afeb, type: 3}
+  - {fileID: 8300000, guid: f1cd9ea072d18754dafd0c0dd57c9bf5, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
+--- !u!114 &2813393255359842593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259630138409025847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Walk Outside
+  _audioClipArray:
+  - {fileID: 8300000, guid: 1f42da950102aac48a2e806a74c25180, type: 3}
+  - {fileID: 8300000, guid: fd7789e2a58efde489542ebe8268fe6d, type: 3}
+  - {fileID: 8300000, guid: fe28a096460480b468dced3d821d5db0, type: 3}
+  - {fileID: 8300000, guid: 60ce3b718e0656b4cab5da582d4a7696, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
+--- !u!114 &8604584723923026437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259630138409025847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Walk Rain
+  _audioClipArray:
+  - {fileID: 8300000, guid: 3488a2a1b5043fe458bf9efcd1d398ac, type: 3}
+  - {fileID: 8300000, guid: 0ec7640c315efc84d8591acc9c670456, type: 3}
+  - {fileID: 8300000, guid: af41460b3240cad4db453869840d16c9, type: 3}
+  - {fileID: 8300000, guid: 27bb4f0a00d946b47b2ff11f8cfa8a68, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
+--- !u!114 &6604548492344583817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259630138409025847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Jump
+  _audioClipArray:
+  - {fileID: 8300000, guid: c8bc8062b33e0d54fb9c16199fce7cbb, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
 --- !u!1 &2288057140893964940
 GameObject:
   m_ObjectHideFlags: 0
