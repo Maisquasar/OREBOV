@@ -79,9 +79,8 @@ public class PlayerStatus : Entity
             Controller.Move(_movementDir.x);
             Controller.ChangeState(ref PlayerActionState);
         }
-        if (_isShadow)
+        if (_isShadow && !_playerAnimator.IsInMovement)
         {
-            _caster.GetShadowPos();
             if (!_caster.CanTransform(false))
             {
                 if (_caster.DoesCurrentLightEject)
@@ -101,9 +100,10 @@ public class PlayerStatus : Entity
             }
             else
             {
-                if (_caster.ShadowDepth < transform.position.z - 0.2f && !_playerAnimator.IsInMovement && !_playerAnimator.IsInAmination)
+                //if (_caster.ShadowDepth < transform.position.z - 0.2f && _movementDir.y < deadZone && !_playerAnimator.IsInAmination)
+                if (_caster.ShadowDepth < transform.position.z - 0.2f && !_playerAnimator.IsInAmination)
                 {
-                    _playerAnimator.MovePlayerDepthTo(new Vector2(_caster.ShadowHeight, _caster.ShadowDepth));
+                    _playerAnimator.MovePlayerPos(new Vector2(_caster.ShadowHeight, _caster.ShadowDepth), _caster.ShadowDeltaX);
                 }
             }
         }
@@ -124,8 +124,6 @@ public class PlayerStatus : Entity
         if (Mathf.Abs(inputs.y) < deadZone) inputs.y = 0.0f;
         return inputs;
     }
-
-
 
     public void PlayRightAnimation(float axis)
     {
