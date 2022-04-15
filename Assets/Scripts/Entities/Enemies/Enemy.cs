@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using States;
 
 
 public class Enemy : Entity
@@ -11,6 +12,7 @@ public class Enemy : Entity
     [Header("Detection Zones")]
     [SerializeField] public DetectionZone CloseDetectionZone;
     [SerializeField] public DetectionZone FOVCone;
+    [HideInInspector] public EnemyState State;
     [SerializeField] protected Weapon _weapon;
 
     [Header("Range Settings")]
@@ -36,8 +38,6 @@ public class Enemy : Entity
         _player = FindObjectOfType<PlayerStatus>();
         TimeStamp = DetectionTime;
         FOVCone.DistanceDetection = DetectionRange;
-        if (_weapon == null)
-            _weapon = new Weapon();
     }
 
     private void OnDrawGizmos()
@@ -51,10 +51,16 @@ public class Enemy : Entity
     // Update is called once per frame
     virtual public void Update()
     {
+        Debug.Log(State);
         if (TimeStamp > 0 && PlayerDetected)
+        {
             TimeStamp -= Time.deltaTime * GaugeAdd;
+            State = EnemyState.SUSPICIOUS;
+        }
         else if (TimeStamp < DetectionTime)
+        {
             TimeStamp += Time.deltaTime * GaugeRemove;
+        }
         if (TimeStamp <= 0)
         {
             _player.Dead = true;

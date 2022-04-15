@@ -20,6 +20,7 @@ namespace States
     public enum EnemyState
     { 
         NORMAL,
+        SUSPICIOUS,
         ALERT,
         CHASE,
         INTERACT,

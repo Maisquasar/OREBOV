@@ -8,7 +8,6 @@ public class MobileEnemy : Enemy
 {
     [Header("Controller")]
     [HideInInspector] public MobileEnemyMovement _controller;
-    [HideInInspector] public EnemyState State;
 
     [Tooltip("The time the enemy search the player after follow him")]
     [SerializeField] float SearchTime = 1f;
@@ -16,6 +15,8 @@ public class MobileEnemy : Enemy
     [SerializeField] private float _detectDistance = 5f;
     [Range(-1f, 1f)]
     [SerializeField] private float _detectionDirection = -1f;
+
+    [SerializeField] private bool _followPlayerOnDetection = true;
 
     ObjectManager _objectManager;
     EnemyCheckpointManager _checkpointManager;
@@ -50,6 +51,8 @@ public class MobileEnemy : Enemy
     // Update is called once per frame
     override public void Update()
     {
+        if (_player != null && _player.Dead)
+            return;
         if (_checkpointManager == null)
         {
             Debug.LogError("Missing Checkpoint Manager");
@@ -58,7 +61,8 @@ public class MobileEnemy : Enemy
         base.Update();
         if (!stillWaiting)
         {
-            _controller.Move(_controller.Direction);
+            if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
+                _controller.Move(_controller.Direction);
             if (State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x)
             {
                 CheckpointChange();
@@ -69,6 +73,7 @@ public class MobileEnemy : Enemy
             }
         }
 
+        // Enemy Interaction
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
         if (objectClose != null)
         {
@@ -116,7 +121,6 @@ public class MobileEnemy : Enemy
     bool decrease = false;
     public void CheckpointChange()
     {
-        State = EnemyState.NORMAL;
         StartCoroutine(WaitCheckpoint());
         if (!_checkpointManager.Reverse)
         {
