@@ -21,6 +21,7 @@ namespace States
     { 
         NOT_DETECTED,
         SUSPICIOUS,
+        INTERACT,
         ALERT,
         CHASE
     }

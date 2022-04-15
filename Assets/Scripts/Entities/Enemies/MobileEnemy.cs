@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using States;
 
 [RequireComponent(typeof(EnemyCheckpointManager))]
 public class MobileEnemy : Enemy
 {
     [Header("Controller")]
     [HideInInspector] public MobileEnemyMovement _controller;
+    [HideInInspector] public EnemyState State;
 
-    [Tooltip("The time the enemy search the player")]
+    [Tooltip("The time the enemy search the player after follow him")]
     [SerializeField] float SearchTime = 1f;
+
+    [SerializeField] private float _detectDistance = 5f;
+    [Range(-1f, 1f)]
+    [SerializeField] private float _detectionDirection = -1f;
+
+    ObjectManager _objectManager;
     EnemyCheckpointManager _checkpointManager;
     bool _followPlayer = false;
     int _currentCheckpoint;
@@ -23,6 +31,7 @@ public class MobileEnemy : Enemy
     override public void Start()
     {
         _controller = GetComponent<MobileEnemyMovement>();
+        _objectManager = FindObjectOfType<ObjectManager>();
         _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
     }
@@ -60,6 +69,20 @@ public class MobileEnemy : Enemy
             }
         }
 
+        InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
+        if (objectClose != null)
+        {
+            if (objectClose.DefaultActive != objectClose._objectActive)
+            {
+                State = EnemyState.INTERACT;
+                _controller.NewCheckpoint(new Vector3(objectClose.transform.position.x, transform.position.y, transform.position.z));
+                if ((int)transform.position.x == (int)objectClose.transform.position.x)
+                {
+                    objectClose.ItemInteraction(this.gameObject);
+                    StartCoroutine(WaitCheckpoint(2, _checkpointManager.Checkpoints[_currentCheckpoint].transform.position));
+                }
+            }
+        }
 
         // Check if same position every {_secondCheckStuck} in seconds.
         if (_timeStamp <= Time.time)
@@ -136,6 +159,16 @@ public class MobileEnemy : Enemy
         yield return new WaitForSeconds(SearchTime);
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
         stillWaiting = false;
+    }
+
+
+    IEnumerator WaitCheckpoint(float time, Vector3 newPos)
+    {
+        int indexAtStart = _currentCheckpoint;
+        stillWaiting = true;
+        yield return new WaitForSeconds(time);
+        stillWaiting = false;
+        _controller.NewCheckpoint(newPos);
     }
 
     bool stillWaiting = false;

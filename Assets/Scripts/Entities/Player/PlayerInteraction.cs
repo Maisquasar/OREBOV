@@ -58,7 +58,6 @@ public class PlayerInteraction : MonoBehaviour
         }
         else
         {
-
             InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance, _detectionDirection);
             if (objectClose != null)
             {

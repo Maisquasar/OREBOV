@@ -15,8 +15,10 @@ public class ShadowCaster : MonoBehaviour
     private Vector3 _oldShadowPos;
     private float _shadowDepth;
     private float _shadowHeight;
+    private float _shadowDeltaX;
     public float ShadowDepth { get { return _shadowDepth - HitBoxRadius - 1; } }
     public float ShadowHeight { get { return _shadowHeight; } }
+    public float ShadowDeltaX { get { return _shadowDeltaX; } }
 
     public bool DoesCurrentLightEject = false;
     private int _mask = 0;
@@ -113,7 +115,7 @@ public class ShadowCaster : MonoBehaviour
             Vector3 direction;
             if (getLightVectors(lights[i], new Vector2(), out origin, out direction))
             {
-                float dist = direction.magnitude;
+                float dist = direction.magnitude - 1;
                 bool hit = false;
                 for (int j = 0; j < ShadowRayCastPosition.Count; j++)
                 {
@@ -133,8 +135,9 @@ public class ShadowCaster : MonoBehaviour
                 for (int j = 0; j < DepthRayCastPosition.Count; j++)
                 {
                     RaycastHit rayHit;
-                    if (getLightVectors(lights[i], DepthRayCastPosition[j], out origin, out direction) && Physics.Raycast(origin, direction, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
+                    if (getLightVectors(lights[i], DepthRayCastPosition[j], out origin, out direction) && Physics.Raycast(origin, direction, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0 && rayHit.distance < dist)
                     {
+                        _shadowDeltaX = rayHit.point.x;
                         if (rayHit.point.z < _shadowDepth) _shadowDepth = rayHit.point.z;
                         if (Mathf.Abs(rayHit.point.y - _shadowHeight) > ShadowHeightDeltaMin) _shadowHeight = rayHit.point.y - DepthRayCastPosition[j].y;
                     }
