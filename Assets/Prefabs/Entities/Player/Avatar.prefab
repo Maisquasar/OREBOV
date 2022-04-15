@@ -1899,7 +1899,10 @@ MonoBehaviour:
   animator: {fileID: 1803301609}
   GroundType:
     serializedVersion: 2
-    m_Bits: 2993
+    m_Bits: 7089
+  WallType:
+    serializedVersion: 2
+    m_Bits: 4097
   ray:
   - 0.5
   - 0
@@ -2154,6 +2157,7 @@ MonoBehaviour:
   - {x: -1, y: 0}
   HitBoxRadius: 0.3
   ShadowHeightDeltaMin: 1
+  ShadowDepthDelta: 1
   DoesCurrentLightEject: 0
 --- !u!82 &1276067027
 AudioSource:
@@ -2279,6 +2283,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 348eae1942d01a249b0451ff2b1d8d9a, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
+  _playAtStart: 0
 --- !u!114 &1276067048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2296,6 +2301,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c8bc8062b33e0d54fb9c16199fce7cbb, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
+  _playAtStart: 0
 --- !u!114 &2984496935508337539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2313,6 +2319,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 86eb462bd3cee9042b41b40abb873f35, type: 3}
   _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
+  _playAtStart: 0
 --- !u!114 &1619094262952789232
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ public class EntityMovement : MonoBehaviour
 
     [Space]    [Header("Collision Settings")]    [Space]
     [SerializeField] public LayerMask GroundType;
+    [SerializeField] public LayerMask WallType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] protected List<float> ray;
 
@@ -20,6 +21,9 @@ public class EntityMovement : MonoBehaviour
     protected float _rayWallSize = 0.31f;
     protected float _direction = 1;
     public float Direction { get { return _direction; } }
+
+    protected bool _touchWall = false;
+    public bool IsTouchingWall { get { return _touchWall; } }
 
     protected float _globalGravity = -9.81f;
     protected float _gravityScale = 1;
@@ -96,15 +100,17 @@ public class EntityMovement : MonoBehaviour
 
     virtual protected void WallDetection()
     {
+        _touchWall = false;
         for (int i = 0; i < ray.Count; i++)
         {
             // Set all Ray pos
             Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-            if ((Physics.Raycast(WallPos, Vector3.left, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && _rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && _rb.velocity.x > 0.1f))
+            if ((Physics.Raycast(WallPos, Vector3.left, _rayWallSize, WallType, QueryTriggerInteraction.Ignore) && _rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, _rayWallSize, WallType, QueryTriggerInteraction.Ignore) && _rb.velocity.x > 0.1f))
             {
                 Vector3 tmp = _rb.velocity;
                 tmp.x = 0;
                 _rb.velocity = tmp;
+                _touchWall = true;
             }
         }
     }
@@ -135,7 +141,7 @@ public class EntityMovement : MonoBehaviour
         {
             // Set all Ray pos
             Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
-            if ((Physics.Raycast(WallPos, Vector3.left, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && _rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore) && _rb.velocity.x > 0.1f))
+            if ((Physics.Raycast(WallPos, Vector3.left, _rayWallSize, WallType, QueryTriggerInteraction.Ignore) && _rb.velocity.x < -0.1f) || (Physics.Raycast(WallPos, Vector3.right, _rayWallSize, WallType, QueryTriggerInteraction.Ignore) && _rb.velocity.x > 0.1f))
             {
                 return true;
             }
