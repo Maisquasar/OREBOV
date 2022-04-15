@@ -63,6 +63,7 @@ public class Enemy : Entity
         if (TimeStamp <= 0 && !_player.Dead)
         {
             _player.Dead = true;
+            Shoot();
             if (_weapon != null)
                 _weapon.Shoot();
         }
@@ -70,6 +71,8 @@ public class Enemy : Entity
     }
 
     virtual public void GoToPlayer(Vector3 lastPlayerPos) { }
+
+    virtual public void Shoot() { }
 
     private void OnApplicationQuit()
     {

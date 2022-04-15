@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using States;
 
-[RequireComponent(typeof(EnemyCheckpointManager))]
 public class MobileEnemy : Enemy
 {
     [Header("Controller")]
@@ -43,6 +42,11 @@ public class MobileEnemy : Enemy
         base.Start();
     }
 
+    public override void Shoot()
+    {
+        _controller.animator.SetBool("Shooting", true);
+    }
+
     public void SetCheckpointManager(EnemyCheckpointManager manage)
     {
         _checkpointManager = manage;
@@ -59,6 +63,13 @@ public class MobileEnemy : Enemy
             Debug.LogError("Missing Checkpoint Manager");
             return;
         }
+
+        if (State == EnemyState.CHASE || State == EnemyState.SUSPICIOUS || State == EnemyState.INTERACT)
+            _controller.animator.SetBool("Chase", true);
+        else
+            _controller.animator.SetBool("Chase", false);
+
+
         if (!stillWaiting)
         {
             if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
