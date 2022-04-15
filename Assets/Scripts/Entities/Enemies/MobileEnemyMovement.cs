@@ -17,7 +17,7 @@ public class MobileEnemyMovement : EntityMovement
         _rayWallSize = 1;
     }
 
-new private void OnDrawGizmos()
+    new private void OnDrawGizmos()
     {
         base.OnDrawGizmos();
         Gizmos.color = Color.red;
@@ -29,10 +29,8 @@ new private void OnDrawGizmos()
         if (_goTo == null)
             return;
         move *= speed;
-        if (_goTo.x > transform.position.x)
-            _direction = 1;
-        else if (_goTo.x < transform.position.x)
-            _direction = -1;
+        if ((_goTo.x > transform.position.x && Mathf.Sign(move) == -1) || (_goTo.x < transform.position.x && Mathf.Sign(move) == 1))
+            move *= -1;
 
         if (_grounded)
             _rb.velocity = new Vector2(_velocityCurve.Evaluate(_time) * move, _rb.velocity.y);
@@ -40,6 +38,7 @@ new private void OnDrawGizmos()
         if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+            Debug.Log($"Change direction {_direction}");
         }
         _time += Time.deltaTime;
     }

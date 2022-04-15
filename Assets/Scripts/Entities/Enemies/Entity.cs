@@ -19,11 +19,10 @@ namespace States
 
     public enum EnemyState
     { 
-        NOT_DETECTED,
-        SUSPICIOUS,
-        INTERACT,
+        NORMAL,
         ALERT,
-        CHASE
+        CHASE,
+        INTERACT,
     }
 }
 
