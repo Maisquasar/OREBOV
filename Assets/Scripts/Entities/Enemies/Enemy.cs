@@ -39,6 +39,8 @@ public class Enemy : Entity
         _player = FindObjectOfType<PlayerStatus>();
         TimeStamp = DetectionTime;
         FOVCone.DistanceDetection = DetectionRange;
+        if (_weapon == null)
+            _weapon = new Weapon();
     }
 
     private void OnDrawGizmos()
@@ -81,6 +83,21 @@ public class Enemy : Entity
 
     virtual public void Shoot() { }
 
+            if (_weapon != null)
+                _weapon.Shoot();
+        }
+
+        SetVibrationController();
+    }
+
+    virtual public void GoToPlayer(Vector3 lastPlayerPos) { }
+
+    private void OnApplicationQuit()
+    {
+        if (Gamepad.current == null)
+            return;
+        Gamepad.current.SetMotorSpeeds(0, 0);
+    }
 
     private IEnumerator Shooting(float time)
     {

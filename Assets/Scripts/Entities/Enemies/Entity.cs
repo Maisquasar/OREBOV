@@ -20,6 +20,7 @@ namespace States
     { 
         NORMAL,
         SUSPICIOUS,
+        INTERACT,
         ALERT,
         CHASE,
         INTERACT,
