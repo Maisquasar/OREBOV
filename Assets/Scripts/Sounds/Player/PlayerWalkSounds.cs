@@ -21,7 +21,7 @@ public class PlayerWalkSounds : MonoBehaviour
 
     private void InitComponents()
     {
-        _mouvement = GetComponentInParent<PlayerMovement>();
+        _mouvement = GetComponentInParent<EntityMovement>();
     }
 
     #endregion
@@ -30,6 +30,7 @@ public class PlayerWalkSounds : MonoBehaviour
     {
         if (IsSoundPlayable(other))
         {
+        print(_mouvement.name);
             if (_mouvement.WalkSoundManager())
             {
                 _canTriggerSounds = false;

@@ -32,8 +32,9 @@ public class MobileEnemyMovement : EntityMovement
             animator.SetFloat("VelocityX", 0);
     }
 
-    public void Move(float move)
+    public override void Move(float move)
     {
+        base.Move(move);
         if (_goTo == null)
             return;
         move *= speed;

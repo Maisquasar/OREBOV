@@ -20,7 +20,9 @@ public class PlayerStatus : Entity
     private float deadZone;
 
     [Header("Sounds")]
-    [SerializeField] private SoundEffectsHandler _shadowEffectHandler;
+    [SerializeField] private SoundEffectsHandler _shadowInEffectHandler;
+    [SerializeField] private SoundEffectsHandler _shadowOutEffectHandler;
+    [SerializeField] private SoundEffectsHandler _shadowFailEffectHandler;
 
     public PlayerMovement Controller;
     private ShadowCaster _caster;
@@ -156,15 +158,20 @@ public class PlayerStatus : Entity
         if (_isShadow)
         {
             OnTransformToPlayer();
+            _shadowOutEffectHandler.PlaySound();
         }
         else
         {
             if (_caster.CanTransform(true))
             {
                 OnTransformToShadow();
+                _shadowInEffectHandler.PlaySound();
+            }
+            else
+            {
+                _shadowFailEffectHandler.PlaySound();
             }
         }
-        _shadowEffectHandler.PlaySound();
     }
 
     public void OnTransformToShadow()

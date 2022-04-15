@@ -1832,6 +1832,8 @@ GameObject:
   - component: {fileID: 7776304015757767147}
   - component: {fileID: 1276067048}
   - component: {fileID: 2984496935508337539}
+  - component: {fileID: 9063410687541665727}
+  - component: {fileID: 616702736875046631}
   - component: {fileID: 1619094262952789232}
   m_Layer: 2
   m_Name: Avatar
@@ -2367,6 +2369,42 @@ MonoBehaviour:
   _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+--- !u!114 &9063410687541665727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Transformation Player
+  _audioClipArray:
+  - {fileID: 8300000, guid: 5ae04bfb0d1919b47bb13a096d36b82a, type: 3}
+  _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
+--- !u!114 &616702736875046631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Transformation Fail
+  _audioClipArray:
+  - {fileID: 8300000, guid: 555ff210c3c70164fa27ce688bafa110, type: 3}
+  _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
 --- !u!114 &1619094262952789232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2382,7 +2420,9 @@ MonoBehaviour:
   PlayerActionState: 0
   CheckpointPos: {x: 0, y: 0, z: 0}
   _pauseMenu: {fileID: 0}
-  _shadowEffectHandler: {fileID: 1276067026}
+  _shadowInEffectHandler: {fileID: 2984496935508337539}
+  _shadowOutEffectHandler: {fileID: 9063410687541665727}
+  _shadowFailEffectHandler: {fileID: 616702736875046631}
   Controller: {fileID: 0}
 --- !u!1 &8498706478600403111
 GameObject:
