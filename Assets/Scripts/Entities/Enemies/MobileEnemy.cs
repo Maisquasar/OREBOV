@@ -51,6 +51,7 @@ public class MobileEnemy : Enemy
     // Update is called once per frame
     override public void Update()
     {
+        base.Update();
         if (_player != null && _player.Dead)
             return;
         if (_checkpointManager == null)
@@ -58,7 +59,6 @@ public class MobileEnemy : Enemy
             Debug.LogError("Missing Checkpoint Manager");
             return;
         }
-        base.Update();
         if (!stillWaiting)
         {
             if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
@@ -96,6 +96,10 @@ public class MobileEnemy : Enemy
             if (_precPoS == (Vector3)transform.position && State == EnemyState.CHASE)
             {
                 StopFollowingPlayer();
+            }
+            else if (_precPoS == (Vector3)transform.position && State != EnemyState.CHASE)
+            {
+                CheckpointChange();
             }
             _precPoS = transform.position;
             _timeStamp = Time.time + _secondCheckStuck;

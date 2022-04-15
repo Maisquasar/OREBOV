@@ -51,7 +51,6 @@ public class Enemy : Entity
     // Update is called once per frame
     virtual public void Update()
     {
-        Debug.Log(State);
         if (TimeStamp > 0 && PlayerDetected)
         {
             TimeStamp -= Time.deltaTime * GaugeAdd;
@@ -61,13 +60,12 @@ public class Enemy : Entity
         {
             TimeStamp += Time.deltaTime * GaugeRemove;
         }
-        if (TimeStamp <= 0)
+        if (TimeStamp <= 0 && !_player.Dead)
         {
             _player.Dead = true;
             if (_weapon != null)
                 _weapon.Shoot();
         }
-
         SetVibrationController();
     }
 
