@@ -24,6 +24,11 @@ public class InteractiveMovement : InteractiveObject
 
     // TODO Clean the code
 
+    protected override void Start()
+    {
+        base.Start();
+    }
+
     protected override void ActiveItem(GameObject player)
     {
         base.ActiveItem(player);
