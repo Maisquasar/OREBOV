@@ -12,8 +12,10 @@ public class SoundEffectsHandler : MonoBehaviour
     [SerializeField] private bool _randomPlaySound;
     [SerializeField] private bool _playAtStart;
 
+
     private AudioSource _audioSource;
     private int _indexAudioClip = 0;
+    private int _prevAudioClip = 0;
 
     private void InitComponents()
     {
@@ -27,6 +29,10 @@ public class SoundEffectsHandler : MonoBehaviour
             Debug.LogError(" No sound in the " + gameObject.name + " for the " + _soundName + " sound effect handler . This component disable for play mode ");
             this.enabled = false;
         }
+        if (_audioClipArray.Length == 1)
+        {
+            _randomPlaySound = false;
+        }
     }
 
     private void Start()
@@ -39,13 +45,20 @@ public class SoundEffectsHandler : MonoBehaviour
 
     private int GetRandomIndex()
     {
-        return Random.Range(0, _audioClipArray.Length);
+        int number = _prevAudioClip;
+        while(number ==  _prevAudioClip)
+        {
+            number = Random.Range(0, _audioClipArray.Length);
+        }
+
+        return number;
     }
 
     public void PlaySound()
     {
         if (_randomPlaySound)
         {
+            _prevAudioClip = _indexAudioClip;
             _indexAudioClip = GetRandomIndex();
         }
         else
