@@ -2,20 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StaticEnemy : Entity
+public class StaticEnemy : Enemy
 {
-    private PlayerStatus player;
-    [SerializeField] Trigger DetectionZone;
+    [SerializeField] public StaticEnemyMovement _controller;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        player = FindObjectOfType<PlayerStatus>();
-    }
 
-    // Update is called once per frame
-    void Update()
+    public override EntityMovement Controller { get { return _controller; } }
+
+    public override void Shoot()
     {
-        
+        _controller.animator.SetBool("Shooting", true);
     }
 }

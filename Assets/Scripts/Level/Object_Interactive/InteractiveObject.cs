@@ -19,12 +19,11 @@ namespace InteractObject
 
 public class InteractiveObject : MonoBehaviour
 {
-    
-
     [Header("Object State")]
     [SerializeField] public bool _isSelected;
-    [SerializeField] public bool _objectActive;
+    [SerializeField] public bool _objectActive = false;
     [SerializeField] public bool _useOnlyInShadow;
+    [HideInInspector] public bool DefaultActive;
 
     [HideInInspector] public bool _deactiveInteraction = false;
 
@@ -44,30 +43,29 @@ public class InteractiveObject : MonoBehaviour
 
     protected GameObject _playerGO;
     protected Vector2 _axis;
+    private void Start()
+    {
+        DefaultActive = _objectActive;
+    }
 
 
     public virtual void ItemInteraction(GameObject player)
     {
-        _objectActive = !_objectActive;
-        
-        if (_objectActive)
-        {
-            ActiveItem(player);
-            return;
-        }
-        if (!_objectActive)
-        {
-            DeactiveItem();
-            return;
-        }
+        ActiveItem(player);
     }
 
     protected virtual void ActiveItem(GameObject player)
     {
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
-
         _playerGO = player;
+    }
+
+    protected virtual void ActiveItem(Enemy enemy)
+    {
+        if (_activeSound)
+            AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
+        _playerGO = enemy.gameObject;
     }
 
     protected virtual void DeactiveItem()
@@ -94,6 +92,11 @@ public class InteractiveObject : MonoBehaviour
     public virtual void HoldUpdate()
     {
 
+    }
+
+    public virtual void CancelUpdate()
+    {
+        DeactiveItem();
     }
 
     private void OnDrawGizmos()

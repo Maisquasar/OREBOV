@@ -9,30 +9,32 @@ public class PlayerMovement : EntityMovement
     [SerializeField] AnimationCurve velocityCurve;
     [SerializeField] float _flipTime = 0.1f;
 
-    [Space]    [Header("Jump Settings")]    [Space]
+    [Space]
+    [Header("Jump Settings")]
+    [Space]
     [SerializeField] float jumpHeight;
     [SerializeField] private float jumpDistance;
     private float _jumpForce;
 
-    [Space]    [Header("Edge Detector Settings")]    [Space]
+    [Space]
+    [Header("Edge Detector Settings")]
+    [Space]
     [SerializeField] float edgeDetectorHeight = 0.6f;
     private float topEdgeDetectorHeight = 0.75f;
     float edgeDetectorDistance = 0.5f;
 
-    [Space]    [Header("Fall Damage Settings")]    [Space]
+    [Space]
+    [Header("Fall Damage Settings")]
+    [Space]
     [SerializeField] float FallDamageHeight = 8;
     [HideInInspector] public bool IsClimbing = false;
 
     Vector3 LastPosBeforeFall;
     private float _lastMove;
-    private float _xAxisValue;
-    private readonly float margeDetectionVelocity = 0.05f;
+    private readonly float margeDetectionVelocity = 0.07f;
     private float time;
     private bool _fallDefine = false;
 
-    [Space]    [Header("Sounds ")]    [Space]
-    [SerializeField] private SoundEffectsHandler _walkEffectsHandler;
-    [SerializeField] private SoundEffectsHandler _jumpImpactEffectHandler;
 
     private new void Start()
     {
@@ -62,10 +64,11 @@ public class PlayerMovement : EntityMovement
 
     private void Update()
     {
+        if (GetComponent<PlayerStatus>().Dead)
+            return;
         //Get the pos at start fall.
         if (_rb.velocity.y < -0.1f && !_fallDefine && !_grounded)
         {
-            Debug.Log("Define");
             LastPosBeforeFall = transform.position;
             _fallDefine = true;
         }
@@ -75,9 +78,7 @@ public class PlayerMovement : EntityMovement
             _fallDefine = false;
             if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<PlayerStatus>().Dead)
             {
-                animator.SetBool("Dead", true);
                 GetComponent<PlayerStatus>().Dead = true;
-                LastPosBeforeFall = GetComponent<PlayerStatus>().CheckpointPos;
             }
         }
 
@@ -103,6 +104,13 @@ public class PlayerMovement : EntityMovement
             }
         }
     }
+    public void SetDead()
+    {
+        animator.SetBool("Dead", true);
+        LastPosBeforeFall = GetComponent<PlayerStatus>().CheckpointPos;
+        animator.SetFloat("VelocityX", 0);
+    }
+
     public void ChangeState(ref PlayerAction State)
     {
         if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
@@ -125,12 +133,12 @@ public class PlayerMovement : EntityMovement
     }
 
     // Move the player.
-    public void Move(float move)
+    public override void Move(float move)
     {
+        base.Move(move);
         // If climbing then can't move
         if (IsClimbing || IsPushing || IsPulling)
             return;
-        _xAxisValue = move;
         _lastMove = move;
 
         // Set move speed.
@@ -140,7 +148,7 @@ public class PlayerMovement : EntityMovement
             move = jumpDistance * speed * Mathf.Sign(move);
 
         // Ground Move
-        if (_grounded )
+        if (_grounded)
             _rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, _rb.velocity.y);
 
         //Flip character
@@ -185,7 +193,6 @@ public class PlayerMovement : EntityMovement
     protected override void LandOnGround()
     {
         base.LandOnGround();
-        _jumpImpactEffectHandler.PlaySound();
     }
 
     public IEnumerator PlayClimb()
@@ -256,25 +263,5 @@ public class PlayerMovement : EntityMovement
         yield return null;
     }
 
-
-    #region Sounds  
-
-
-
-
-    public bool WalkSoundManager()
-    {
-        if (_xAxisValue != 0f)
-        {
-            _walkEffectsHandler.PlaySound();
-            return true;
-
-        }
-
-        return false;
-
-    }
-
-    #endregion
 }
 
