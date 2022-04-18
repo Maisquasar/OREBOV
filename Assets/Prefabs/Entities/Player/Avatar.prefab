@@ -1834,6 +1834,7 @@ GameObject:
   - component: {fileID: 2984496935508337539}
   - component: {fileID: 9063410687541665727}
   - component: {fileID: 616702736875046631}
+  - component: {fileID: 8905401067555059032}
   - component: {fileID: 1619094262952789232}
   m_Layer: 2
   m_Name: Avatar
@@ -2222,7 +2223,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2405,6 +2406,25 @@ MonoBehaviour:
   _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+--- !u!114 &8905401067555059032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Death
+  _audioClipArray:
+  - {fileID: 8300000, guid: ff1c00096324f734a8541069a632a186, type: 3}
+  - {fileID: 8300000, guid: 3b2e6f4172bb19e4ab8c459551f82cb3, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
 --- !u!114 &1619094262952789232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2423,6 +2443,7 @@ MonoBehaviour:
   _shadowInEffectHandler: {fileID: 2984496935508337539}
   _shadowOutEffectHandler: {fileID: 9063410687541665727}
   _shadowFailEffectHandler: {fileID: 616702736875046631}
+  _deathEffectHandler: {fileID: 8905401067555059032}
   Controller: {fileID: 0}
 --- !u!1 &8498706478600403111
 GameObject:

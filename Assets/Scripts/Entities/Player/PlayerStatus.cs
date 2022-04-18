@@ -23,6 +23,7 @@ public class PlayerStatus : Entity
     [SerializeField] private SoundEffectsHandler _shadowInEffectHandler;
     [SerializeField] private SoundEffectsHandler _shadowOutEffectHandler;
     [SerializeField] private SoundEffectsHandler _shadowFailEffectHandler;
+    [SerializeField] private SoundEffectsHandler _deathEffectHandler;
 
     public PlayerMovement Controller;
     private ShadowCaster _caster;
@@ -284,6 +285,7 @@ public class PlayerStatus : Entity
     private void PlayerDeath()
     {
         Controller.SetDead();
+        _deathEffectHandler.PlaySound();
         if (Dead && !_respawn)
             StartCoroutine(WaitBeforeRespawn());
     }
