@@ -28,7 +28,7 @@ public class MobileEnemyMovement : EntityMovement
     {
         if (!DetectWall())
             animator.SetFloat("VelocityX", _rb.velocity.x);
-        else 
+        else
             animator.SetFloat("VelocityX", 0);
     }
 
@@ -44,12 +44,16 @@ public class MobileEnemyMovement : EntityMovement
         if (_grounded)
             _rb.velocity = new Vector2(_velocityCurve.Evaluate(_time) * move, _rb.velocity.y);
 
-        if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
+        if (_grounded && _endOfCoroutine)
         {
-            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+            if (move < 0 && _direction == 1)
+                StartCoroutine(Flip(Quaternion.Euler(0, 180, 0), Quaternion.Euler(0, 0, 0), 0.1f));
+            else if (move > 0 && _direction == -1)
+                StartCoroutine(Flip(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 180, 0), 0.1f));
         }
         _time += Time.deltaTime;
     }
+
 
     public void NewCheckpoint(Vector3 to)
     {

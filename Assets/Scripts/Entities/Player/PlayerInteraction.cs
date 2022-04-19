@@ -54,7 +54,13 @@ public class PlayerInteraction : MonoBehaviour
 
         if (_interactionState == InteractionState.Link)
         {
-            _objectInteractive.UpdateItem(_axis);
+            if (_objectManager.IsObjectInRange(transform.position,transform.forward, _detectDistance, _detectionDirection, _objectInteractive))
+                _objectInteractive.UpdateItem(_axis);
+            else
+            {
+                _objectInteractive.CancelUpdate();
+                UnlinkObject();
+            }
         }
         else
         {
