@@ -30,6 +30,7 @@ public class Enemy : Entity
     [HideInInspector] public float TimeStamp = 0;
     protected PlayerStatus _player;
 
+    private float _shootTime = 1f;
     public virtual EntityMovement Controller { get { return _entityController; } }
 
     // Start is called before the first frame update
@@ -51,28 +52,49 @@ public class Enemy : Entity
     // Update is called once per frame
     virtual public void Update()
     {
-        if (TimeStamp > 0 && PlayerDetected)
+        if (!_player.Dead)
         {
-            TimeStamp -= Time.deltaTime * GaugeAdd;
-            State = EnemyState.SUSPICIOUS;
+
+            if (TimeStamp > 0 && PlayerDetected)
+            {
+                TimeStamp -= Time.deltaTime * GaugeAdd;
+                State = EnemyState.SUSPICIOUS;
+            }
+            else if (TimeStamp < DetectionTime)
+            {
+                TimeStamp += Time.deltaTime * GaugeRemove;
+            }
+            if (TimeStamp <= 0)
+            {
+                _player.Dead = true;
+                Debug.Log("Shoot!!");
+                Shoot();
+                if (_weapon != null)
+                    _weapon.Shoot();
+                StartCoroutine(Shooting(0.5f));
+            }
+            SetVibrationController();
         }
-        else if (TimeStamp < DetectionTime)
-        {
-            TimeStamp += Time.deltaTime * GaugeRemove;
-        }
-        if (TimeStamp <= 0 && !_player.Dead)
-        {
-            _player.Dead = true;
-            Shoot();
-            if (_weapon != null)
-                _weapon.Shoot();
-        }
-        SetVibrationController();
     }
 
     virtual public void GoToPlayer(Vector3 lastPlayerPos) { }
 
     virtual public void Shoot() { }
+
+
+    private IEnumerator Shooting(float time)
+    {
+        yield return new WaitForSeconds(time);
+        EndShooting();
+    }
+
+    protected virtual void EndShooting()
+    {
+        PlayerDetected = false;
+        TimeStamp = DetectionTime;
+        State = EnemyState.NORMAL;
+    }
+
 
     private void OnApplicationQuit()
     {
@@ -80,6 +102,8 @@ public class Enemy : Entity
             return;
         Gamepad.current.SetMotorSpeeds(0, 0);
     }
+
+
 
     void SetVibrationController()
     {
