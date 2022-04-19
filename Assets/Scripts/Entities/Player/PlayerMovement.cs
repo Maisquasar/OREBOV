@@ -86,6 +86,7 @@ public class PlayerMovement : EntityMovement
             animator.SetFloat("VelocityX", _rb.velocity.x);
         else
             animator.SetFloat("VelocityX", 0);
+
         animator.SetFloat("VelocityY", _rb.velocity.y);
         animator.SetBool("Grounded", _grounded);
 
@@ -103,6 +104,8 @@ public class PlayerMovement : EntityMovement
                 }
             }
         }
+
+
     }
     public void SetDead(bool state)
     {
