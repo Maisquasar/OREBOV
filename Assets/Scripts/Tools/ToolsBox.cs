@@ -8,7 +8,7 @@ namespace Tools
     {
         public static bool IsInLayerMask(GameObject obj, LayerMask layerMask)
         {
-            return (layerMask.value & (1 << obj.layer)) != 0;
+            return ((layerMask.value & (1 << obj.layer)) > 0);
         }
     }
 

@@ -34,6 +34,8 @@ public class PlayerStatus : Entity
     private Vector3 _previousPos;
     private Vector3 _shadowPos;
 
+   [HideInInspector]
+    public bool IsHide = false;
     private bool _isDead = false;
     private bool _isJumping = false;
     private bool _isShadow = false;
@@ -205,6 +207,7 @@ public class PlayerStatus : Entity
             _exactPos = false;
         }
 
+
         if (_playerInteraction.ObjectType == InteractObjects.Box)
         {
             if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y || CheckForObstacles())
@@ -296,4 +299,5 @@ public class PlayerStatus : Entity
         yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
         Respawn();
     }
+
 }

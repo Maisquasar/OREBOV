@@ -30,7 +30,6 @@ public class PlayerWalkSounds : MonoBehaviour
     {
         if (IsSoundPlayable(other))
         {
-        print(_mouvement.name);
             if (_mouvement.WalkSoundManager())
             {
                 _canTriggerSounds = false;
