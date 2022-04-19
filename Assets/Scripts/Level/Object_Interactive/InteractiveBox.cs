@@ -28,6 +28,10 @@ public class InteractiveBox : InteractiveObject
     private PlayerInteraction PlayerInteract;
     private PlayerStatus _playerStatus;
 
+    private Vector3 delta;
+    private Vector3 startPos;
+    private Vector3 endPos;
+
     private void Start()
     {
         ObjectType = InteractObjects.Box;
@@ -44,6 +48,9 @@ public class InteractiveBox : InteractiveObject
             _playerStatus = _playerGO.GetComponent<PlayerStatus>();
             PlayerInteract.LinkObject(this);
             _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
+             startPos = _playerGO.transform.position;
+             delta = transform.position - _playerGO.transform.position;
+
         }
     }
 
@@ -68,7 +75,7 @@ public class InteractiveBox : InteractiveObject
             Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
             if (!_activeMouvement && axis.normalized.x != 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
             {
-                StartCoroutine(MoveBox(axis.normalized.x));
+                MovingBox(_axis.x);
                 _playerStatus.PlayRightAnimation(axis.x);
             }
         }
@@ -143,6 +150,15 @@ public class InteractiveBox : InteractiveObject
         _boxPush.StopSound();
     }
 
+
+     private void MovingBox(float dir)
+    {
+        PlayerInteract.CanStopNow = false;
+      
+      
+        _rigidbodyPlayer.position += Vector3.right * dir * _speedBox * Time.deltaTime;
+        transform.position = _rigidbodyPlayer.position + delta;
+    }
     private IEnumerator PauseBoxMouvement()
     {
         PlayerInteract.CanStopNow = true;
