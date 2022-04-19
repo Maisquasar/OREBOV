@@ -34,6 +34,8 @@ public class PlayerStatus : Entity
     private Vector3 _previousPos;
     private Vector3 _shadowPos;
 
+    [HideInInspector]
+    public bool IsHide = false;
     private bool _isDead = false;
     private bool _isJumping = false;
     private bool _isShadow = false;
@@ -148,7 +150,7 @@ public class PlayerStatus : Entity
     {
         //if (Controller.IsTouchingWall && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link && !_playerAnimator.IsInAmination)
         if ((PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link && !_playerAnimator.IsInAmination)
-                if (context.started)
+            if (context.started)
                 Controller.Jump();
     }
 
@@ -205,6 +207,7 @@ public class PlayerStatus : Entity
             _exactPos = false;
         }
 
+
         if (_playerInteraction.ObjectType == InteractObjects.Box)
         {
             if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y || CheckForObstacles())
@@ -245,10 +248,16 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Debug.Log("Test");
+        transform.position = CheckpointPos;
         _playerAnimator.enabled = true;
         _playerInteraction.enabled = true;
         Controller.enabled = true;
+        _isDead = false;
+        PlayerActionState = PlayerAction.IDLE;
+        Controller.SetDead(false);
+        _respawn = false;
+        StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
     }
 
     //Set Player to the right Position
@@ -284,7 +293,7 @@ public class PlayerStatus : Entity
 
     private void PlayerDeath()
     {
-        Controller.SetDead();
+        Controller.SetDead(true);
         _deathEffectHandler.PlaySound();
         if (Dead && !_respawn)
             StartCoroutine(WaitBeforeRespawn());
@@ -296,4 +305,5 @@ public class PlayerStatus : Entity
         yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
         Respawn();
     }
+
 }

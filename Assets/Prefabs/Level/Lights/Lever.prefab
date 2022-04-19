@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1870600496214625239}
   - component: {fileID: 1870600496214625237}
   m_Layer: 0
-  m_Name: LightLever
+  m_Name: Lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,6 +98,7 @@ MonoBehaviour:
   _isSelected: 0
   _objectActive: 0
   _useOnlyInShadow: 0
+  DefaultActive: 0
   _deactiveInteraction: 0
   _uiHintPosition: {x: 0, y: 1.26, z: -0.4}
   _activeSound: 0
@@ -106,9 +107,11 @@ MonoBehaviour:
   ObjectType: 0
   _debug: 0
   _handleAmplitude: 0.0442
+  _activationCooldown: 0
   _handleSpeed: 0.3
   _lightConnect:
   - {fileID: 0}
+  _others: []
 --- !u!1 &1870600497274712669
 GameObject:
   m_ObjectHideFlags: 0

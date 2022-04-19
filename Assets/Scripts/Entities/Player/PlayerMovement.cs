@@ -104,10 +104,10 @@ public class PlayerMovement : EntityMovement
             }
         }
     }
-    public void SetDead()
+    public void SetDead(bool state)
     {
-        animator.SetBool("Dead", true);
-        LastPosBeforeFall = GetComponent<PlayerStatus>().CheckpointPos;
+        animator.SetBool("Dead", state);
+        LastPosBeforeFall = GetComponent<PlayerStatus>().CheckpointPos; 
         animator.SetFloat("VelocityX", 0);
     }
 

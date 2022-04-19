@@ -47,6 +47,13 @@ public class MobileEnemy : Enemy
         _controller.animator.SetBool("Shooting", true);
     }
 
+    protected override void EndShooting()
+    {
+
+        base.EndShooting();
+        _controller.animator.SetBool("Shooting", false);
+    }
+
     public void SetCheckpointManager(EnemyCheckpointManager manage)
     {
         _checkpointManager = manage;

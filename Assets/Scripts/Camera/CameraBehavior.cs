@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class CameraBehavior : MonoBehaviour
 {
 
+ 
+
     private enum CameraBehaviorState
     {
         FollowTarget,
@@ -23,10 +25,8 @@ public class CameraBehavior : MonoBehaviour
     [Space]
     [SerializeField]
     private bool _showWindow;
-
     [SerializeField]
     public Vector2 WindowSize;
-
     [SerializeField]
     public Vector2 WindowOffset;
 
@@ -42,6 +42,16 @@ public class CameraBehavior : MonoBehaviour
     [Range(0,100f)]
     [SerializeField] private float _stopCamDistance;
     [SerializeField] private LayerMask _camLayer;
+
+
+    [HideInInspector]
+    public Vector2 WindowSizeCheckpoint;
+    [HideInInspector]
+    public Vector2 WindowOffsetCheckpoint;
+    [HideInInspector]
+    public Vector3 PositionCheckpoint;
+    [HideInInspector]
+    public Quaternion RotationCheckpoint; 
 
     private PlayerStatus _player;
     private Vector3 _windowCenter;
@@ -136,6 +146,14 @@ public class CameraBehavior : MonoBehaviour
 
     }
 
+
+    public void ResetCamCheckpoint()
+    {
+        WindowOffset = WindowOffsetCheckpoint;
+        WindowSize = WindowSizeCheckpoint;
+        transform.position = PositionCheckpoint;
+        transform.rotation = RotationCheckpoint;
+    }
 
     private void DrawRectWindown()
     {
