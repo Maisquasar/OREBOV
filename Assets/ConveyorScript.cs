@@ -29,7 +29,7 @@ public class ConveyorScript : MonoBehaviour
             }
             else
             {
-                _player.transform.position += new Vector3(_reverse ? -speed : speed, 0, 0) * Time.deltaTime;
+                _player.transform.position += transform.forward * (_reverse ? -speed : speed) * Time.deltaTime;
             }
         }
         _playerHit = false;
