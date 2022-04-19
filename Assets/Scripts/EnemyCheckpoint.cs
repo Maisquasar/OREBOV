@@ -6,6 +6,7 @@ public class EnemyCheckpoint : MonoBehaviour
 {
     [Tooltip("Time in seconds")]
     [SerializeField] public float Time;
+    [SerializeField] public float Angle;
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.black;

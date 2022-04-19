@@ -167,7 +167,7 @@ public class EntityMovement : MonoBehaviour
     }
 
     [HideInInspector] public bool canTurn = true;
-    protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
+    virtual protected IEnumerator Flip(Quaternion initial, Quaternion goTo, float duration)
     {
         if (!canTurn)
             yield break;

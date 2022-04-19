@@ -10,8 +10,6 @@ public class EnemyCheckpointManager : MonoBehaviour
     [SerializeField] public float StartTime;
     [SerializeField] public bool Reverse;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
