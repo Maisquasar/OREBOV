@@ -1,10 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using InteractObject;
-using UnityEngine.Events;
 
-public class InteractiveSwitch : InteractiveObject
+public class InteractiveLightSwitch : InteractiveObject
 {
     [Header("Switch")]
     private GameObject _handle;
@@ -13,14 +12,11 @@ public class InteractiveSwitch : InteractiveObject
     [SerializeField]
     private float _activationCooldown = 0.0f;
     [SerializeField]
-    private float _autoDesactivateTimer = 0.0f;
-    [SerializeField]
     private float _handleSpeed = 0.3f;
-    [Header("Objects")]
+    [Header("Light")]
     [SerializeField]
-    private UnityEvent _activateEvent = new UnityEvent();
+    private Light[] _lightConnect = new Light[0];
     [SerializeField]
-    private UnityEvent _desactivateEvent = new UnityEvent();
     private void Start()
     {
         ObjectType = InteractObjects.Switch;
@@ -34,7 +30,6 @@ public class InteractiveSwitch : InteractiveObject
         {
             base.DeactiveItem();
             StartCoroutine(desactivateLever());
-
             _objectActive = false;
         }
         else
@@ -78,17 +73,10 @@ public class InteractiveSwitch : InteractiveObject
             if (!active && tmp.z < 0)
             {
                 active = true;
-                _activateEvent.Invoke();
+                toggleLamps();
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
-        }
-        if (_autoDesactivateTimer > 0)
-        {
-            yield return new WaitForSeconds(_autoDesactivateTimer);
-            base.DeactiveItem();
-            yield return desactivateLever();
-            _objectActive = false;
         }
         yield return null;
     }
@@ -105,12 +93,20 @@ public class InteractiveSwitch : InteractiveObject
             if (!active && tmp.z > 0)
             {
                 active = true;
-                _desactivateEvent.Invoke();
+                toggleLamps();
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
         }
         yield return null;
+    }
+
+    private void toggleLamps()
+    {
+        for (int i = 0; i < _lightConnect.Length; i++)
+        {
+            _lightConnect[i].gameObject.SetActive(!_lightConnect[i].gameObject.activeSelf);
+        }
     }
 
 }
