@@ -42,6 +42,8 @@ public class PlayerStatus : Entity
     private bool _respawn = false; // To execute repawn only once.
     private bool _exactPos = false; // To execute LerpTo only once.
 
+    public bool IsShadow { get { return _isShadow; } }
+
     public Vector2 MoveDir { get { return _movementDir; } }
     public bool Dead
     {
@@ -52,7 +54,6 @@ public class PlayerStatus : Entity
             if (value == true) PlayerDeath();
         }
     }
-    public bool IsShadow { get { return _isShadow; } }
 
 
     #region Initiate Script 
