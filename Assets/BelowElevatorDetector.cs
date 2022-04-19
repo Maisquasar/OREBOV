@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BelowElevatorDetector : Trigger
+public class BelowElevatorDetector : MonoBehaviour
 {
     [HideInInspector] public bool Detect = false;
 
