@@ -38,7 +38,24 @@ public class InteractiveSwitch : InteractiveObject
         }
         _objectActive = !_objectActive;
     }
-    
+
+
+    protected override void ActiveItem(Enemy enemy)
+    {
+        if (_activationCooldown > 0) return;
+        if (_objectActive)
+        {
+            base.DeactiveItem();
+            StartCoroutine(desactivateLever());
+        }
+        else
+        {
+            base.ActiveItem(enemy);
+            StartCoroutine(activateLever());
+        }
+        _objectActive = !_objectActive;
+    }
+
     protected override void DeactiveItem()
     {
     }

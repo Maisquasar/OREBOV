@@ -4,5 +4,13 @@ using UnityEngine;
 
 public class StaticEnemy : Enemy
 {
-    [SerializeField] new public StaticEnemyMovement Controller;
+    [SerializeField] public StaticEnemyMovement _controller;
+
+
+    public override EntityMovement Controller { get { return _controller; } }
+
+    public override void Shoot()
+    {
+        _controller.animator.SetBool("Shooting", true);
+    }
 }

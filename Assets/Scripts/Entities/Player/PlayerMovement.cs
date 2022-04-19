@@ -31,16 +31,10 @@ public class PlayerMovement : EntityMovement
 
     Vector3 LastPosBeforeFall;
     private float _lastMove;
-    private float _xAxisValue;
-    private readonly float margeDetectionVelocity = 0.05f;
+    private readonly float margeDetectionVelocity = 0.07f;
     private float time;
     private bool _fallDefine = false;
 
-    [Space]
-    [Header("Sounds ")]
-    [Space]
-    [SerializeField] private SoundEffectsHandler _walkEffectsHandler;
-    [SerializeField] private SoundEffectsHandler _jumpImpactEffectHandler;
 
     private new void Start()
     {
@@ -139,12 +133,12 @@ public class PlayerMovement : EntityMovement
     }
 
     // Move the player.
-    public void Move(float move)
+    public override void Move(float move)
     {
+        base.Move(move);
         // If climbing then can't move
         if (IsClimbing || IsPushing || IsPulling)
             return;
-        _xAxisValue = move;
         _lastMove = move;
 
         // Set move speed.
@@ -199,7 +193,6 @@ public class PlayerMovement : EntityMovement
     protected override void LandOnGround()
     {
         base.LandOnGround();
-        _jumpImpactEffectHandler.PlaySound();
     }
 
     public IEnumerator PlayClimb()
@@ -270,25 +263,5 @@ public class PlayerMovement : EntityMovement
         yield return null;
     }
 
-
-    #region Sounds  
-
-
-
-
-    public bool WalkSoundManager()
-    {
-        if (_xAxisValue != 0f)
-        {
-            _walkEffectsHandler.PlaySound();
-            return true;
-
-        }
-
-        return false;
-
-    }
-
-    #endregion
 }
 

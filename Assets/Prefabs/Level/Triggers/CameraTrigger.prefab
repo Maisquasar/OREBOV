@@ -109,9 +109,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a2513481d3d96645b347d886db13803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraToMove: {fileID: 0}
+  ShowOnLoad: 0
   reverse: 1
-  travelTime: 0
+  _resetFreeMouvement: 1
+  _checkPlayerState: 0
+  _isShadow: 0
+  _windowSize: {x: 0, y: 0}
+  _windowOffset: {x: 0, y: 0}
 --- !u!1 &5642535341867486604
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,7 +127,6 @@ GameObject:
   - component: {fileID: 5642535341867486600}
   - component: {fileID: 5642535341867486601}
   - component: {fileID: 5642535341867486602}
-  - component: {fileID: 5642535341867486603}
   - component: {fileID: 397945167}
   m_Layer: 3
   m_Name: SwitchTo
@@ -195,19 +198,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5642535341867486603
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5642535341867486604}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &397945167
 MonoBehaviour:
   m_ObjectHideFlags: 0
