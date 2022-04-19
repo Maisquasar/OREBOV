@@ -26,7 +26,7 @@ public class ObjectManager : MonoBehaviour
             {
                 Vector3 objDir = _interactiveObjectList[i].transform.position - position;
                 if (Vector3.Dot(faceDir.normalized, objDir.normalized) > angle)
-                { 
+                {
                     distanceObject = Vector3.Distance(position, _interactiveObjectList[i].transform.position);
                     _item = _interactiveObjectList[i];
                 }
@@ -35,4 +35,17 @@ public class ObjectManager : MonoBehaviour
         return _item;
     }
 
+    public bool IsObjectInRange(Vector3 position, Vector3 faceDir, float range, float angle, InteractiveObject obj)
+    {
+        float distanceObject = GameMetric.GetUnityValue(range);
+        if (Vector3.Distance(position, obj.transform.position) < distanceObject)
+        {
+            Vector3 objDir = obj.transform.position - position;
+            if (Vector3.Dot(faceDir.normalized, objDir.normalized) > angle)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
