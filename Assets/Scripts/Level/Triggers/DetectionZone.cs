@@ -43,6 +43,9 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
+            if (_playerAnimator.IsInAmination)
+                Enemy.PlayerDetected = false;
+
             if (_playerStatus.IsShadow)
                 return;
             Enemy.PlayerDetected = false;
