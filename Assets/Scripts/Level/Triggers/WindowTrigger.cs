@@ -30,8 +30,9 @@ public class WindowTrigger : Trigger
     private BoxCollider _boxCollider;
     private CameraBehavior _cameraBehavior;
 
-    private void Start()
+    override public void Start()
     {
+        base.Start();
         _cameraBehavior = Camera.main.GetComponent<CameraBehavior>();
         _boxCollider = GetComponent<BoxCollider>();
     }

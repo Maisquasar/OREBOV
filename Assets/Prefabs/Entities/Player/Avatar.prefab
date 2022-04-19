@@ -1828,8 +1828,13 @@ GameObject:
   - component: {fileID: 1276067027}
   - component: {fileID: 1276067028}
   - component: {fileID: 1276067026}
+  - component: {fileID: 1972867806646358642}
+  - component: {fileID: 7776304015757767147}
   - component: {fileID: 1276067048}
   - component: {fileID: 2984496935508337539}
+  - component: {fileID: 9063410687541665727}
+  - component: {fileID: 616702736875046631}
+  - component: {fileID: 8905401067555059032}
   - component: {fileID: 1619094262952789232}
   m_Layer: 2
   m_Name: Avatar
@@ -1897,14 +1902,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1803301609}
+  AmbientType: 0
   GroundType:
     serializedVersion: 2
-    m_Bits: 2993
+    m_Bits: 7089
+  WallType:
+    serializedVersion: 2
+    m_Bits: 4225
   ray:
   - 0.5
   - 0
   - -0.5
   speed: 3
+  _walkInsideEffectsHandler: {fileID: 1276067026}
+  _walkOutsideEffectsHandler: {fileID: 1972867806646358642}
+  _walkRainEffectsHandler: {fileID: 7776304015757767147}
+  _jumpImpactEffectHandler: {fileID: 1276067048}
   canTurn: 1
   velocityCurve:
     serializedVersion: 2
@@ -1936,8 +1949,6 @@ MonoBehaviour:
   edgeDetectorHeight: 0.6
   FallDamageHeight: 8
   IsClimbing: 0
-  _walkEffectsHandler: {fileID: 1276067026}
-  _jumpImpactEffectHandler: {fileID: 1276067048}
   IsPushing: 0
   IsPulling: 0
 --- !u!114 &8288549701085702374
@@ -2154,6 +2165,7 @@ MonoBehaviour:
   - {x: -1, y: 0}
   HitBoxRadius: 0.3
   ShadowHeightDeltaMin: 1
+  ShadowDepthDelta: 1
   DoesCurrentLightEject: 0
 --- !u!82 &1276067027
 AudioSource:
@@ -2211,7 +2223,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2271,14 +2283,57 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soundName: Walk
+  _soundName: Walk Inside
   _audioClipArray:
-  - {fileID: 8300000, guid: 010fe43486f92494bb6a04261d710d09, type: 3}
   - {fileID: 8300000, guid: e15f19d651496084bb30eefd34f4d496, type: 3}
   - {fileID: 8300000, guid: 16c4cd447da9f7d4f879a3072903c5f8, type: 3}
   - {fileID: 8300000, guid: 348eae1942d01a249b0451ff2b1d8d9a, type: 3}
+  - {fileID: 8300000, guid: 010fe43486f92494bb6a04261d710d09, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
+  _playAtStart: 0
+--- !u!114 &1972867806646358642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Walk Outside
+  _audioClipArray:
+  - {fileID: 8300000, guid: 8e0903d1fb8ff8149bf3c5b2f3dd341f, type: 3}
+  - {fileID: 8300000, guid: 588d3c10cbb9bf247b493c0a81124977, type: 3}
+  - {fileID: 8300000, guid: 6a7550d91052ca34dab1faa4f8ebb62b, type: 3}
+  - {fileID: 8300000, guid: 60ce3b718e0656b4cab5da582d4a7696, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
+--- !u!114 &7776304015757767147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Walk Rain
+  _audioClipArray:
+  - {fileID: 8300000, guid: 39cb51dde311e9742ab3ce94ff420ffb, type: 3}
+  - {fileID: 8300000, guid: f948003c0c6accf40969d178526c7fb1, type: 3}
+  - {fileID: 8300000, guid: 5639fafd0c83f8347aa90d08691f109e, type: 3}
+  - {fileID: 8300000, guid: 8a9fe7841a91adc45b277d095fbe31b3, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
 --- !u!114 &1276067048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2296,6 +2351,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c8bc8062b33e0d54fb9c16199fce7cbb, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
+  _playAtStart: 0
 --- !u!114 &2984496935508337539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2313,6 +2369,62 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 86eb462bd3cee9042b41b40abb873f35, type: 3}
   _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
+  _playAtStart: 0
+--- !u!114 &9063410687541665727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Transformation Player
+  _audioClipArray:
+  - {fileID: 8300000, guid: 5ae04bfb0d1919b47bb13a096d36b82a, type: 3}
+  _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
+--- !u!114 &616702736875046631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Transformation Fail
+  _audioClipArray:
+  - {fileID: 8300000, guid: 555ff210c3c70164fa27ce688bafa110, type: 3}
+  _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
+--- !u!114 &8905401067555059032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288549701085702373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Death
+  _audioClipArray:
+  - {fileID: 8300000, guid: ff1c00096324f734a8541069a632a186, type: 3}
+  - {fileID: 8300000, guid: 3b2e6f4172bb19e4ab8c459551f82cb3, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _randomPlaySound: 1
+  _playAtStart: 0
 --- !u!114 &1619094262952789232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2328,7 +2440,10 @@ MonoBehaviour:
   PlayerActionState: 0
   CheckpointPos: {x: 0, y: 0, z: 0}
   _pauseMenu: {fileID: 0}
-  _shadowEffectHandler: {fileID: 1276067026}
+  _shadowInEffectHandler: {fileID: 2984496935508337539}
+  _shadowOutEffectHandler: {fileID: 9063410687541665727}
+  _shadowFailEffectHandler: {fileID: 616702736875046631}
+  _deathEffectHandler: {fileID: 8905401067555059032}
   Controller: {fileID: 0}
 --- !u!1 &8498706478600403111
 GameObject:

@@ -24,8 +24,17 @@ public class MobileEnemyMovement : EntityMovement
         Gizmos.DrawSphere(_goTo, 1);
     }
 
-    public void Move(float move)
+    private void Update()
     {
+        if (!DetectWall())
+            animator.SetFloat("VelocityX", _rb.velocity.x);
+        else 
+            animator.SetFloat("VelocityX", 0);
+    }
+
+    public override void Move(float move)
+    {
+        base.Move(move);
         if (_goTo == null)
             return;
         move *= speed;
@@ -38,7 +47,6 @@ public class MobileEnemyMovement : EntityMovement
         if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
         {
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
-            Debug.Log($"Change direction {_direction}");
         }
         _time += Time.deltaTime;
     }

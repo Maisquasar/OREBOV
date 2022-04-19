@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using States;
 
-[RequireComponent(typeof(EnemyCheckpointManager))]
 public class MobileEnemy : Enemy
 {
     [Header("Controller")]
@@ -43,6 +42,11 @@ public class MobileEnemy : Enemy
         base.Start();
     }
 
+    public override void Shoot()
+    {
+        _controller.animator.SetBool("Shooting", true);
+    }
+
     public void SetCheckpointManager(EnemyCheckpointManager manage)
     {
         _checkpointManager = manage;
@@ -51,6 +55,7 @@ public class MobileEnemy : Enemy
     // Update is called once per frame
     override public void Update()
     {
+        base.Update();
         if (_player != null && _player.Dead)
             return;
         if (_checkpointManager == null)
@@ -58,7 +63,13 @@ public class MobileEnemy : Enemy
             Debug.LogError("Missing Checkpoint Manager");
             return;
         }
-        base.Update();
+
+        if (State == EnemyState.CHASE || State == EnemyState.SUSPICIOUS || State == EnemyState.INTERACT)
+            _controller.animator.SetBool("Chase", true);
+        else
+            _controller.animator.SetBool("Chase", false);
+
+
         if (!stillWaiting)
         {
             if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
@@ -96,6 +107,10 @@ public class MobileEnemy : Enemy
             if (_precPoS == (Vector3)transform.position && State == EnemyState.CHASE)
             {
                 StopFollowingPlayer();
+            }
+            else if (_precPoS == (Vector3)transform.position && State != EnemyState.CHASE)
+            {
+                CheckpointChange();
             }
             _precPoS = transform.position;
             _timeStamp = Time.time + _secondCheckStuck;

@@ -9,7 +9,7 @@ public class PlayerWalkSounds : MonoBehaviour
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _walkSoundFrequency = 0.4f;
 
-    private PlayerMovement _playerMouvement;
+    private EntityMovement _mouvement;
     private bool _canTriggerSounds = true;
 
     #region InitScript
@@ -21,7 +21,7 @@ public class PlayerWalkSounds : MonoBehaviour
 
     private void InitComponents()
     {
-        _playerMouvement = GetComponentInParent<PlayerMovement>();
+        _mouvement = GetComponentInParent<EntityMovement>();
     }
 
     #endregion
@@ -30,7 +30,8 @@ public class PlayerWalkSounds : MonoBehaviour
     {
         if (IsSoundPlayable(other))
         {
-            if (_playerMouvement.WalkSoundManager())
+        print(_mouvement.name);
+            if (_mouvement.WalkSoundManager())
             {
                 _canTriggerSounds = false;
                 StartCoroutine(ResetSound());
@@ -48,8 +49,6 @@ public class PlayerWalkSounds : MonoBehaviour
             return false;
 
     }
-
-
 
     private IEnumerator ResetSound()
     {
