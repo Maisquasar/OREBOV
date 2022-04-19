@@ -27,10 +27,11 @@ public class InteractiveBox : InteractiveObject
     [SerializeField] private int mouvementCount = 1;
     private PlayerInteraction PlayerInteract;
     private PlayerStatus _playerStatus;
+    private PlayerAnimator _playerAnimator;
 
     private Vector3 delta;
     private Vector3 startPos;
-    private Vector3 endPos;
+    private bool _hasMove;
 
     private void Start()
     {
@@ -46,24 +47,33 @@ public class InteractiveBox : InteractiveObject
             base.ActiveItem(player);
             PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
             _playerStatus = _playerGO.GetComponent<PlayerStatus>();
+            _playerAnimator = _playerGO.GetComponent<PlayerAnimator>();
+            _playerAnimator.SetPush(false);
             PlayerInteract.LinkObject(this);
             _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
-             startPos = _playerGO.transform.position;
-             delta = transform.position - _playerGO.transform.position;
+            startPos = _playerGO.transform.position;
+            delta = transform.position - _playerGO.transform.position;
+            _hasMove = false;
+            _boxPush.PlaySound(true);
+
 
         }
     }
 
     protected override void DeactiveItem()
     {
-        _objectActive = false;
-        if (!_activeMouvement)
+
+        if (_objectActive)
         {
+            _objectActive = false;
             base.DeactiveItem();
-            _playerGO.GetComponent<PlayerInteraction>().UnlinkObject();
+            PlayerInteract.UnlinkObject();
             _playerStatus.PlayerActionState = States.PlayerAction.IDLE;
+            _playerAnimator.SetPush(true);
+            _boxPush.StopSound();
+            PlayerInteract.CanStopNow = true;
         }
-        
+
     }
 
     public override void UpdateItem(Vector2 axis)
@@ -73,10 +83,17 @@ public class InteractiveBox : InteractiveObject
         {
 
             Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
-            if (!_activeMouvement && axis.normalized.x != 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
+            if (axis.normalized.x != 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
             {
                 MovingBox(_axis.x);
                 _playerStatus.PlayRightAnimation(axis.x);
+            }
+            else if (axis.normalized.x == 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
+            {
+                if (_hasMove)
+                {
+                    DeactiveItem();
+                }
             }
         }
     }
@@ -151,13 +168,16 @@ public class InteractiveBox : InteractiveObject
     }
 
 
-     private void MovingBox(float dir)
+    private void MovingBox(float dir)
     {
+        _hasMove = false;
         PlayerInteract.CanStopNow = false;
-      
-      
-        _rigidbodyPlayer.position += Vector3.right * dir * _speedBox * Time.deltaTime;
-        transform.position = _rigidbodyPlayer.position + delta;
+        if (!Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox*Time.deltaTime, _collisionMask, QueryTriggerInteraction.Ignore))
+        {
+
+            _rigidbodyPlayer.position += Vector3.right * dir * _speedBox * Time.deltaTime;
+            transform.position = _rigidbodyPlayer.position + delta;
+        }
     }
     private IEnumerator PauseBoxMouvement()
     {

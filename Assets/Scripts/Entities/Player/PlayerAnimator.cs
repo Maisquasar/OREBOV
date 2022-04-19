@@ -12,6 +12,8 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] Material PlayerMaterial;
     [SerializeField] Material PlayerFadeMaterial;
 
+    private Animator _animator;
+
     private Vector3 _shadowPosition;
     private bool _isInAmination = false;
     private bool _isInMovement = false;
@@ -19,6 +21,11 @@ public class PlayerAnimator : MonoBehaviour
     public Vector3 ShadowPosition { get { return _shadowPosition; } set { _shadowPosition = value; } }
     public bool IsInAmination { get { return _isInAmination; } }
     public bool IsInMovement { get { return _isInMovement; } }
+
+    private void Start()
+    {
+        _animator = GetComponentInChildren<Animator>();
+    }
 
     public IEnumerator TransformToShadowAnim()
     {
@@ -72,6 +79,12 @@ public class PlayerAnimator : MonoBehaviour
         _isInMovement = true;
         StartCoroutine(MovePlayerDepth(deltaPos));
     }
+
+    public void SetPush(bool state)
+    {
+        _animator.SetBool("EndPush", state);
+    }
+
     private IEnumerator MovePlayerDepth(Vector2 deltaPos)
     {
         Vector2 currentPos = new Vector2(transform.position.y, transform.position.z);
