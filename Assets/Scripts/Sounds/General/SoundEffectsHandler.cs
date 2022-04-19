@@ -46,13 +46,13 @@ public class SoundEffectsHandler : MonoBehaviour
         CheckComponentIsValid();
         InitComponents();
         if (_playAtStart) PlaySound();
-        
+
     }
 
     private int GetRandomIndex()
     {
         int number = _prevAudioClip;
-        while(number ==  _prevAudioClip)
+        while (number == _prevAudioClip)
         {
             number = Random.Range(0, _audioClipArray.Length);
         }
@@ -66,6 +66,14 @@ public class SoundEffectsHandler : MonoBehaviour
         if (_playCount == 1 && _playCountRandomChances == 0) playSoundOnce();
         else StartCoroutine(playSoundMultiple());
     }
+
+    public void StopSound()
+    {
+        _audioSource.Stop();
+    }
+
+
+
 
     private void playSoundOnce()
     {
@@ -87,12 +95,12 @@ public class SoundEffectsHandler : MonoBehaviour
     private IEnumerator playSoundMultiple()
     {
         _active = true;
-        int count = _playCount + Random.Range(0,_playCountRandomChances);
+        int count = _playCount + Random.Range(0, _playCountRandomChances);
         while (count > 0)
         {
             playSoundOnce();
             count--;
-            yield return new WaitForSeconds(_playDelay + Random.Range(0,_playDelayRandomChances));
+            yield return new WaitForSeconds(_playDelay + Random.Range(0, _playDelayRandomChances));
         }
         _active = false;
         yield return null;

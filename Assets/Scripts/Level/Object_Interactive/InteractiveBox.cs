@@ -17,6 +17,11 @@ public class InteractiveBox : InteractiveObject
     private float _moveTimer = 0f;
     private float _timeBetweenMove = 0.7f;
 
+
+    [Header("Sounds")]
+    [SerializeField]
+    private SoundEffectsHandler _boxPush;
+
     [Header("Box Debug")]
     [SerializeField] private bool _activeBoxDebug;
     [SerializeField] private int mouvementCount = 1;
@@ -117,11 +122,13 @@ public class InteractiveBox : InteractiveObject
         Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
         Vector3 delta = transform.position - startPos;
         Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
+
         if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
         {
             StartCoroutine(PauseBoxMouvement());
             yield break;
         }
+        _boxPush.PlaySound();
 
         while (_moveTimer < _moveTime)
         {
@@ -133,6 +140,7 @@ public class InteractiveBox : InteractiveObject
         _moveTimer = 0f;
         _rigidbodyPlayer.velocity = Vector3.zero;
         StartCoroutine(PauseBoxMouvement());
+        _boxPush.StopSound();
     }
 
     private IEnumerator PauseBoxMouvement()
