@@ -16,6 +16,10 @@ public class InteractiveSwitch : InteractiveObject
     [Header("Light")]
     [SerializeField]
     private Light[] _lightConnect = new Light[0];
+
+    [Header("Others")]
+    [SerializeField] private List<SwitchableObjects> _others =  new List<SwitchableObjects>();
+
     [SerializeField]
     private void Start()
     {
@@ -72,7 +76,7 @@ public class InteractiveSwitch : InteractiveObject
             if (!active && tmp.z < 0)
             {
                 active = true;
-                toggleLamps();
+                Toggle();
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
@@ -92,7 +96,7 @@ public class InteractiveSwitch : InteractiveObject
             if (!active && tmp.z > 0)
             {
                 active = true;
-                toggleLamps();
+                Toggle();
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
@@ -100,11 +104,15 @@ public class InteractiveSwitch : InteractiveObject
         yield return null;
     }
 
-    private void toggleLamps()
+    private void Toggle()
     {
         for (int i = 0; i < _lightConnect.Length; i++)
         {
             _lightConnect[i].gameObject.SetActive(!_lightConnect[i].gameObject.activeSelf);
+        }
+        foreach (var other in _others)
+        {
+            other.Activate();
         }
     }
 
