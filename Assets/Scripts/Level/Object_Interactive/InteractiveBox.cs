@@ -149,4 +149,6 @@ public class InteractiveBox : InteractiveObject
             transform.position = _rigidbodyPlayer.position + delta;
         }
     }
+
+  
 }
