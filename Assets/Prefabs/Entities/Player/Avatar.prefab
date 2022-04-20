@@ -1771,6 +1771,8 @@ GameObject:
   - component: {fileID: 8776146697637678620}
   - component: {fileID: 7267188652524746768}
   - component: {fileID: 4809066972489266635}
+  - component: {fileID: 6551062268810129300}
+  - component: {fileID: 6363827402333041668}
   m_Layer: 2
   m_Name: SoundHandler
   m_TagString: Untagged
@@ -2511,6 +2513,52 @@ MonoBehaviour:
   _playCountRandomChances: 0
   _playDelay: 1
   _playDelayRandomChances: 0.5
+--- !u!114 &6551062268810129300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7618428330397827339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: ClimbBox
+  _audioClipArray:
+  - {fileID: 8300000, guid: cf0c7cdd291115f4cadc4fe307127b7d, type: 3}
+  _mixer: {fileID: 0}
+  _randomPlaySound: 0
+  _playAtStart: 0
+  _looped: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
+--- !u!114 &6363827402333041668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7618428330397827339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: ClimbWall
+  _audioClipArray:
+  - {fileID: 8300000, guid: ae28dda41076851408df876bd6ded18d, type: 3}
+  _mixer: {fileID: 0}
+  _randomPlaySound: 0
+  _playAtStart: 0
+  _looped: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
 --- !u!1 &7827733608162906357
 GameObject:
   m_ObjectHideFlags: 0
@@ -2708,6 +2756,7 @@ MonoBehaviour:
   IsClimbing: 0
   IsPushing: 0
   IsPulling: 0
+  IsHide: 0
 --- !u!114 &8288549701085702374
 MonoBehaviour:
   m_ObjectHideFlags: 0
