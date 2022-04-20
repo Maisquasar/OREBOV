@@ -23,11 +23,8 @@ public class CameraBehavior : MonoBehaviour
     public GameObject MainTarget { get { return _mainTarget; } }
 
     [Space]
-    [SerializeField]
-    private bool _showWindow;
-    [SerializeField]
+    [SerializeField] private bool _showWindow;
     public Vector2 WindowSize;
-    [SerializeField]
     public Vector2 WindowOffset;
 
 
