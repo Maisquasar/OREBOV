@@ -7,7 +7,7 @@ public class MobileEnemy : Enemy
 {
     [Header("Controller")]
     [HideInInspector] public MobileEnemyMovement _controller;
-    [HideInInspector] public EnemyState State;
+
 
     [Tooltip("The time the enemy search the player after follow him")]
     [SerializeField] float SearchTime = 1f;

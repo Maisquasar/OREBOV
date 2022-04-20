@@ -72,7 +72,8 @@ public class InteractiveBox : InteractiveObject
             PlayerInteract.UnlinkObject();
             _playerStatus.PlayerActionState = States.PlayerAction.IDLE;
             _playerAnimator.SetPush(true);
-            _boxPush.StopSound();
+            _boxPushInt.StopSound();
+            _boxPushExt.StopSound();
             PlayerInteract.CanStopNow = true;
             _boxRelease.PlaySound();
         }
@@ -148,7 +149,7 @@ public class InteractiveBox : InteractiveObject
     {
         if (!_startMovement)
         {
-            -_startMovement = true;
+            _startMovement = true;
             if (AmbientType == AmbientSoundType.Interior)
             {
                 _boxPushInt.PlaySound();

@@ -29,15 +29,15 @@ public class CameraTrigger : Trigger
     private bool _resetTrigger = true;
     private bool _goToEnd = true;
 
-
-    #region Inititate Script
-
     public override void Start()
     {
         InitCamera();
         InitCheckpointLight();
         base.Start();
     }
+
+    #region Inititate Script
+
 
 
     private void InitCamera()
