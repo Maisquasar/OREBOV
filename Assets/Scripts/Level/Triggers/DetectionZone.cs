@@ -22,7 +22,7 @@ public class DetectionZone : Trigger
         Component t = other.gameObject.GetComponent(typeof(PlayerStatus));
         if (t != null)
         {
-            if (CheckForObstacles() || _playerAnimator.IsInAmination || _playerStatus.IsShadow)
+            if (CheckForObstacles() || _playerAnimator.IsInAmination || _playerStatus.IsShadow || _playerStatus.IsHide)
             {
                 return;
             }
