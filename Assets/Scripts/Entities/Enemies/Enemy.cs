@@ -56,7 +56,6 @@ public class Enemy : Entity
     {
         if (!_player.Dead)
         {
-
             if (TimeStamp > 0 && PlayerDetected)
             {
                 TimeStamp -= Time.deltaTime * GaugeAdd;

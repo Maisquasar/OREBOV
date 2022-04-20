@@ -49,8 +49,8 @@ public class PlayerStatus : Entity
     private Vector3 _previousPos;
     private Vector3 _shadowPos;
 
-    [HideInInspector]
     public bool IsHide = false;
+    [HideInInspector]
     private bool _isDead = false;
     private bool _isJumping = false;
     private bool _isShadow = false;
