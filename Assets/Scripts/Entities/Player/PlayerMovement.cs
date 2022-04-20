@@ -165,7 +165,7 @@ public class PlayerMovement : EntityMovement
 
     public void Jump()
     {
-        if (_grounded)
+        if (_grounded && !IsClimbing)
         {
             _jumpForce = GetJumpForce(jumpHeight);
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);

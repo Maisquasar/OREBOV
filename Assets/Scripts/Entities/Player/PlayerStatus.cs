@@ -204,15 +204,15 @@ public class PlayerStatus : Entity
 
         if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
         {
-
             _exactPos = false;
         }
 
 
         if (_playerInteraction.ObjectType == InteractObjects.Box)
         {
-            if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y || CheckForObstacles())
+            if (_playerInteraction.InteractiveObjectPos.y < transform.position.y || CheckForObstacles())
                 return;
+
             PlayerActionState = PlayerAction.INTERACT;
             if (_exactPos)
                 _playerInteraction.InteractionInput(context.started, context.canceled);

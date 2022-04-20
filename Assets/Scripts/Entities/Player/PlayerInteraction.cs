@@ -54,7 +54,7 @@ public class PlayerInteraction : MonoBehaviour
 
         if (_interactionState == InteractionState.Link)
         {
-            if (_objectManager.IsObjectInRange(transform.position,transform.forward, _detectDistance, _detectionDirection, _objectInteractive))
+            if (_objectManager.IsObjectInRange(transform.position, transform.forward, _detectDistance, _detectionDirection, _objectInteractive))
                 _objectInteractive.UpdateItem(_axis);
             else
             {
@@ -67,8 +67,8 @@ public class PlayerInteraction : MonoBehaviour
             InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance, _detectionDirection);
             if (objectClose != null)
             {
-                    UnselectObject(objectClose);
-                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow || !objectClose._useOnlyInShadow)
+                UnselectObject(objectClose);
+                if (CanBeSelected(objectClose))
                 {
                     ChangeSelectedObject(objectClose);
                 }
@@ -82,7 +82,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(_objectManager == null)
+        if (_objectManager == null)
         {
             Debug.LogError("Object Manager is missing in Player Interaction");
         }
@@ -93,6 +93,7 @@ public class PlayerInteraction : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
         }
+
     }
 
     #region Input Managing
@@ -101,7 +102,7 @@ public class PlayerInteraction : MonoBehaviour
         if (started)
             PressInput();
 
-      
+
 
         if (canceled)
             CancelInput();
@@ -159,6 +160,14 @@ public class PlayerInteraction : MonoBehaviour
         _uiInteract.transform.rotation = _uiRot;
         _uiInteract.transform.SetParent(_objectInteractive.transform);
         _interactionState = InteractionState.Selected;
+    }
+
+    private bool CanBeSelected(InteractiveObject interactiveObject)
+    {
+        if (interactiveObject.transform.position.y >= transform.position.y && (interactiveObject._useOnlyInShadow && _playerStatus.IsShadow || !interactiveObject._useOnlyInShadow))
+            return true;
+        else
+            return false;
     }
 
     private void UnselectObject()
