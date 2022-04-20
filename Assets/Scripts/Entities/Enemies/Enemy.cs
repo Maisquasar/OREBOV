@@ -39,6 +39,8 @@ public class Enemy : Entity
         _player = FindObjectOfType<PlayerStatus>();
         TimeStamp = DetectionTime;
         FOVCone.DistanceDetection = DetectionRange;
+        if (_weapon == null)
+            _weapon = new Weapon();
     }
 
     private void OnDrawGizmos()

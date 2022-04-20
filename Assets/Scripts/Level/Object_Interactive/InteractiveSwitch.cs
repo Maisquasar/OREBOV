@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using InteractObject;
+using UnityEngine.Events;
 
 public class InteractiveSwitch : InteractiveObject
 {
@@ -12,15 +13,14 @@ public class InteractiveSwitch : InteractiveObject
     [SerializeField]
     private float _activationCooldown = 0.0f;
     [SerializeField]
+    private float _autoDesactivateTimer = 0.0f;
+    [SerializeField]
     private float _handleSpeed = 0.3f;
-    [Header("Light")]
+    [Header("Objects")]
     [SerializeField]
-    private Light[] _lightConnect = new Light[0];
-
-    [Header("Others")]
-    [SerializeField] private List<SwitchableObjects> _others =  new List<SwitchableObjects>();
-
+    private UnityEvent _activateEvent = new UnityEvent();
     [SerializeField]
+    private UnityEvent _desactivateEvent = new UnityEvent();
     private void Start()
     {
         ObjectType = InteractObjects.Switch;
@@ -34,15 +34,16 @@ public class InteractiveSwitch : InteractiveObject
         {
             base.DeactiveItem();
             StartCoroutine(desactivateLever());
+
+            _objectActive = false;
         }
         else
         {
             base.ActiveItem(player);
             StartCoroutine(activateLever());
+            _objectActive = true;
         }
-        _objectActive = !_objectActive;
     }
-
 
     protected override void ActiveItem(Enemy enemy)
     {
@@ -51,13 +52,14 @@ public class InteractiveSwitch : InteractiveObject
         {
             base.DeactiveItem();
             StartCoroutine(desactivateLever());
+            _objectActive = false;
         }
         else
         {
             base.ActiveItem(enemy);
             StartCoroutine(activateLever());
+            _objectActive = true;
         }
-        _objectActive = !_objectActive;
     }
 
     protected override void DeactiveItem()
@@ -76,10 +78,17 @@ public class InteractiveSwitch : InteractiveObject
             if (!active && tmp.z < 0)
             {
                 active = true;
-                Toggle();
+                _activateEvent.Invoke();
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
+        }
+        if (_autoDesactivateTimer > 0)
+        {
+            yield return new WaitForSeconds(_autoDesactivateTimer);
+            base.DeactiveItem();
+            yield return desactivateLever();
+            _objectActive = false;
         }
         yield return null;
     }
@@ -96,24 +105,12 @@ public class InteractiveSwitch : InteractiveObject
             if (!active && tmp.z > 0)
             {
                 active = true;
-                Toggle();
+                _desactivateEvent.Invoke();
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
         }
         yield return null;
-    }
-
-    private void Toggle()
-    {
-        for (int i = 0; i < _lightConnect.Length; i++)
-        {
-            _lightConnect[i].gameObject.SetActive(!_lightConnect[i].gameObject.activeSelf);
-        }
-        foreach (var other in _others)
-        {
-            other.Activate();
-        }
     }
 
 }

@@ -12,6 +12,7 @@ public class InteractiveBox : InteractiveObject
     [SerializeField] private float _speedBox = 2f;
     [SerializeField] private float _moveTime = 1f;
     private bool _activeMouvement = false;
+    private bool _startMovement = false;
 
     private Rigidbody _rigidbodyPlayer;
     private float _moveTimer = 0f;
@@ -19,14 +20,21 @@ public class InteractiveBox : InteractiveObject
 
 
     [Header("Sounds")]
-    [SerializeField]
-    private SoundEffectsHandler _boxPush;
+    [SerializeField] private SoundEffectsHandler _boxPushInt;
+    [SerializeField] private SoundEffectsHandler _boxPushExt;
+    [SerializeField] private SoundEffectsHandler _boxGrab;
+    [SerializeField] private SoundEffectsHandler _boxRelease;
 
     [Header("Box Debug")]
     [SerializeField] private bool _activeBoxDebug;
     [SerializeField] private int mouvementCount = 1;
     private PlayerInteraction PlayerInteract;
     private PlayerStatus _playerStatus;
+    private PlayerAnimator _playerAnimator;
+
+    private Vector3 delta;
+    private Vector3 startPos;
+    private bool _hasMove;
 
     private void Start()
     {
@@ -39,24 +47,38 @@ public class InteractiveBox : InteractiveObject
         if (!_objectActive)
         {
             _objectActive = true;
+            _startMovement = false;
             base.ActiveItem(player);
             PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
             _playerStatus = _playerGO.GetComponent<PlayerStatus>();
+            _playerAnimator = _playerGO.GetComponent<PlayerAnimator>();
+            _playerAnimator.SetPush(false);
             PlayerInteract.LinkObject(this);
             _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
+            startPos = _playerGO.transform.position;
+            delta = transform.position - _playerGO.transform.position;
+            _hasMove = false;
+            _boxGrab.PlaySound();
         }
     }
 
     protected override void DeactiveItem()
     {
-        _objectActive = false;
-        if (!_activeMouvement)
+
+        if (_objectActive)
         {
+            _objectActive = false;
             base.DeactiveItem();
-            _playerGO.GetComponent<PlayerInteraction>().UnlinkObject();
+            PlayerInteract.UnlinkObject();
             _playerStatus.PlayerActionState = States.PlayerAction.IDLE;
+            _playerAnimator.SetPush(true);
+            _boxPushInt.StopSound();
+            _boxPushExt.StopSound();
+            PlayerInteract.CanStopNow = true;
+            _boxRelease.PlaySound();
+            _startMovement = false;
         }
-        
+
     }
 
     public override void UpdateItem(Vector2 axis)
@@ -66,10 +88,17 @@ public class InteractiveBox : InteractiveObject
         {
 
             Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
-            if (!_activeMouvement && axis.normalized.x != 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
+            if (axis.normalized.x != 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
             {
-                StartCoroutine(MoveBox(axis.normalized.x));
+                MovingBox(_axis.x);
                 _playerStatus.PlayRightAnimation(axis.x);
+            }
+            else if (axis.normalized.x == 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
+            {
+                if (_hasMove)
+                {
+                    DeactiveItem();
+                }
             }
         }
     }
@@ -114,45 +143,28 @@ public class InteractiveBox : InteractiveObject
         if (_activeBoxDebug) ShowBoxMouvement();
     }
 
-    private IEnumerator MoveBox(float dir)
+    private void MovingBox(float dir)
     {
-        _activeMouvement = true;
+        if (!_startMovement)
+        {
+            -_startMovement = true;
+            if (AmbientType == AmbientSoundType.Interior)
+            {
+                _boxPushInt.PlaySound();
+            }
+            else
+            {
+                _boxPushExt.PlaySound();
+            }
+        }
+        _hasMove = false;
         PlayerInteract.CanStopNow = false;
-        Vector3 startPos = _playerGO.transform.position;
-        Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
-        Vector3 delta = transform.position - startPos;
-        Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
-
-        if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
+        if (!Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox*Time.deltaTime, _collisionMask, QueryTriggerInteraction.Ignore))
         {
-            StartCoroutine(PauseBoxMouvement());
-            yield break;
-        }
-        _boxPush.PlaySound();
-
-        while (_moveTimer < _moveTime)
-        {
-            _rigidbodyPlayer.position = Vector3.Lerp(startPos, endPos, _moveTimer / _moveTime);
+            _rigidbodyPlayer.position += Vector3.right * dir * _speedBox * Time.deltaTime;
             transform.position = _rigidbodyPlayer.position + delta;
-            _moveTimer += Time.deltaTime;
-            yield return Time.deltaTime;
         }
-        _moveTimer = 0f;
-        _rigidbodyPlayer.velocity = Vector3.zero;
-        StartCoroutine(PauseBoxMouvement());
-        _boxPush.StopSound();
     }
 
-    private IEnumerator PauseBoxMouvement()
-    {
-        PlayerInteract.CanStopNow = true;
-        while (_moveTimer < _timeBetweenMove)
-        {
-            _moveTimer += Time.deltaTime;
-            yield return Time.deltaTime;
-        }
-        _activeMouvement = false;
-        _moveTimer = 0f;
-        if (!_objectActive) DeactiveItem();
-    }
+  
 }

@@ -35,6 +35,14 @@ public class PlayerMovement : EntityMovement
     private float time;
     private bool _fallDefine = false;
 
+    public void SetSounds(ref Dictionary<SoundIDs, SoundEffectsHandler> sounds)
+    {
+        _walkInsideEffectsHandler = sounds[SoundIDs.WalkInside];
+        _walkOutsideEffectsHandler = sounds[SoundIDs.WalkOutside];
+        _walkRainEffectsHandler = sounds[SoundIDs.WalkRain];
+        _landInsideEffectHandler = sounds[SoundIDs.FallInterior];
+        _landOutsideEffectHandler = sounds[SoundIDs.FallExterior];
+    }
 
     private new void Start()
     {
@@ -86,6 +94,7 @@ public class PlayerMovement : EntityMovement
             animator.SetFloat("VelocityX", _rb.velocity.x);
         else
             animator.SetFloat("VelocityX", 0);
+
         animator.SetFloat("VelocityY", _rb.velocity.y);
         animator.SetBool("Grounded", _grounded);
 
@@ -103,6 +112,8 @@ public class PlayerMovement : EntityMovement
                 }
             }
         }
+
+
     }
     public void SetDead(bool state)
     {
@@ -162,7 +173,7 @@ public class PlayerMovement : EntityMovement
 
     public void Jump()
     {
-        if (_grounded)
+        if (_grounded && !IsClimbing)
         {
             _jumpForce = GetJumpForce(jumpHeight);
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);

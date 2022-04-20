@@ -43,8 +43,6 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            if (_playerStatus.IsShadow)
-                return;
             Enemy.PlayerDetected = false;
             StartCoroutine(WaitForNextFrame());
         }

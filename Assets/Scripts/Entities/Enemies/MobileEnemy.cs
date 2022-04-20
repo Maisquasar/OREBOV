@@ -7,6 +7,7 @@ public class MobileEnemy : Enemy
 {
     [Header("Controller")]
     [HideInInspector] public MobileEnemyMovement _controller;
+    [HideInInspector] public EnemyState State;
 
     [Tooltip("The time the enemy search the player after follow him")]
     [SerializeField] float SearchTime = 1f;
@@ -124,6 +125,7 @@ public class MobileEnemy : Enemy
         }
     }
 
+
     void StopFollowingPlayer()
     {
         Debug.Log("Stop following Player");
@@ -199,11 +201,22 @@ public class MobileEnemy : Enemy
         _controller.NewCheckpoint(newPos);
     }
 
+    IEnumerator LerpFromTo(Quaternion initial, Quaternion goTo, float duration)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.rotation = goTo;
+    }
+
     bool stillWaiting = false;
     IEnumerator WaitCheckpoint()
     {
         int indexAtStart = _currentCheckpoint;
         stillWaiting = true;
+        StartCoroutine(LerpFromTo(transform.rotation, transform.rotation * Quaternion.Euler(0, _checkpointManager.Checkpoints[indexAtStart].Angle, 0), _checkpointManager.Checkpoints[indexAtStart].Time * 25 / 100));
         yield return new WaitForSeconds(_checkpointManager.Checkpoints[indexAtStart].Time);
         stillWaiting = false;
     }
