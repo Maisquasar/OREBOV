@@ -67,8 +67,17 @@ public class SoundEffectsHandler : MonoBehaviour
         else StartCoroutine(playSoundMultiple());
     }
 
+    public void PlaySound(bool loop)
+    {
+        if (_active) return;
+        _audioSource.loop = loop;
+        if (_playCount == 1 && _playCountRandomChances == 0) playSoundOnce();
+        else StartCoroutine(playSoundMultiple());
+    }
+
     public void StopSound()
     {
+        _audioSource.loop = false;
         _audioSource.Stop();
     }
 
