@@ -629,14 +629,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc6fd05f03c4d2c4aa3dd4ea3319fb93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 8319057138023446284}
   AmbientType: 0
+  animator: {fileID: 8319057138023446284}
   GroundType:
     serializedVersion: 2
-    m_Bits: 8187
+    m_Bits: 8067
   WallType:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8065
   ray:
   - 0
   speed: 0
@@ -763,6 +763,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -788,6 +789,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -813,6 +815,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -835,6 +838,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -857,6 +861,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -1690,6 +1695,7 @@ MonoBehaviour:
   _mixer: {fileID: 24300002, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 0.1

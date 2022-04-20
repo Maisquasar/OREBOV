@@ -19,6 +19,8 @@ public class SoundEffectsHandler : MonoBehaviour
     [SerializeField] private float _playDelayRandomChances = 0.5f;
     private bool _active = false;
 
+    public bool Active { get { return _active; } }
+
 
     public string SoundName { get { return _soundName; } }
     private AudioSource[] _audioSources;
@@ -74,19 +76,23 @@ public class SoundEffectsHandler : MonoBehaviour
     public void PlaySound()
     {
         if (_active) return;
+        if (_looped) _active = true;
         if (_playCount == 1 && _playCountRandomChances == 0) playSoundOnce();
         else StartCoroutine(playSoundMultiple());
     }
 
     public void StopSound()
     {
+        if (!_active) return;
+        StopAllCoroutines();
+        _active = false;
         foreach (AudioSource item in _audioSources)
         {
             foreach (AudioClip clip in _audioClipArray)
             {
                 if (item.clip == clip)
                 {
-                    item.Stop();
+                    StartCoroutine(soundFadeOut(item, 0.5f));
                     break;
                 }
             }
@@ -122,6 +128,7 @@ public class SoundEffectsHandler : MonoBehaviour
         _audioSources[index].clip = _audioClipArray[_indexAudioClip];
         _audioSources[index].outputAudioMixerGroup = _mixer;
         _audioSources[index].loop = _looped;
+        _audioSources[index].volume = 1.0f;
         _audioSources[index].Play();
     }
 
@@ -136,6 +143,19 @@ public class SoundEffectsHandler : MonoBehaviour
             yield return new WaitForSeconds(_playDelay + Random.Range(0, _playDelayRandomChances));
         }
         _active = false;
+        yield return null;
+    }
+
+    private IEnumerator soundFadeOut(AudioSource sound, float delay)
+    {
+        float timer = delay;
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            sound.volume = timer / delay;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        sound.Stop();
         yield return null;
     }
 
