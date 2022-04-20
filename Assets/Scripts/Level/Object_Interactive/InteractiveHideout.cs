@@ -4,24 +4,22 @@ using UnityEngine;
 
 public class InteractiveHideout : InteractiveObject
 {
-    private PlayerStatus _playerStatus;
-    private PlayerInteraction _playerInteraction;
-    private SkinnedMeshRenderer _playerMeshRenderer;
-
     [Header("Hideout Setting")]
     [SerializeField] private float _playerFadingTime;
-    [SerializeField]
-    private float _playerFadingTimer;
-    [SerializeField]
-    private bool _isFading;
+    [SerializeField] private float _playerFadingTimer;
+    [SerializeField] private bool _isFading;
 
     private IEnumerator _startCoroutine;
     private IEnumerator _endCoroutine;
 
+    private PlayerStatus _playerStatus;
+    private PlayerInteraction _playerInteraction;
+    private SkinnedMeshRenderer _playerMeshRenderer;
 
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         ObjectType = InteractObject.InteractObjects.Hideout;
     }
 
@@ -31,10 +29,11 @@ public class InteractiveHideout : InteractiveObject
         if (!ObjectActive)
         {
             base.ActiveItem(player);
+
             // Get the component for the first time
             GetPlayerComponent();
 
-            // Cancel fading coroutine if it already running
+            // Cancel player fading coroutine if it already running
             if (_isFading) StopCoroutine(_endCoroutine);
 
             ObjectActive = true;
@@ -60,7 +59,8 @@ public class InteractiveHideout : InteractiveObject
         if (ObjectActive)
         {
             base.DeactiveItem();
-            // Cancel fading if it already running
+
+            // Cancel player fading if it already running
             if (_isFading) StopCoroutine(_startCoroutine);
 
             _endCoroutine = PlayerFading(false);
@@ -80,6 +80,8 @@ public class InteractiveHideout : InteractiveObject
         if (_playerMeshRenderer == null) _playerMeshRenderer = _playerGO.GetComponentInChildren<SkinnedMeshRenderer>();
     }
 
+
+    // Player Coroutine Fading
     private IEnumerator PlayerFading(bool active)
     {
         Color matColor = _playerMeshRenderer.material.color;
@@ -101,4 +103,7 @@ public class InteractiveHideout : InteractiveObject
 
         _isFading = false;
     }
+
+
+
 }

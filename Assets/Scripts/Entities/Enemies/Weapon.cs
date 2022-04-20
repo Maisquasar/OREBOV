@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    Animator _animator;
-    ParticleSystem _particle;
-    SoundEffectsHandler _shootEffect;
     [SerializeField] protected float _cooldown;
+    
+    private Animator _animator;
+    private ParticleSystem _particle;
+    private SoundEffectsHandler _shootEffect;
     // Start is called before the first frame update
     void Start()
     {
