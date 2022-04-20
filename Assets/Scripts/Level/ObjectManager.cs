@@ -41,8 +41,15 @@ public class ObjectManager : MonoBehaviour
         float distanceObject = GameMetric.GetUnityValue(range);
         if (Vector3.Distance(position, obj.transform.position) < distanceObject)
         {
-            Vector3 objDir = obj.transform.position - position;
-            if (Vector3.Dot(faceDir.normalized, objDir.normalized) > angle)
+            if (obj.ObjectType != InteractObject.InteractObjects.Hideout)
+            {
+                Vector3 objDir = obj.transform.position - position;
+                if (Vector3.Dot(faceDir.normalized, objDir.normalized) > angle)
+                {
+                    return true;
+                }
+            }
+            else
             {
                 return true;
             }

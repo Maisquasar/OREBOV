@@ -233,7 +233,7 @@ public class PlayerStatus : Entity
     {
         if ((PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || _playerInteraction.Interaction == PlayerInteraction.InteractionState.None)
             return;
-        if (_isJumping || Controller.IsClimbing || !Controller.IsGrounded || _playerAnimator.IsInAmination)
+        if (_isJumping || Controller.IsClimbing || !Controller.IsGrounded || _playerAnimator.IsInAmination || Controller.IsHide)
             return;
 
         if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
@@ -339,6 +339,19 @@ public class PlayerStatus : Entity
         _respawn = true;
         yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
         Respawn();
+    }
+
+
+    public void Hide(bool hide)
+    {
+        if (hide)
+        {
+            StartCoroutine(Controller.PlayHide());
+        }
+        else
+        {
+            StartCoroutine(Controller.StopHide());
+        }
     }
 
 }
