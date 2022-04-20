@@ -17,7 +17,7 @@ namespace InteractObject
 
 }
 
-public class InteractiveObject : MonoBehaviour
+public class InteractiveObject : AmbientTypeHolder
 {
     [Header("Object State")]
     [SerializeField] public bool _isSelected;

@@ -9,10 +9,10 @@ public class AmbientSoundTrigger : Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        Component t = other.GetComponent(typeof(EntityMovement));
+        Component t = other.GetComponent(typeof(AmbientTypeHolder));
         if (t != null)
         {
-            EntityMovement entity = (EntityMovement)t;
+            AmbientTypeHolder entity = (AmbientTypeHolder)t;
             entity.AmbientType = _switchTo;
         }
     }

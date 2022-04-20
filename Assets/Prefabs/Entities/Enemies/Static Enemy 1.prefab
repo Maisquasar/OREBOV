@@ -536,6 +536,7 @@ GameObject:
   - component: {fileID: 7118050570934900019}
   - component: {fileID: 7118050570934900028}
   - component: {fileID: 7118050570934900029}
+  - component: {fileID: 6013309663282073541}
   m_Layer: 2
   m_Name: Static Enemy 1
   m_TagString: Untagged
@@ -642,7 +643,8 @@ MonoBehaviour:
   _walkInsideEffectsHandler: {fileID: 7118050570934900018}
   _walkOutsideEffectsHandler: {fileID: 7118050570934900019}
   _walkRainEffectsHandler: {fileID: 7118050570934900028}
-  _jumpImpactEffectHandler: {fileID: 7118050570934900029}
+  _landInsideEffectHandler: {fileID: 7118050570934900029}
+  _landOutsideEffectHandler: {fileID: 6013309663282073541}
   canTurn: 1
 --- !u!82 &7118050570934900023
 AudioSource:
@@ -754,13 +756,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundName: Walk Inside
   _audioClipArray:
-  - {fileID: 8300000, guid: d3c69ad405b28aa4a83ef71d6ecc810d, type: 3}
-  - {fileID: 8300000, guid: 8b284f4540ce7dd439eb2cb50353d11f, type: 3}
-  - {fileID: 8300000, guid: 8cb2c60dfc69075429310a221a86afeb, type: 3}
-  - {fileID: 8300000, guid: f1cd9ea072d18754dafd0c0dd57c9bf5, type: 3}
+  - {fileID: 8300000, guid: 90900d84decc6b54bba8c94fad818304, type: 3}
+  - {fileID: 8300000, guid: 22c03453bf733d7479b6da870f8d14f6, type: 3}
+  - {fileID: 8300000, guid: 66dc5fb1c6fc1064aa8f3ad39b7f25bc, type: 3}
+  - {fileID: 8300000, guid: 2f0db7c976e3ae54fbceb502aa61a68a, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
 --- !u!114 &7118050570934900019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,13 +781,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundName: Walk Outside
   _audioClipArray:
-  - {fileID: 8300000, guid: 1f42da950102aac48a2e806a74c25180, type: 3}
-  - {fileID: 8300000, guid: fd7789e2a58efde489542ebe8268fe6d, type: 3}
-  - {fileID: 8300000, guid: fe28a096460480b468dced3d821d5db0, type: 3}
-  - {fileID: 8300000, guid: 60ce3b718e0656b4cab5da582d4a7696, type: 3}
+  - {fileID: 8300000, guid: 04b385617bd0d0b4fa72e0322f94082a, type: 3}
+  - {fileID: 8300000, guid: ce253837d368d7f44ab1a9983a4abe4d, type: 3}
+  - {fileID: 8300000, guid: 7531db3e283532b4a8bdb6c99031c281, type: 3}
+  - {fileID: 8300000, guid: 6cc0a35fa7378094bb1f43cd18ad2035, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
 --- !u!114 &7118050570934900028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,13 +806,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundName: Walk Rain
   _audioClipArray:
-  - {fileID: 8300000, guid: 3488a2a1b5043fe458bf9efcd1d398ac, type: 3}
-  - {fileID: 8300000, guid: 0ec7640c315efc84d8591acc9c670456, type: 3}
-  - {fileID: 8300000, guid: af41460b3240cad4db453869840d16c9, type: 3}
-  - {fileID: 8300000, guid: 27bb4f0a00d946b47b2ff11f8cfa8a68, type: 3}
+  - {fileID: 8300000, guid: e691ecffb23e2b749834354a04015840, type: 3}
+  - {fileID: 8300000, guid: b54e0172c1505e346a20df125d278f2a, type: 3}
+  - {fileID: 8300000, guid: df6bada43f0125243bae8abb2e9a0277, type: 3}
+  - {fileID: 8300000, guid: 2717044b238a44845b89ee0aa4c6ee71, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
 --- !u!114 &7118050570934900029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -815,12 +829,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soundName: Jump
+  _soundName: FallInside
   _audioClipArray:
-  - {fileID: 8300000, guid: c8bc8062b33e0d54fb9c16199fce7cbb, type: 3}
+  - {fileID: 8300000, guid: 5444423c107e61644bd3cb2be8879418, type: 3}
   _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
+--- !u!114 &6013309663282073541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7118050570934900031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: FallOutside
+  _audioClipArray:
+  - {fileID: 8300000, guid: 4b6c862290470f64982a36c0f102a3fe, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
 --- !u!1 &8319057137938707421
 GameObject:
   m_ObjectHideFlags: 0
@@ -1447,6 +1487,8 @@ GameObject:
   - component: {fileID: 8319057138457206369}
   - component: {fileID: 8319057138457206370}
   - component: {fileID: 8319057138457206371}
+  - component: {fileID: 8687380910161269469}
+  - component: {fileID: 7613476334829046271}
   m_Layer: 0
   m_Name: SM_Prop_Rifle_01
   m_TagString: Untagged
@@ -1534,6 +1576,124 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cooldown: 0.1
+--- !u!82 &8687380910161269469
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8319057138457206381}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 0
+  MaxDistance: 15
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &7613476334829046271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8319057138457206381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Fire
+  _audioClipArray:
+  - {fileID: 8300000, guid: 77f10a0ce1f727148af9153a612144c2, type: 3}
+  _mixer: {fileID: 24300002, guid: 6ae8019f688210b498bbf8fe235f8341, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 0.1
+  _playDelayRandomChances: 0.1
 --- !u!1 &8319057138468100871
 GameObject:
   m_ObjectHideFlags: 0

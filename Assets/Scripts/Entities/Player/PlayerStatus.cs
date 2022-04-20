@@ -6,10 +6,25 @@ using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
 using States;
 using InteractObject;
+using System;
 
+public enum SoundIDs
+{
+    WalkInside,
+    WalkOutside,
+    WalkRain,
+    FallInterior,
+    FallExterior,
+    Death,
+    TransformToShadow,
+    TransformToHuman,
+    TransformationFail,
+}
 
 public class PlayerStatus : Entity
 {
+    private Dictionary<SoundIDs, SoundEffectsHandler> _soundBoard = new Dictionary<SoundIDs, SoundEffectsHandler>();
+
     public PlayerAction PlayerActionState;
     [HideInInspector] public Vector3 CheckpointPos;
 
@@ -20,10 +35,7 @@ public class PlayerStatus : Entity
     private float deadZone;
 
     [Header("Sounds")]
-    [SerializeField] private SoundEffectsHandler _shadowInEffectHandler;
-    [SerializeField] private SoundEffectsHandler _shadowOutEffectHandler;
-    [SerializeField] private SoundEffectsHandler _shadowFailEffectHandler;
-    [SerializeField] private SoundEffectsHandler _deathEffectHandler;
+    [SerializeField] private GameObject _soundEffectsHandler;
 
     public PlayerMovement Controller;
     private ShadowCaster _caster;
@@ -61,6 +73,28 @@ public class PlayerStatus : Entity
     {
         InitComponent();
         CheckpointPos = transform.position;
+        foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
+        {
+            bool found = false;
+            foreach (var id in Enum.GetValues(typeof(SoundIDs)))
+            {
+                if (id.ToString().Equals(item.SoundName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    try
+                    {
+                        _soundBoard.Add((SoundIDs)id, item);
+                        found = true;
+                    }
+                    catch (ArgumentException)
+                    {
+                        Debug.LogWarning("Duplicate element " + item.SoundName + "in sound effects");
+                    }
+                    break;
+                }
+            }
+            if (!found) Debug.LogWarning("Element " + item.SoundName + " not found in sound IDs");
+        }
+        gameObject.GetComponent<PlayerMovement>().SetSounds(ref _soundBoard);
     }
 
 
@@ -74,8 +108,8 @@ public class PlayerStatus : Entity
 
     #endregion
 
-    // Update is called once per frame
-    void Update()
+    // Update is called once per 
+    private void Update()
     {
         if (Dead)
             return;
@@ -162,18 +196,18 @@ public class PlayerStatus : Entity
         if (_isShadow)
         {
             OnTransformToPlayer();
-            _shadowOutEffectHandler.PlaySound();
+            _soundBoard[SoundIDs.TransformToHuman].PlaySound();
         }
         else
         {
             if (_caster.CanTransform(true))
             {
                 OnTransformToShadow();
-                _shadowInEffectHandler.PlaySound();
+                _soundBoard[SoundIDs.TransformToShadow].PlaySound();
             }
             else
             {
-                _shadowFailEffectHandler.PlaySound();
+                _soundBoard[SoundIDs.TransformationFail].PlaySound();
             }
         }
     }
@@ -295,7 +329,7 @@ public class PlayerStatus : Entity
     private void PlayerDeath()
     {
         Controller.SetDead(true);
-        _deathEffectHandler.PlaySound();
+        _soundBoard[SoundIDs.Death].PlaySound();
         if (Dead && !_respawn)
             StartCoroutine(WaitBeforeRespawn());
     }
