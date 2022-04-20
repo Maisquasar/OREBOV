@@ -110,9 +110,7 @@ public class Enemy : Entity
     void SetVibrationController()
     {
         // Set vibration intensity.
-        if (Gamepad.current == null)
-            return;
-        if (_player == null)
+        if (_player == null || Gamepad.current == null)
             return;
         if (_player.Dead)
             Gamepad.current.SetMotorSpeeds(0, 0);

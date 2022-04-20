@@ -147,7 +147,7 @@ public class InteractiveBox : InteractiveObject
     {
         if (!_startMovement)
         {
-            -_startMovement = true;
+            _startMovement = true;
             if (AmbientType == AmbientSoundType.Interior)
             {
                 _boxPushInt.PlaySound();

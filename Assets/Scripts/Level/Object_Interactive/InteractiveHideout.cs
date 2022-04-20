@@ -25,27 +25,26 @@ public class InteractiveHideout : InteractiveObject
         ObjectType = InteractObject.InteractObjects.Hideout;
     }
 
-    
     protected override void ActiveItem(GameObject player)
     {
-        base.ActiveItem(player);
 
         if (!_objectActive)
         {
-
+            base.ActiveItem(player);
             // Get the component for the first time
-            GetPlayerComponent(); 
+            GetPlayerComponent();
 
             // Cancel fading coroutine if it already running
-            if (_isFading) StopCoroutine(_endCoroutine); 
+            if (_isFading) StopCoroutine(_endCoroutine);
 
             _objectActive = true;
-            _playerStatus.IsHide = true;
+            _playerStatus.Hide(true);
             _playerInteraction.LinkObject(this);
-            _startCoroutine = PlayerFading(true); 
+            _startCoroutine = PlayerFading(true);
 
             StartCoroutine(_startCoroutine);
         }
+
 
 
     }
@@ -53,30 +52,26 @@ public class InteractiveHideout : InteractiveObject
     public override void UpdateItem(Vector2 axis)
     {
         base.UpdateItem(axis);
-        Debug.Log("Test");
         if (axis.x != 0) DeactiveItem();
-
     }
 
     protected override void DeactiveItem()
     {
-        base.DeactiveItem();
         if (_objectActive)
         {
-
+            base.DeactiveItem();
             // Cancel fading if it already running
             if (_isFading) StopCoroutine(_startCoroutine);
 
             _endCoroutine = PlayerFading(false);
             _playerInteraction.UnlinkObject();
+            _playerStatus.Hide(false);
             _objectActive = false;
-            _playerStatus.IsHide = false;
-            
+
             StartCoroutine(_endCoroutine);
 
         }
     }
-
 
     private void GetPlayerComponent()
     {
@@ -89,7 +84,7 @@ public class InteractiveHideout : InteractiveObject
     {
         Color matColor = _playerMeshRenderer.material.color;
         float startAlpha = matColor.a;
-        float endAlpha = active == false ? 1f : 0f; 
+        float endAlpha = active == false ? 1f : 0f;
 
         _isFading = true;
         _playerFadingTimer = 0;

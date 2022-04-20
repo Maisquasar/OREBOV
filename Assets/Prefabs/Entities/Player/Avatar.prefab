@@ -1770,6 +1770,7 @@ GameObject:
   - component: {fileID: 5168250982378073670}
   - component: {fileID: 8776146697637678620}
   - component: {fileID: 7267188652524746768}
+  - component: {fileID: 4809066972489266635}
   m_Layer: 2
   m_Name: SoundHandler
   m_TagString: Untagged
@@ -2292,6 +2293,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2317,6 +2319,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2342,6 +2345,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2364,6 +2368,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2386,6 +2391,7 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2408,6 +2414,7 @@ MonoBehaviour:
   _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2430,6 +2437,7 @@ MonoBehaviour:
   _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2452,6 +2460,7 @@ MonoBehaviour:
   _mixer: {fileID: -3210508410283769672, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 0
   _playAtStart: 0
+  _looped: 0
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2474,6 +2483,30 @@ MonoBehaviour:
   _mixer: {fileID: 7992309737490739314, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _randomPlaySound: 1
   _playAtStart: 0
+  _looped: 0
+  _playCount: 1
+  _playCountRandomChances: 0
+  _playDelay: 1
+  _playDelayRandomChances: 0.5
+--- !u!114 &4809066972489266635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7618428330397827339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9823dcf4e423d2643b66bda3d007b29a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundName: Stress
+  _audioClipArray:
+  - {fileID: 8300000, guid: 264f705866fd5f240a2efea8e0576e22, type: 3}
+  _mixer: {fileID: 7992309737490739314, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _randomPlaySound: 0
+  _playAtStart: 0
+  _looped: 1
   _playCount: 1
   _playCountRandomChances: 0
   _playDelay: 1
@@ -2624,8 +2657,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8165514554ea943ba8cabe59ee35e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1803301609}
   AmbientType: 0
+  animator: {fileID: 1803301609}
   GroundType:
     serializedVersion: 2
     m_Bits: 7089
@@ -2640,7 +2673,8 @@ MonoBehaviour:
   _walkInsideEffectsHandler: {fileID: 0}
   _walkOutsideEffectsHandler: {fileID: 0}
   _walkRainEffectsHandler: {fileID: 0}
-  _jumpImpactEffectHandler: {fileID: 0}
+  _landInsideEffectHandler: {fileID: 0}
+  _landOutsideEffectHandler: {fileID: 0}
   canTurn: 1
   velocityCurve:
     serializedVersion: 2
