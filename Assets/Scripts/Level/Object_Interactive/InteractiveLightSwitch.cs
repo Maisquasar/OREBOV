@@ -26,34 +26,34 @@ public class InteractiveLightSwitch : InteractiveObject
     protected override void ActiveItem(GameObject player)
     {
         if (_activationCooldown > 0) return;
-        if (_objectActive)
+        if (ObjectActive)
         {
             base.DeactiveItem();
             StartCoroutine(desactivateLever());
-            _objectActive = false;
+            ObjectActive = false;
         }
         else
         {
             base.ActiveItem(player);
             StartCoroutine(activateLever());
-            _objectActive = true;
+            ObjectActive = true;
         }
     }
 
     protected override void ActiveItem(Enemy enemy)
     {
         if (_activationCooldown > 0) return;
-        if (_objectActive)
+        if (ObjectActive)
         {
             base.DeactiveItem();
             StartCoroutine(desactivateLever());
-            _objectActive = false;
+            ObjectActive = false;
         }
         else
         {
             base.ActiveItem(enemy);
             StartCoroutine(activateLever());
-            _objectActive = true;
+            ObjectActive = true;
         }
     }
 

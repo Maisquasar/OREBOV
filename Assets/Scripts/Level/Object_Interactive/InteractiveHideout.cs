@@ -28,7 +28,7 @@ public class InteractiveHideout : InteractiveObject
     protected override void ActiveItem(GameObject player)
     {
 
-        if (!_objectActive)
+        if (!ObjectActive)
         {
             base.ActiveItem(player);
             // Get the component for the first time
@@ -37,7 +37,7 @@ public class InteractiveHideout : InteractiveObject
             // Cancel fading coroutine if it already running
             if (_isFading) StopCoroutine(_endCoroutine);
 
-            _objectActive = true;
+            ObjectActive = true;
             _playerStatus.Hide(true);
             _playerInteraction.LinkObject(this);
             _startCoroutine = PlayerFading(true);
@@ -57,7 +57,7 @@ public class InteractiveHideout : InteractiveObject
 
     protected override void DeactiveItem()
     {
-        if (_objectActive)
+        if (ObjectActive)
         {
             base.DeactiveItem();
             // Cancel fading if it already running
@@ -66,7 +66,7 @@ public class InteractiveHideout : InteractiveObject
             _endCoroutine = PlayerFading(false);
             _playerInteraction.UnlinkObject();
             _playerStatus.Hide(false);
-            _objectActive = false;
+            ObjectActive = false;
 
             StartCoroutine(_endCoroutine);
 

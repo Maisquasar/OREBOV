@@ -48,7 +48,7 @@ public class InteractiveMovement : InteractiveObject
 
     protected void Update()
     {
-        if (_objectActive)
+        if (ObjectActive)
         {
             float ratio = (_movementTimer / _movementTime);
             _playerGO.transform.position = Vector3.Lerp(_posStart, _posEnd, ratio);
@@ -75,7 +75,7 @@ public class InteractiveMovement : InteractiveObject
 
     protected override void DeactiveItem()
     {
-        _objectActive = false;
+        ObjectActive = false;
         _rigidbodyPlayer.isKinematic = false;
         _rigidbodyPlayer.useGravity = true;
         _playerInteraction.UnlinkObject();

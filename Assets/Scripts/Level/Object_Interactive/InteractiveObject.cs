@@ -20,35 +20,29 @@ namespace InteractObject
 public class InteractiveObject : AmbientTypeHolder
 {
     [Header("Object State")]
-    [SerializeField] public bool _isSelected;
-    [SerializeField] public bool _objectActive = false;
-    [SerializeField] public bool _useOnlyInShadow;
+    [HideInInspector] public bool IsSelected;
+    [HideInInspector] public bool ObjectActive = false;
+    public bool UseOnlyInShadow;
     public float ObjectInteractionArea = 0;
-    [HideInInspector] public bool DefaultActive;
-
-    [HideInInspector] public bool _deactiveInteraction = false;
+    [HideInInspector] public bool DefaultState;
+    [HideInInspector] public bool DeactiveInteraction = false;
+    [HideInInspector] public InteractObjects ObjectType;
 
     [Header("UI Postion")]
     [SerializeField] private Vector3 _uiHintPosition;
-
     public Vector3 HintPosition { get { return transform.position + _uiHintPosition; } }
 
-    [Header("Sound")]
-    [SerializeField] protected bool _activeSound = false;
-    [SerializeField] protected AudioClip _soundActiveTrigger;
-    [SerializeField] protected AudioClip _soundDeactiveTrigger;
-    [HideInInspector] public InteractObjects ObjectType;
 
     [Header("Debug  Settings")]
     [SerializeField] protected bool _debug;
 
     protected GameObject _playerGO;
     protected Vector2 _axis;
+
     protected virtual void Start()
     {
-        DefaultActive = _objectActive;
+        DefaultState = ObjectActive;
     }
-
 
     public virtual void ItemInteraction(GameObject player)
     {
@@ -57,36 +51,29 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void ActiveItem(GameObject player)
     {
-        if (_activeSound)
-            AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
         _playerGO = player;
-        _objectActive = true;
+        ObjectActive = true;
     }
 
     protected virtual void ActiveItem(Enemy enemy)
     {
-        if (_activeSound)
-            AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
         _playerGO = enemy.gameObject;
-        _objectActive = true;
+        ObjectActive = true;
     }
 
     protected virtual void DeactiveItem()
     {
-        if (_activeSound)
-            AudioSource.PlayClipAtPoint(_soundDeactiveTrigger, transform.position);
-        _objectActive = false;
+        ObjectActive = false;
     }
 
     public virtual void UpdateItem(Vector2 axis)
     {
-            
         _axis = axis;
     }
 
     protected virtual void UpdateItemInternally()
     {
-        if (_isSelected) ItemSelected();
+        if (IsSelected) ItemSelected();
     }
 
     protected virtual void ItemSelected()

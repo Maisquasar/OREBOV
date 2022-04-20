@@ -12,11 +12,6 @@ public class InteractiveBox : InteractiveObject
     [SerializeField] private float _speedBox = 2f;
     private bool _startMovement = false;
 
-    private Rigidbody _rigidbodyPlayer;
-    private float _moveTimer = 0f;
-    private float _timeBetweenMove = 0.7f;
-
-
     [Header("Sounds")]
     [SerializeField] private SoundEffectsHandler _boxPushInt;
     [SerializeField] private SoundEffectsHandler _boxPushExt;
@@ -26,6 +21,8 @@ public class InteractiveBox : InteractiveObject
     [Header("Box Debug")]
     [SerializeField] private bool _activeBoxDebug;
     [SerializeField] private int _mouvementCount = 1;
+    
+    private Rigidbody _rigidbodyPlayer;
     private PlayerInteraction _playerInteract;
     private PlayerStatus _playerStatus;
     private PlayerAnimator _playerAnimator;
@@ -40,11 +37,11 @@ public class InteractiveBox : InteractiveObject
 
     protected override void ActiveItem(GameObject player)
     {
-        if (!_objectActive)
+        if (!ObjectActive)
         {
             base.ActiveItem(player);
 
-            _objectActive = true;
+            ObjectActive = true;
             _startMovement = false;
             delta = transform.position - _playerGO.transform.position;
             _hasMove = false;
@@ -71,9 +68,9 @@ public class InteractiveBox : InteractiveObject
     protected override void DeactiveItem()
     {
 
-        if (_objectActive)
+        if (ObjectActive)
         {
-            _objectActive = false;
+            ObjectActive = false;
             _playerStatus.PlayerActionState = States.PlayerAction.IDLE;
             _playerInteract.CanStopNow = true;
             _startMovement = false;
@@ -96,12 +93,12 @@ public class InteractiveBox : InteractiveObject
         base.UpdateItem(axis);
 
         Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
-        if (axis.normalized.x != 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
+        if (axis.normalized.x != 0 && (!UseOnlyInShadow || _playerStatus.IsShadow))
         {
             MovingBox(_axis.x);
             _playerStatus.PlayRightAnimation(axis.x);
         }
-        else if (axis.normalized.x == 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
+        else if (axis.normalized.x == 0 && (!UseOnlyInShadow || _playerStatus.IsShadow))
         {
             if (_hasMove) DeactiveItem();
           

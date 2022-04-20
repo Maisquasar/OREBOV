@@ -1,17 +1,13 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class InteractionSwitchEvent : InteractiveObject
 {
-    [SerializeField]
-    private bool _switchState;
-    [SerializeField]
-    private UnityEvent _switchEvent;
-
-    [SerializeField]
-    private float _activationCooldown = 0.3f;
+    [SerializeField] private bool _switchState;
+    [SerializeField] private UnityEvent _switchEvent;
+    [SerializeField] private float _activationCooldown = 0.3f;
 
     private float _activationTimer = 0f;
 
@@ -24,7 +20,6 @@ public class InteractionSwitchEvent : InteractiveObject
         _switchEvent.Invoke();
         StartCoroutine(ActiveSwitch());
     }
-
 
     private IEnumerator ActiveSwitch()
     {
