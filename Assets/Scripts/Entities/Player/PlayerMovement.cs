@@ -111,6 +111,8 @@ public class PlayerMovement : EntityMovement
 
     public void CheckForClimb()
     {
+        if (ClimbingLadder)
+            return;
         // Can't climb if fall damage.
         if (LastPosBeforeFall.y - transform.position.y < GameMetric.GetGameUnit(FallDamageHeight))
         {
@@ -296,6 +298,7 @@ public class PlayerMovement : EntityMovement
         animator.SetBool("Hide", true);
         IsHide = true;
         Quaternion target = Quaternion.Euler(0, 0, 0);
+        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.forward * 1f, 0.2f));
         yield return StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
         yield return new WaitForSeconds(1.133f);
         _playerStatus.IsHide = true;
@@ -307,10 +310,20 @@ public class PlayerMovement : EntityMovement
         animator.SetBool("Hide", false);
         yield return new WaitForSeconds(1.1f);
         IsHide = false;
+        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.back * 1f, 0.2f));
         Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
         StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
     }
 
+    IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.position = Vector3.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.position = goTo;
+    }
 
     IEnumerator LerpFromTo(Quaternion initial, Quaternion goTo, float duration)
     {
@@ -320,6 +333,14 @@ public class PlayerMovement : EntityMovement
             yield return 0;
         }
         transform.rotation = goTo;
+    }
+
+    [HideInInspector] public bool ClimbingLadder = false;
+    public void Climb(bool value, int direction = 1)
+    {
+        ClimbingLadder = value;
+        animator.SetBool("Ladder Climb", ClimbingLadder);
+        animator.SetInteger("Direction", direction);
     }
 }
 

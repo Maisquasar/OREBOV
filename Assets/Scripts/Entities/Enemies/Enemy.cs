@@ -54,9 +54,8 @@ public class Enemy : Entity
     // Update is called once per frame
     virtual public void Update()
     {
-        if (!_player.Dead)  
+        if (!_player.Dead)
         {
-
             if (TimeStamp > 0 && PlayerDetected)
             {
                 TimeStamp -= Time.deltaTime * GaugeAdd;
