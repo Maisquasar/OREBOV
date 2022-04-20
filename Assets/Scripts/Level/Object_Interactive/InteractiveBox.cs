@@ -72,9 +72,11 @@ public class InteractiveBox : InteractiveObject
             PlayerInteract.UnlinkObject();
             _playerStatus.PlayerActionState = States.PlayerAction.IDLE;
             _playerAnimator.SetPush(true);
-            _boxPush.StopSound();
+            _boxPushInt.StopSound();
+            _boxPushExt.StopSound();
             PlayerInteract.CanStopNow = true;
             _boxRelease.PlaySound();
+            _startMovement = false;
         }
 
     }
@@ -93,9 +95,6 @@ public class InteractiveBox : InteractiveObject
             }
             else if (axis.normalized.x == 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
             {
-                _startMovement = false;
-                _boxPushInt.StopSound();
-                _boxPushExt.StopSound();
                 if (_hasMove)
                 {
                     DeactiveItem();
