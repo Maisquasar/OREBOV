@@ -17,6 +17,8 @@ public enum SoundIDs
     FallExterior,
     Stress,
     Death,
+    ClimbBox,
+    ClimbWall,
     TransformToShadow,
     TransformToHuman,
     TransformationFail,
@@ -367,4 +369,8 @@ public class PlayerStatus : Entity
         _soundBoard[SoundIDs.Stress].PlaySound();
     }
 
+    public void PlaySound(SoundIDs sound)
+    {
+        _soundBoard[sound].PlaySound();
+    }
 }

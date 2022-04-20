@@ -218,6 +218,14 @@ public class PlayerMovement : EntityMovement
     {
         RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
         StartCoroutine(LerpTo(transform.position + Vector3.right * _direction * (downRay[0].distance - 0.4f), 0.1f));
+        if (downRay[0].transform.GetComponent<InteractiveBox>())
+        {
+            _playerStatus.PlaySound(SoundIDs.ClimbBox);
+        }
+        else
+        {
+            _playerStatus.PlaySound(SoundIDs.ClimbWall);
+        }
         IsClimbing = true;
         //Play animation
         animator.Play("Climb");
