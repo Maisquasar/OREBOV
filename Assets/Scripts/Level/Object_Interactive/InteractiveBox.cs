@@ -12,6 +12,7 @@ public class InteractiveBox : InteractiveObject
     [SerializeField] private float _speedBox = 2f;
     [SerializeField] private float _moveTime = 1f;
     private bool _activeMouvement = false;
+    private bool _startMovement = false;
 
     private Rigidbody _rigidbodyPlayer;
     private float _moveTimer = 0f;
@@ -19,8 +20,10 @@ public class InteractiveBox : InteractiveObject
 
 
     [Header("Sounds")]
-    [SerializeField]
-    private SoundEffectsHandler _boxPush;
+    [SerializeField] private SoundEffectsHandler _boxPushInt;
+    [SerializeField] private SoundEffectsHandler _boxPushExt;
+    [SerializeField] private SoundEffectsHandler _boxGrab;
+    [SerializeField] private SoundEffectsHandler _boxRelease;
 
     [Header("Box Debug")]
     [SerializeField] private bool _activeBoxDebug;
@@ -44,6 +47,7 @@ public class InteractiveBox : InteractiveObject
         if (!_objectActive)
         {
             _objectActive = true;
+            _startMovement = false;
             base.ActiveItem(player);
             PlayerInteract = _playerGO.GetComponent<PlayerInteraction>();
             _playerStatus = _playerGO.GetComponent<PlayerStatus>();
@@ -54,9 +58,7 @@ public class InteractiveBox : InteractiveObject
             startPos = _playerGO.transform.position;
             delta = transform.position - _playerGO.transform.position;
             _hasMove = false;
-            _boxPush.PlaySound(true);
-
-
+            _boxGrab.PlaySound();
         }
     }
 
@@ -72,6 +74,7 @@ public class InteractiveBox : InteractiveObject
             _playerAnimator.SetPush(true);
             _boxPush.StopSound();
             PlayerInteract.CanStopNow = true;
+            _boxRelease.PlaySound();
         }
 
     }
@@ -90,6 +93,9 @@ public class InteractiveBox : InteractiveObject
             }
             else if (axis.normalized.x == 0 && (!_useOnlyInShadow || _playerStatus.IsShadow))
             {
+                _startMovement = false;
+                _boxPushInt.StopSound();
+                _boxPushExt.StopSound();
                 if (_hasMove)
                 {
                     DeactiveItem();
@@ -140,11 +146,22 @@ public class InteractiveBox : InteractiveObject
 
     private void MovingBox(float dir)
     {
+        if (!_startMovement)
+        {
+            -_startMovement = true;
+            if (AmbientType == AmbientSoundType.Interior)
+            {
+                _boxPushInt.PlaySound();
+            }
+            else
+            {
+                _boxPushExt.PlaySound();
+            }
+        }
         _hasMove = false;
         PlayerInteract.CanStopNow = false;
         if (!Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox*Time.deltaTime, _collisionMask, QueryTriggerInteraction.Ignore))
         {
-
             _rigidbodyPlayer.position += Vector3.right * dir * _speedBox * Time.deltaTime;
             transform.position = _rigidbodyPlayer.position + delta;
         }

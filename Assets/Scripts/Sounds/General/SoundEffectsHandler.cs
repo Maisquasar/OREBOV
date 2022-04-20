@@ -11,6 +11,7 @@ public class SoundEffectsHandler : MonoBehaviour
     [SerializeField] private AudioMixerGroup _mixer;
     [SerializeField] private bool _randomPlaySound;
     [SerializeField] private bool _playAtStart;
+    [SerializeField] private bool _looped;
     [Header("Play Count")]
     [SerializeField] private int _playCount = 1;
     [SerializeField] private int _playCountRandomChances = 0;
@@ -19,13 +20,23 @@ public class SoundEffectsHandler : MonoBehaviour
     private bool _active = false;
 
 
-    private AudioSource _audioSource;
+    public string SoundName { get { return _soundName; } }
+    private AudioSource[] _audioSources;
+    private bool _multiSources = false;
     private int _indexAudioClip = 0;
     private int _prevAudioClip = 0;
 
     private void InitComponents()
     {
-        _audioSource = GetComponent<AudioSource>();
+        _audioSources = GetComponents<AudioSource>();
+        if (_audioSources.Length == 0)
+        {
+            Debug.LogError(" No audio source in the " + gameObject.name + " for the " + _soundName + " sound effect handler . This component disable for play mode ");
+        }
+        else if (_audioSources.Length > 1)
+        {
+            _multiSources = true;
+        }
     }
 
     private void CheckComponentIsValid()
@@ -67,21 +78,29 @@ public class SoundEffectsHandler : MonoBehaviour
         else StartCoroutine(playSoundMultiple());
     }
 
-    public void PlaySound(bool loop)
-    {
-        if (_active) return;
-        _audioSource.loop = loop;
-        if (_playCount == 1 && _playCountRandomChances == 0) playSoundOnce();
-        else StartCoroutine(playSoundMultiple());
-    }
-
     public void StopSound()
     {
-        _audioSource.loop = false;
-        _audioSource.Stop();
+        foreach (AudioSource item in _audioSources)
+        {
+            foreach (AudioClip clip in _audioClipArray)
+            {
+                if (item.clip == clip)
+                {
+                    item.Stop();
+                    break;
+                }
+            }
+        }
     }
 
-
+    private int findFirstAudioSource()
+    {
+        for (int i = 0; i < _audioSources.Length; i++)
+        {
+            if (!_audioSources[i].isPlaying) return i;
+        }
+        return _audioSources.Length - 1;
+    }
 
 
     private void playSoundOnce()
@@ -95,10 +114,15 @@ public class SoundEffectsHandler : MonoBehaviour
         {
             _indexAudioClip = _indexAudioClip + 1 == _audioClipArray.Length ? 0 : _indexAudioClip++;
         }
-
-        _audioSource.clip = _audioClipArray[_indexAudioClip];
-        _audioSource.outputAudioMixerGroup = _mixer;
-        _audioSource.Play();
+        int index = 0;
+        if (_multiSources)
+        {
+            index = findFirstAudioSource();
+        }
+        _audioSources[index].clip = _audioClipArray[_indexAudioClip];
+        _audioSources[index].outputAudioMixerGroup = _mixer;
+        _audioSources[index].loop = _looped;
+        _audioSources[index].Play();
     }
 
     private IEnumerator playSoundMultiple()

@@ -3,17 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public enum AmbientSoundType
-{
-    Exterior,
-    Interior,
-    Rain,
-}
-
-public class EntityMovement : MonoBehaviour
+public class EntityMovement : AmbientTypeHolder
 {
     [SerializeField] public Animator animator;
-    [SerializeField] public AmbientSoundType AmbientType;
 
     [Space]    [Header("Collision Settings")]    [Space]
     [SerializeField] public LayerMask GroundType;
@@ -25,10 +17,11 @@ public class EntityMovement : MonoBehaviour
     [SerializeField] protected float speed;
 
     [Space]    [Header("Sounds ")]    [Space]
-    [SerializeField] private SoundEffectsHandler _walkInsideEffectsHandler;
-    [SerializeField] private SoundEffectsHandler _walkOutsideEffectsHandler;
-    [SerializeField] private SoundEffectsHandler _walkRainEffectsHandler;
-    [SerializeField] private SoundEffectsHandler _jumpImpactEffectHandler;
+    [SerializeField] protected SoundEffectsHandler _walkInsideEffectsHandler;
+    [SerializeField] protected SoundEffectsHandler _walkOutsideEffectsHandler;
+    [SerializeField] protected SoundEffectsHandler _walkRainEffectsHandler;
+    [SerializeField] protected SoundEffectsHandler _landInsideEffectHandler;
+    [SerializeField] protected SoundEffectsHandler _landOutsideEffectHandler;
 
     protected float _rayGroundSize = 1.1f;
     protected float _rayCeilingSize = 1.1f;
@@ -149,7 +142,14 @@ public class EntityMovement : MonoBehaviour
     protected virtual void LandOnGround()
     {
         _grounded = true;
-        _jumpImpactEffectHandler.PlaySound();
+        if (AmbientType == AmbientSoundType.Interior)
+        {
+            _landInsideEffectHandler.PlaySound();
+        }
+        else
+        {
+            _landOutsideEffectHandler.PlaySound();
+        }
     }
 
     protected virtual bool DetectWall()

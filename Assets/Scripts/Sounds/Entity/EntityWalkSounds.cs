@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Tools;
 
-public class PlayerWalkSounds : MonoBehaviour
+public class EntityWalkSounds : MonoBehaviour
 {
     [Header("Sounds ")]
     [SerializeField] private LayerMask _groundLayer;
