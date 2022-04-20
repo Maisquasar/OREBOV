@@ -23,6 +23,7 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField] public bool _isSelected;
     [SerializeField] public bool _objectActive = false;
     [SerializeField] public bool _useOnlyInShadow;
+    public float ObjectInteractionArea = 0;
     [HideInInspector] public bool DefaultActive;
 
     [HideInInspector] public bool _deactiveInteraction = false;
@@ -38,7 +39,7 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField] protected AudioClip _soundDeactiveTrigger;
     [HideInInspector] public InteractObjects ObjectType;
 
-    [Header("Debug")]
+    [Header("Debug  Settings")]
     [SerializeField] protected bool _debug;
 
     protected GameObject _playerGO;
@@ -106,5 +107,8 @@ public class InteractiveObject : MonoBehaviour
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawSphere(HintPosition, 0.112f);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, ObjectInteractionArea);
     }
 }

@@ -22,12 +22,13 @@ public class ObjectManager : MonoBehaviour
 
         for (int i = 0; i < _interactiveObjectList.Length; i++)
         {
-            if (Vector3.Distance(position, _interactiveObjectList[i].transform.position) < distanceObject)
+            Vector3 pos = _interactiveObjectList[i].transform.position + (position - _interactiveObjectList[i].transform.position).normalized * _interactiveObjectList[i].ObjectInteractionArea;
+            if (Vector3.Distance(position, pos) < distanceObject)
             {
                 Vector3 objDir = _interactiveObjectList[i].transform.position - position;
                 if (Vector3.Dot(faceDir.normalized, objDir.normalized) > angle)
                 {
-                    distanceObject = Vector3.Distance(position, _interactiveObjectList[i].transform.position);
+                    distanceObject = Vector3.Distance(position, pos);
                     _item = _interactiveObjectList[i];
                 }
             }
