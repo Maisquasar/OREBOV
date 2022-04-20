@@ -15,6 +15,7 @@ public enum SoundIDs
     WalkRain,
     FallInterior,
     FallExterior,
+    Stress,
     Death,
     TransformToShadow,
     TransformToHuman,
@@ -53,7 +54,7 @@ public class PlayerStatus : Entity
     private bool _isShadow = false;
     private bool _respawn = false; // To execute repawn only once.
     private bool _exactPos = false; // To execute LerpTo only once.
-
+    private float _stressTimer = 0.0f;
     public bool IsShadow { get { return _isShadow; } }
 
     public Vector2 MoveDir { get { return _movementDir; } }
@@ -68,7 +69,7 @@ public class PlayerStatus : Entity
     }
 
 
-    #region Initiate Script 
+       #region Initiate Script 
     private void Start()
     {
         InitComponent();
@@ -112,7 +113,13 @@ public class PlayerStatus : Entity
     private void Update()
     {
         if (Dead)
+        {
+            _stressTimer = 0.0f;
+            _soundBoard[SoundIDs.Stress].StopSound();
             return;
+        }
+        if (_stressTimer > 0) _stressTimer -= Time.deltaTime;
+        else if (_soundBoard[SoundIDs.Stress].Active) _soundBoard[SoundIDs.Stress].StopSound();
         _shadowPos = _caster.GetShadowPos();
         if (_playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
@@ -352,6 +359,12 @@ public class PlayerStatus : Entity
         {
             StartCoroutine(Controller.StopHide());
         }
+    }
+    
+    public void StressPlayer(float delay)
+    {
+        if (delay > _stressTimer) _stressTimer = delay;
+        _soundBoard[SoundIDs.Stress].PlaySound();
     }
 
 }
