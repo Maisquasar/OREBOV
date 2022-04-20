@@ -12,7 +12,7 @@ namespace InteractObject
         Box,
         Switch,
         Hideout,
-        OilLight
+        Ladder
     }
 
 }

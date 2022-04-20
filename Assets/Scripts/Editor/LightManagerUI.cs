@@ -4,7 +4,7 @@ using UnityEditor;
 using System.Threading;
 
 [CustomEditor(typeof(LightManager))]
-public class LookAtPointEditor : Editor
+public class LightManagerUI : Editor
 {
     SerializedProperty lightsList;
     SerializedProperty usableLightsList;

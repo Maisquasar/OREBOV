@@ -54,20 +54,28 @@ public class PlayerInteraction : MonoBehaviour
 
         if (_interactionState == InteractionState.Link)
         {
-            if (_objectManager.IsObjectInRange(transform.position,transform.forward, _detectDistance, _detectionDirection, _objectInteractive))
+            if (_objectInteractive.ObjectType == InteractObjects.Ladder)
+            {
+                _objectInteractive.UpdateItem(_axis);
+                return;
+            }
+
+            if (_objectManager.IsObjectInRange(transform.position, transform.forward, _detectDistance, _detectionDirection, _objectInteractive))
                 _objectInteractive.UpdateItem(_axis);
             else
             {
                 _objectInteractive.CancelUpdate();
                 UnlinkObject();
             }
+
+
         }
         else
         {
             InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance, _detectionDirection);
             if (objectClose != null)
             {
-                    UnselectObject(objectClose);
+                UnselectObject(objectClose);
                 if (objectClose._useOnlyInShadow && _playerStatus.IsShadow || !objectClose._useOnlyInShadow)
                 {
                     ChangeSelectedObject(objectClose);
@@ -82,7 +90,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(_objectManager == null)
+        if (_objectManager == null)
         {
             Debug.LogError("Object Manager is missing in Player Interaction");
         }
@@ -101,7 +109,7 @@ public class PlayerInteraction : MonoBehaviour
         if (started)
             PressInput();
 
-      
+
 
         if (canceled)
             CancelInput();

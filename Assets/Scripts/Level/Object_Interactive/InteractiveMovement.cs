@@ -27,6 +27,7 @@ public class InteractiveMovement : InteractiveObject
     protected override void Start()
     {
         base.Start();
+        ObjectType = InteractObject.InteractObjects.Ladder; 
     }
 
     protected override void ActiveItem(GameObject player)
