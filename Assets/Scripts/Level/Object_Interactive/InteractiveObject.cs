@@ -80,6 +80,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     public virtual void UpdateItem(Vector2 axis)
     {
+            
         _axis = axis;
     }
 
