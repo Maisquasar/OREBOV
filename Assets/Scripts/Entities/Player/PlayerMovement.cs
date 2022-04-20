@@ -111,6 +111,8 @@ public class PlayerMovement : EntityMovement
 
     public void CheckForClimb()
     {
+        if (ClimbingLadder)
+            return;
         // Can't climb if fall damage.
         if (LastPosBeforeFall.y - transform.position.y < GameMetric.GetGameUnit(FallDamageHeight))
         {
@@ -320,6 +322,14 @@ public class PlayerMovement : EntityMovement
             yield return 0;
         }
         transform.rotation = goTo;
+    }
+
+    [HideInInspector] public bool ClimbingLadder = false;
+    public void Climb(bool value, int direction = 1)
+    {
+        ClimbingLadder = value;
+        animator.SetBool("Ladder Climb", ClimbingLadder);
+        animator.SetInteger("Direction", direction);
     }
 }
 

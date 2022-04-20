@@ -69,7 +69,6 @@ public class InteractiveHideout : InteractiveObject
             _objectActive = false;
 
             StartCoroutine(_endCoroutine);
-
         }
     }
 

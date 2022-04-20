@@ -41,17 +41,17 @@ public class ObjectManager : MonoBehaviour
         float distanceObject = GameMetric.GetUnityValue(range);
         if (Vector3.Distance(position, obj.transform.position) < distanceObject)
         {
-            if (obj.ObjectType != InteractObject.InteractObjects.Hideout)
+            if (obj.ObjectType == InteractObject.InteractObjects.Hideout || obj.ObjectType == InteractObject.InteractObjects.Ladder)
+            {
+                return true;
+            }
+            else
             {
                 Vector3 objDir = obj.transform.position - position;
                 if (Vector3.Dot(faceDir.normalized, objDir.normalized) > angle)
                 {
                     return true;
                 }
-            }
-            else
-            {
-                return true;
             }
         }
         return false;
