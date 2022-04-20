@@ -23,7 +23,6 @@ namespace States
         INTERACT,
         ALERT,
         CHASE,
-        INTERACT,
     }
 }
 
