@@ -29,9 +29,9 @@ public class InteractiveObject : MonoBehaviour
 
     [Header("UI Postion")]
     [SerializeField] private Vector3 _uiHintPosition;
-    
+
     public Vector3 HintPosition { get { return transform.position + _uiHintPosition; } }
-    
+
     [Header("Sound")]
     [SerializeField] protected bool _activeSound = false;
     [SerializeField] protected AudioClip _soundActiveTrigger;
@@ -43,7 +43,7 @@ public class InteractiveObject : MonoBehaviour
 
     protected GameObject _playerGO;
     protected Vector2 _axis;
-    private void Start()
+    protected virtual void Start()
     {
         DefaultActive = _objectActive;
     }
@@ -59,6 +59,7 @@ public class InteractiveObject : MonoBehaviour
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
         _playerGO = player;
+        _objectActive = true;
     }
 
     protected virtual void ActiveItem(Enemy enemy)
@@ -66,12 +67,14 @@ public class InteractiveObject : MonoBehaviour
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
         _playerGO = enemy.gameObject;
+        _objectActive = true;
     }
 
     protected virtual void DeactiveItem()
     {
         if (_activeSound)
             AudioSource.PlayClipAtPoint(_soundDeactiveTrigger, transform.position);
+        _objectActive = false;
     }
 
     public virtual void UpdateItem(Vector2 axis)

@@ -138,36 +138,6 @@ public class InteractiveBox : InteractiveObject
         if (_activeBoxDebug) ShowBoxMouvement();
     }
 
-    private IEnumerator MoveBox(float dir)
-    {
-        _activeMouvement = true;
-        PlayerInteract.CanStopNow = false;
-        Vector3 startPos = _playerGO.transform.position;
-        Vector3 endPos = _playerGO.transform.position + Vector3.right * dir * _speedBox;
-        Vector3 delta = transform.position - startPos;
-        Debug.DrawRay(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x, new Vector3(dir, 0, 0) * _speedBox, Color.green);
-
-        if (Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox, _collisionMask, QueryTriggerInteraction.Ignore))
-        {
-            StartCoroutine(PauseBoxMouvement());
-            yield break;
-        }
-        _boxPush.PlaySound();
-
-        while (_moveTimer < _moveTime)
-        {
-            _rigidbodyPlayer.position = Vector3.Lerp(startPos, endPos, _moveTimer / _moveTime);
-            transform.position = _rigidbodyPlayer.position + delta;
-            _moveTimer += Time.deltaTime;
-            yield return Time.deltaTime;
-        }
-        _moveTimer = 0f;
-        _rigidbodyPlayer.velocity = Vector3.zero;
-        StartCoroutine(PauseBoxMouvement());
-        _boxPush.StopSound();
-    }
-
-
     private void MovingBox(float dir)
     {
         _hasMove = false;
@@ -178,17 +148,5 @@ public class InteractiveBox : InteractiveObject
             _rigidbodyPlayer.position += Vector3.right * dir * _speedBox * Time.deltaTime;
             transform.position = _rigidbodyPlayer.position + delta;
         }
-    }
-    private IEnumerator PauseBoxMouvement()
-    {
-        PlayerInteract.CanStopNow = true;
-        while (_moveTimer < _timeBetweenMove)
-        {
-            _moveTimer += Time.deltaTime;
-            yield return Time.deltaTime;
-        }
-        _activeMouvement = false;
-        _moveTimer = 0f;
-        if (!_objectActive) DeactiveItem();
     }
 }
