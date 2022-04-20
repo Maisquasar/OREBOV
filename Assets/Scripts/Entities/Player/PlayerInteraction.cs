@@ -76,7 +76,7 @@ public class PlayerInteraction : MonoBehaviour
             if (objectClose != null)
             {
                 UnselectObject(objectClose);
-                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow || !objectClose._useOnlyInShadow)
+                if (CanBeSelected(objectClose))
                 {
                     ChangeSelectedObject(objectClose);
                 }
@@ -101,6 +101,7 @@ public class PlayerInteraction : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
         }
+
     }
 
     #region Input Managing
@@ -167,6 +168,14 @@ public class PlayerInteraction : MonoBehaviour
         _uiInteract.transform.rotation = _uiRot;
         _uiInteract.transform.SetParent(_objectInteractive.transform);
         _interactionState = InteractionState.Selected;
+    }
+
+    private bool CanBeSelected(InteractiveObject interactiveObject)
+    {
+        if (interactiveObject.transform.position.y >= transform.position.y && (interactiveObject._useOnlyInShadow && _playerStatus.IsShadow || !interactiveObject._useOnlyInShadow))
+            return true;
+        else
+            return false;
     }
 
     private void UnselectObject()
