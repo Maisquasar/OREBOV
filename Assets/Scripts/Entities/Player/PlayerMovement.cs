@@ -219,6 +219,11 @@ public class PlayerMovement : EntityMovement
 
     protected override void LandOnGround()
     {
+        if (IsClimbing || _playerStatus.Dead)
+        {
+            _grounded = true;
+            return;
+        }
         base.LandOnGround();
     }
 

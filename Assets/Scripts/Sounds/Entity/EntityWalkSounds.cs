@@ -38,8 +38,6 @@ public class EntityWalkSounds : MonoBehaviour
         }
     }
 
-
-
     private bool IsSoundPlayable(Collider other)
     {
         if (ToolsBox.IsInLayerMask(other.gameObject, _groundLayer) && _canTriggerSounds)

@@ -15,4 +15,13 @@ public class Corn : MonoBehaviour
     {
         
     }
+
+    public void CookSomePopCorn(int quantity)
+    {
+        for (int i = 0; i < quantity; i++)
+        {
+            print("Pop !");
+        }
+        print("Cooked " + quantity + " popcorn !");
+    }
 }
