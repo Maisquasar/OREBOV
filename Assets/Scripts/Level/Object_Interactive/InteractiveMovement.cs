@@ -43,7 +43,6 @@ public class InteractiveMovement : InteractiveObject
         _playerStatus = _playerGO.GetComponent<PlayerStatus>();
 
         _rigidbodyPlayer.isKinematic = true;
-        _playerStatus.Controller._gravityScale = 0;
         _playerInteraction.LinkObject(this);
         _climbLadder.PlaySound();
 
@@ -128,7 +127,6 @@ public class InteractiveMovement : InteractiveObject
     {
         ObjectActive = false;
         _rigidbodyPlayer.isKinematic = false;
-        _playerStatus.Controller._gravityScale = 1;
         _playerInteraction.UnlinkObject();
         _climbLadder.StopSound();
     }
