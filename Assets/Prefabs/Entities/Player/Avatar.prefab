@@ -867,7 +867,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4441617465147297195}
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
@@ -1398,6 +1398,8 @@ MonoBehaviour:
   _walkRainEffectsHandler: {fileID: 0}
   _landInsideEffectHandler: {fileID: 0}
   _landOutsideEffectHandler: {fileID: 0}
+  _globalGravity: -9.81
+  _gravityScale: 1
   canTurn: 1
   velocityCurve:
     serializedVersion: 2
@@ -1432,6 +1434,7 @@ MonoBehaviour:
   IsPushing: 0
   IsPulling: 0
   IsHide: 0
+  CanHide: 1
   ClimbingLadder: 0
 --- !u!114 &5666957167554232153
 MonoBehaviour:
