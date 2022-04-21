@@ -36,8 +36,22 @@ public class PlayerInteraction : MonoBehaviour
     public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
     public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
-    public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
-    public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
+    public Vector3 InteractiveObjectPos
+    {
+        get
+        {
+            if (_objectInteractive != null) return _objectInteractive.transform.position;
+            else return Vector3.zero;
+        }
+    }
+    public Vector3 InteractiveObjectScale
+    {
+        get
+        {
+            if (_objectInteractive != null) return _objectInteractive.transform.localScale;
+            else return Vector3.zero;
+        }
+    }
     public InteractiveObject Object { get { return _objectInteractive; } }
     public InteractionState Interaction { get { return _interactionState; } }
 

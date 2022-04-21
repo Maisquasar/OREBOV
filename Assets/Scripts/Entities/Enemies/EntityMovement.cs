@@ -7,21 +7,30 @@ public class EntityMovement : AmbientTypeHolder
 {
     [SerializeField] public Animator animator;
 
-    [Space]    [Header("Collision Settings")]    [Space]
+    [Space]
+    [Header("Collision Settings")]
+    [Space]
     [SerializeField] public LayerMask GroundType;
     [SerializeField] public LayerMask WallType;
     [Tooltip("Manually place rays (May lag if too much)")]
     [SerializeField] protected List<float> ray;
 
-    [Space]    [Header("Velocity Settings")]    [Space]
+    [Space]
+    [Header("Velocity Settings")]
+    [Space]
     [SerializeField] protected float speed;
 
-    [Space]    [Header("Sounds ")]    [Space]
+    [Space]
+    [Header("Sounds ")]
+    [Space]
     [SerializeField] protected SoundEffectsHandler _walkInsideEffectsHandler;
     [SerializeField] protected SoundEffectsHandler _walkOutsideEffectsHandler;
     [SerializeField] protected SoundEffectsHandler _walkRainEffectsHandler;
     [SerializeField] protected SoundEffectsHandler _landInsideEffectHandler;
     [SerializeField] protected SoundEffectsHandler _landOutsideEffectHandler;
+
+    [HideInInspector] public float _globalGravity = -9.81f;
+    [HideInInspector] public float _gravityScale = 1;
 
     protected float _rayGroundSize = 1.1f;
     protected float _rayCeilingSize = 1.1f;
@@ -34,8 +43,6 @@ public class EntityMovement : AmbientTypeHolder
     protected bool _touchWall = false;
     public bool IsTouchingWall { get { return _touchWall; } }
 
-    protected float _globalGravity = -9.81f;
-    protected float _gravityScale = 1;
     protected float _offset = 0.18f;
 
     protected Rigidbody _rb;

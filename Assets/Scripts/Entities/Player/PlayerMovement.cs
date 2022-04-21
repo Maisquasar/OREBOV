@@ -92,13 +92,14 @@ public class PlayerMovement : EntityMovement
             }
         }
 
-        if (!DetectWall())
-            animator.SetFloat("VelocityX", _rb.velocity.x);
-        else
+        if (DetectWall() || (_playerStatus.GetComponent<PlayerAnimator>().IsInAmination && !_playerStatus.IsShadow))
             animator.SetFloat("VelocityX", 0);
+        else
+            animator.SetFloat("VelocityX", _rb.velocity.x);
 
         animator.SetFloat("VelocityY", _rb.velocity.y);
         animator.SetBool("Grounded", _grounded);
+
         CheckForClimb();
     }
 
@@ -257,39 +258,19 @@ public class PlayerMovement : EntityMovement
     }
 
     [HideInInspector] public bool IsPushing = false;
-    // Play push animation.
-    public IEnumerator PlayPush()
-    {
-        if (!IsPushing)
-        {
-            IsPushing = true;
-            animator.Play("Push");
-            yield return new WaitForSeconds(1f);
-            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                yield return null;
-            }
-            IsPushing = false;
-        }
-        yield return null;
-    }
 
     [HideInInspector] public bool IsPulling = false;
-    // Play pull animation.
-    public IEnumerator PlayPull()
+
+    public void Push(bool value)
     {
-        if (!IsPulling)
-        {
-            IsPulling = true;
-            animator.Play("Pull");
-            yield return new WaitForSeconds(1f);
-            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                yield return null;
-            }
-            IsPulling = false;
-        }
-        yield return null;
+        animator.SetBool("Pushing", value);
+        animator.SetBool("Pulling", false);
+    }
+
+    public void Pull(bool value)
+    {
+        animator.SetBool("Pulling", value);
+        animator.SetBool("Pushing", false);
     }
 
     [HideInInspector] public bool IsHide = false;
