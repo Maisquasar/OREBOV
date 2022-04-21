@@ -303,7 +303,7 @@ public class PlayerMovement : EntityMovement
         CanHide = true;
     }
 
-    IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
+    public IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
     {
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {

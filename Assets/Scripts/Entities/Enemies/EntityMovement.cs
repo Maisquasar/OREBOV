@@ -38,7 +38,7 @@ public class EntityMovement : AmbientTypeHolder
     protected float _direction = 1;
     protected float _xAxisValue;
 
-    public float Direction { get { return _direction; } }
+    public float Direction { get { return _direction; } set { _direction = value; } }
 
     protected bool _touchWall = false;
     public bool IsTouchingWall { get { return _touchWall; } }
