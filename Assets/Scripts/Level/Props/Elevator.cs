@@ -52,7 +52,7 @@ public class Elevator : SwitchableObjects
     }
     bool cancel = false;
 
-    bool CoroutineEnd = true;
+    [HideInInspector] public bool CoroutineEnd = true;
     IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
     {
         CoroutineEnd = false;

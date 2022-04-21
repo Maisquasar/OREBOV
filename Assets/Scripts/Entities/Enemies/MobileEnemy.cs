@@ -23,7 +23,7 @@ public class MobileEnemy : Enemy
     int _currentCheckpoint;
 
     float _timeStamp;
-    float _secondCheckStuck = 2f;
+    float _secondCheckStuck = 5f;
     Vector3 _precPoS;
 
     public override EntityMovement Controller { get { return _controller; } }
@@ -78,7 +78,6 @@ public class MobileEnemy : Enemy
         else
             _controller.animator.SetBool("Chase", false);
 
-
         if (!stillWaiting)
         {
             if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
@@ -109,7 +108,6 @@ public class MobileEnemy : Enemy
                 }
             }
         }
-
         // Check if same position every {_secondCheckStuck} in seconds.
         if (_timeStamp <= Time.time)
         {
@@ -189,6 +187,7 @@ public class MobileEnemy : Enemy
         stillWaiting = true;
         yield return new WaitForSeconds(SearchTime);
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
+        State = EnemyState.NORMAL;
         stillWaiting = false;
     }
 
