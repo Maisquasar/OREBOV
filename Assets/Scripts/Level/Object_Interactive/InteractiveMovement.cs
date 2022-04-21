@@ -59,9 +59,9 @@ public class InteractiveMovement : InteractiveObject
 
     protected void Update()
     {
-        if (ObjectActive  && !climb)
+        if (ObjectActive && !climb)
         {
-            StartCoroutine(LerpFromTo(_posStart , _posEnd + Vector3.down * 0.4f, _movementTime));
+            StartCoroutine(LerpFromTo(_posStart, _posEnd + Vector3.down * 0.4f, _movementTime));
         }
     }
 
@@ -89,6 +89,8 @@ public class InteractiveMovement : InteractiveObject
         _playerStatus.Controller.Climb(true, initial.y < goTo.y ? 1 : -1);
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
+            if (_playerStatus.transform.eulerAngles.y != transform.eulerAngles.y)
+                FlipEnterPlayer();
             _playerGO.transform.position = Vector3.Lerp(initial, goTo, t / duration);
             yield return 0;
         }
@@ -109,6 +111,7 @@ public class InteractiveMovement : InteractiveObject
 
     protected void FlipEnterPlayer()
     {
+        _playerStatus.Controller.canTurn = false;
         var tmpRot = _playerStatus.transform.eulerAngles;
         tmpRot.y = transform.eulerAngles.y;
         _playerStatus.transform.eulerAngles = tmpRot;
@@ -117,6 +120,7 @@ public class InteractiveMovement : InteractiveObject
 
     protected void FlipExitPlayer()
     {
+        _playerStatus.Controller.canTurn = true;
         var tmpRot = _playerStatus.transform.eulerAngles;
         _playerStatus.Controller.Direction = _exitDirection;
         tmpRot.y = _exitDirection * 90;

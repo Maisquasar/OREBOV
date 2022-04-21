@@ -156,7 +156,7 @@ public class PlayerMovement : EntityMovement
     {
         base.Move(move);
         // If climbing then can't move
-        if (IsClimbing || IsPushing || IsPulling || IsHide)
+        if (IsClimbing || IsPushing || IsPulling || IsHide || ClimbingLadder)
             return;
         _lastMove = move;
 
