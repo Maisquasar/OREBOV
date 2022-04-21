@@ -13,6 +13,8 @@ public class InteractiveMovement : InteractiveObject
     private float _movementTime = 1f;
     [SerializeField]
     protected float _movementTimer = 0f;
+    [SerializeField]
+    SoundEffectsHandler _climbLadder;
 
 
     private PlayerInteraction _playerInteraction;
@@ -42,6 +44,7 @@ public class InteractiveMovement : InteractiveObject
         _rigidbodyPlayer.isKinematic = true;
         _rigidbodyPlayer.useGravity = false;
         _playerInteraction.LinkObject(this);
+        _climbLadder.PlaySound();
 
         _posStart = _startPoint.position;
         _posEnd = _endPoint.position;
