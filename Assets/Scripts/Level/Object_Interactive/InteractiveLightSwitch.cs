@@ -6,6 +6,7 @@ using InteractObject;
 public class InteractiveLightSwitch : InteractiveObject
 {
     [Header("Switch")]
+    [SerializeField] private GameObject _handle;
     [SerializeField] private float _handleAmplitude = 0.0442f;
     [SerializeField] private float _activationCooldown = 0.0f;
     [SerializeField] private float _handleSpeed = 0.3f;
@@ -20,7 +21,7 @@ public class InteractiveLightSwitch : InteractiveObject
     {
         base.Start();
         ObjectType = InteractObjects.Switch;
-        _handle = transform.GetChild(0).gameObject;
+        if (!_handle) _handle = transform.GetChild(0).gameObject;
     }
 
     protected override void ActiveItem(GameObject player)

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class ConveyorScript : MonoBehaviour
 {
-    [SerializeField] private float speed;
+    [SerializeField] private SoundEffectsHandler _changeDirEffect;
+    [SerializeField] private float _speed;
     private Material _mat;
     private PlayerMovement _player;
     private bool _playerHit = false;
@@ -20,7 +21,7 @@ public class ConveyorScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _mat.mainTextureOffset = new Vector2(0, Time.realtimeSinceStartup * speed * -0.5f);
+        _mat.mainTextureOffset = new Vector2(0, Time.realtimeSinceStartup * _speed * -0.5f);
         if (!_playerHit && _playerTouched)
         {
             if (_player.IsGrounded || _player.GetComponent<PlayerStatus>().IsShadow)
@@ -29,7 +30,7 @@ public class ConveyorScript : MonoBehaviour
             }
             else
             {
-                _player.transform.position += transform.forward * (_reverse ? -speed : speed) * Time.deltaTime;
+                _player.transform.position += transform.forward * (_reverse ? -_speed : _speed) * Time.deltaTime;
             }
         }
         _playerHit = false;
@@ -39,6 +40,7 @@ public class ConveyorScript : MonoBehaviour
     {
         _reverse = !_reverse;
         _mat.mainTextureScale = new Vector2(_mat.mainTextureScale.x, -_mat.mainTextureScale.y);
+        _changeDirEffect.PlaySound();
     }
 
     private void OnCollisionStay(Collision collision)
@@ -48,12 +50,12 @@ public class ConveyorScript : MonoBehaviour
             Component anim = collision.gameObject.GetComponent(typeof(PlayerStatus));
             if (!anim)
             {
-                collision.rigidbody.velocity = transform.forward * (_reverse ? -speed : speed);
-                //collision.rigidbody.position += transform.forward * (_reverse ? -speed : speed) * Time.deltaTime;
+                collision.rigidbody.velocity = transform.forward * (_reverse ? -_speed : _speed);
+                //collision.rigidbody.position += transform.forward * (_reverse ? -_speed : _speed) * Time.deltaTime;
             }
             else if (!((PlayerStatus)anim).IsShadow)
             {
-                collision.rigidbody.position += transform.forward * (_reverse ? -speed : speed) * Time.deltaTime;
+                collision.rigidbody.position += transform.forward * (_reverse ? -_speed : _speed) * Time.deltaTime;
                 _playerHit = true;
                 _playerTouched = true;
                 _player = collision.gameObject.GetComponent<PlayerMovement>();

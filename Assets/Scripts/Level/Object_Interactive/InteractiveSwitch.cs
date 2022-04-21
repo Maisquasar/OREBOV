@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class InteractiveSwitch : InteractiveObject
 {
     [Header("Switch")]
+    [SerializeField] private GameObject _handle;
     [SerializeField] private float _handleAmplitude = 0.0442f;
     [SerializeField] private float _activationCooldown = 0.0f;
     [SerializeField] private float _autoDesactivateTimer = 0.0f;
@@ -19,7 +20,7 @@ public class InteractiveSwitch : InteractiveObject
     protected override void Start()
     {
         ObjectType = InteractObjects.Switch;
-        _handle = transform.GetChild(0).gameObject;
+        if (!_handle) _handle = transform.GetChild(0).gameObject;
     }
 
     protected override void ActiveItem(GameObject player)
@@ -74,6 +75,14 @@ public class InteractiveSwitch : InteractiveObject
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
+        }
+        if (_autoDesactivateTimer > 0)
+        {
+            _activationCooldown = _autoDesactivateTimer;
+            yield return new WaitForSeconds(_autoDesactivateTimer);
+            base.DeactiveItem();
+            yield return desactivateLever();
+            _objectActive = false;
         }
         yield return null;
     }

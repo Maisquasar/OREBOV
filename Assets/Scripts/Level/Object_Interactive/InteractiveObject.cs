@@ -32,6 +32,11 @@ public class InteractiveObject : AmbientTypeHolder
     [SerializeField] private Vector3 _uiHintPosition;
     public Vector3 HintPosition { get { return transform.position + _uiHintPosition; } }
 
+    [Header("Sound")]
+    [SerializeField] protected bool _activeSound = false;
+    [SerializeField] protected SoundEffectsHandler _soundActiveTrigger;
+    [SerializeField] protected SoundEffectsHandler _soundDeactiveTrigger;
+    [HideInInspector] public InteractObjects ObjectType;
 
     [Header("Debug  Settings")]
     [SerializeField] protected bool _debug;
@@ -51,19 +56,25 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void ActiveItem(GameObject player)
     {
+        if (_activeSound)
+            _soundActiveTrigger.PlaySound();
         _playerGO = player;
         ObjectActive = true;
     }
 
     protected virtual void ActiveItem(Enemy enemy)
     {
+        if (_activeSound)
+            _soundActiveTrigger.PlaySound();
         _playerGO = enemy.gameObject;
         ObjectActive = true;
     }
 
     protected virtual void DeactiveItem()
     {
-        ObjectActive = false;
+        if (_activeSound)
+            _soundDeactiveTrigger.PlaySound();
+        _objectActive = false;
     }
 
     public virtual void UpdateItem(Vector2 axis)
