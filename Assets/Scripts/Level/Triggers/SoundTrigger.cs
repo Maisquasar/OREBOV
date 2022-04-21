@@ -2,21 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class SoundTrigger : Trigger
 {
-    [SerializeField] AudioSource _sound;
+    [SerializeField] private AudioSource _sound;
+    [SerializeField] private bool _playOnce;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<PlayerStatus>())
+        if (other.gameObject.GetComponent<PlayerStatus>()) PlaySoundTrigger();
+    }
+
+    private void PlaySoundTrigger()
+    {
+        if (_sound != null)
         {
-            if (_sound != null)
-            {
-                Debug.Log($"Play : {_sound.name}");
-                _sound.Play();
-            }
-            else
-                Debug.Log("No sounds Set");
+            _sound.Play();
+            if (_playOnce) Destroy(gameObject);
         }
     }
 }
+

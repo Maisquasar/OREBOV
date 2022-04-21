@@ -9,30 +9,41 @@ public class PlayerMovement : EntityMovement
     [SerializeField] AnimationCurve velocityCurve;
     [SerializeField] float _flipTime = 0.1f;
 
-    [Space]    [Header("Jump Settings")]    [Space]
+    [Space]
+    [Header("Jump Settings")]
+    [Space]
     [SerializeField] float jumpHeight;
     [SerializeField] private float jumpDistance;
     private float _jumpForce;
 
-    [Space]    [Header("Edge Detector Settings")]    [Space]
+    [Space]
+    [Header("Edge Detector Settings")]
+    [Space]
     [SerializeField] float edgeDetectorHeight = 0.6f;
     private float topEdgeDetectorHeight = 0.75f;
     float edgeDetectorDistance = 0.5f;
 
-    [Space]    [Header("Fall Damage Settings")]    [Space]
+    [Space]
+    [Header("Fall Damage Settings")]
+    [Space]
     [SerializeField] float FallDamageHeight = 8;
     [HideInInspector] public bool IsClimbing = false;
 
     Vector3 LastPosBeforeFall;
     private float _lastMove;
-    private float _xAxisValue;
-    private readonly float margeDetectionVelocity = 0.05f;
+    private readonly float margeDetectionVelocity = 0.07f;
     private float time;
     private bool _fallDefine = false;
 
-    [Space]    [Header("Sounds ")]    [Space]
-    [SerializeField] private SoundEffectsHandler _walkEffectsHandler;
-    [SerializeField] private SoundEffectsHandler _jumpImpactEffectHandler;
+    PlayerStatus _playerStatus;
+    public void SetSounds(ref Dictionary<SoundIDs, SoundEffectsHandler> sounds)
+    {
+        _walkInsideEffectsHandler = sounds[SoundIDs.WalkInside];
+        _walkOutsideEffectsHandler = sounds[SoundIDs.WalkOutside];
+        _walkRainEffectsHandler = sounds[SoundIDs.WalkRain];
+        _landInsideEffectHandler = sounds[SoundIDs.FallInterior];
+        _landOutsideEffectHandler = sounds[SoundIDs.FallExterior];
+    }
 
     private new void Start()
     {
@@ -40,6 +51,7 @@ public class PlayerMovement : EntityMovement
         base.Start();
         _gravityScale = 3;
         topEdgeDetectorHeight = edgeDetectorHeight + 0.15f;
+        _playerStatus = GetComponent<PlayerStatus>();
     }
 
     #region Draw Debug
@@ -62,10 +74,11 @@ public class PlayerMovement : EntityMovement
 
     private void Update()
     {
+        if (_playerStatus.Dead)
+            return;
         //Get the pos at start fall.
         if (_rb.velocity.y < -0.1f && !_fallDefine && !_grounded)
         {
-            Debug.Log("Define");
             LastPosBeforeFall = transform.position;
             _fallDefine = true;
         }
@@ -75,7 +88,7 @@ public class PlayerMovement : EntityMovement
             _fallDefine = false;
             if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<PlayerStatus>().Dead)
             {
-                SetDead();
+                _playerStatus.Dead = true;
             }
         }
 
@@ -83,9 +96,23 @@ public class PlayerMovement : EntityMovement
             animator.SetFloat("VelocityX", _rb.velocity.x);
         else
             animator.SetFloat("VelocityX", 0);
+
         animator.SetFloat("VelocityY", _rb.velocity.y);
         animator.SetBool("Grounded", _grounded);
+        CheckForClimb();
+    }
 
+    public void SetDead(bool state)
+    {
+        animator.SetBool("Dead", state);
+        LastPosBeforeFall = _playerStatus.CheckpointPos;
+        animator.SetFloat("VelocityX", 0);
+    }
+
+    public void CheckForClimb()
+    {
+        if (ClimbingLadder)
+            return;
         // Can't climb if fall damage.
         if (LastPosBeforeFall.y - transform.position.y < GameMetric.GetGameUnit(FallDamageHeight))
         {
@@ -100,12 +127,6 @@ public class PlayerMovement : EntityMovement
                 }
             }
         }
-    }
-    public void SetDead()
-    {
-        animator.SetBool("Dead", true);
-        GetComponent<PlayerStatus>().Dead = true;
-        LastPosBeforeFall = GetComponent<PlayerStatus>().CheckpointPos;
     }
 
     public void ChangeState(ref PlayerAction State)
@@ -130,12 +151,12 @@ public class PlayerMovement : EntityMovement
     }
 
     // Move the player.
-    public void Move(float move)
+    public override void Move(float move)
     {
+        base.Move(move);
         // If climbing then can't move
-        if (IsClimbing || IsPushing || IsPulling)
+        if (IsClimbing || IsPushing || IsPulling || IsHide)
             return;
-        _xAxisValue = move;
         _lastMove = move;
 
         // Set move speed.
@@ -145,13 +166,16 @@ public class PlayerMovement : EntityMovement
             move = jumpDistance * speed * Mathf.Sign(move);
 
         // Ground Move
-        if (_grounded )
+        if (_grounded)
             _rb.velocity = new Vector2(velocityCurve.Evaluate(time) * move, _rb.velocity.y);
 
         //Flip character
-        if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
+        if (_grounded && _endOfCoroutine)
         {
-            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), _flipTime));
+            if (move < 0 && _direction == 1)
+                StartCoroutine(Flip(Quaternion.Euler(0, 90, 0), Quaternion.Euler(0, -90, 0), 0.1f));
+            else if (move > 0 && _direction == -1)
+                StartCoroutine(Flip(Quaternion.Euler(0, -90, 0), Quaternion.Euler(0, 90, 0), 0.1f));
         }
 
         time += Time.deltaTime;
@@ -159,7 +183,7 @@ public class PlayerMovement : EntityMovement
 
     public void Jump()
     {
-        if (_grounded)
+        if (_grounded && !IsClimbing && !IsHide)
         {
             _jumpForce = GetJumpForce(jumpHeight);
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
@@ -190,13 +214,20 @@ public class PlayerMovement : EntityMovement
     protected override void LandOnGround()
     {
         base.LandOnGround();
-        _jumpImpactEffectHandler.PlaySound();
     }
 
     public IEnumerator PlayClimb()
     {
         RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right * _direction, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
         StartCoroutine(LerpTo(transform.position + Vector3.right * _direction * (downRay[0].distance - 0.4f), 0.1f));
+        if (downRay[0].transform.GetComponent<InteractiveBox>())
+        {
+            _playerStatus.PlaySound(SoundIDs.ClimbBox);
+        }
+        else
+        {
+            _playerStatus.PlaySound(SoundIDs.ClimbWall);
+        }
         IsClimbing = true;
         //Play animation
         animator.Play("Climb");
@@ -261,25 +292,55 @@ public class PlayerMovement : EntityMovement
         yield return null;
     }
 
-
-    #region Sounds  
-
-
-
-
-    public bool WalkSoundManager()
+    [HideInInspector] public bool IsHide = false;
+    public IEnumerator PlayHide()
     {
-        if (_xAxisValue != 0f)
-        {
-            _walkEffectsHandler.PlaySound();
-            return true;
-
-        }
-
-        return false;
-
+        animator.SetBool("Hide", true);
+        IsHide = true;
+        Quaternion target = Quaternion.Euler(0, 0, 0);
+        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.forward * 1f, 0.2f));
+        yield return StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
+        yield return new WaitForSeconds(1.133f);
+        _playerStatus.IsHide = true;
     }
 
-    #endregion
+    public IEnumerator StopHide()
+    {
+        _playerStatus.IsHide = false;
+        animator.SetBool("Hide", false);
+        yield return new WaitForSeconds(1.1f);
+        IsHide = false;
+        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.back * 1f, 0.2f));
+        Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
+        StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
+    }
+
+    IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.position = Vector3.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.position = goTo;
+    }
+
+    IEnumerator LerpFromTo(Quaternion initial, Quaternion goTo, float duration)
+    {
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
+            yield return 0;
+        }
+        transform.rotation = goTo;
+    }
+
+    [HideInInspector] public bool ClimbingLadder = false;
+    public void Climb(bool value, int direction = 1)
+    {
+        ClimbingLadder = value;
+        animator.SetBool("Ladder Climb", ClimbingLadder);
+        animator.SetInteger("Direction", direction);
+    }
 }
 

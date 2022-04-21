@@ -47,6 +47,20 @@ public class UIPauseMenu : MonoBehaviour
         _pauseMenuActive = true;
         _UIPauseMenu.SetActive(_pauseMenuActive);
         _UIPauseMenu.transform.Find("Resume").GetComponent<Button>().Select();
+        foreach (AmbientTypeHolder item in FindObjectsOfType<AmbientTypeHolder>(false))
+        {
+            item.enabled = false;
+        }
+        foreach (Rigidbody item in FindObjectsOfType<Rigidbody>(false))
+        {
+            if (item.gameObject.name == "Ball_L" || item.gameObject.name == "Ball_R") continue;
+            item.isKinematic = true;
+        }
+        foreach (Animator item in FindObjectsOfType<Animator>(false))
+        {
+            if (item.transform.parent.name == "PauseMenu") continue;
+            item.speed = 0;
+        }
     }
 
     private void CloseMenu()
@@ -54,6 +68,20 @@ public class UIPauseMenu : MonoBehaviour
         _pauseMenuActive = false;
         _UIPauseMenu.SetActive(_pauseMenuActive);
         _eventSystem.SetSelectedGameObject(null);
+        foreach (AmbientTypeHolder item in FindObjectsOfType<AmbientTypeHolder>(false))
+        {
+            item.enabled = true;
+        }
+        foreach (Rigidbody item in FindObjectsOfType<Rigidbody>(false))
+        {
+            if (item.gameObject.name == "Ball_L" || item.gameObject.name == "Ball_R") continue;
+            item.isKinematic = false;
+        }
+        foreach (Animator item in FindObjectsOfType<Animator>(false))
+        {
+            if (item.transform.parent.name == "PauseMenu") continue;
+            item.speed = 1;
+        }
     }
 
     public IEnumerator ScreenfadeIn(float fadeTime, float waitTime = 0.0f)
