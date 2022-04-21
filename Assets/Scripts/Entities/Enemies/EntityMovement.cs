@@ -20,14 +20,11 @@ public class EntityMovement : AmbientTypeHolder
     [Space]
     [SerializeField] protected float speed;
 
-    [Space]
-    [Header("Sounds ")]
-    [Space]
-    [SerializeField] protected SoundEffectsHandler _walkInsideEffectsHandler;
-    [SerializeField] protected SoundEffectsHandler _walkOutsideEffectsHandler;
-    [SerializeField] protected SoundEffectsHandler _walkRainEffectsHandler;
-    [SerializeField] protected SoundEffectsHandler _landInsideEffectHandler;
-    [SerializeField] protected SoundEffectsHandler _landOutsideEffectHandler;
+    protected SoundEffectsHandler _walkInsideEffectsHandler;
+    protected SoundEffectsHandler _walkOutsideEffectsHandler;
+    protected SoundEffectsHandler _walkRainEffectsHandler;
+    protected SoundEffectsHandler _landInsideEffectHandler;
+    protected SoundEffectsHandler _landOutsideEffectHandler;
 
     [HideInInspector] public float _globalGravity = -9.81f;
     [HideInInspector] public float _gravityScale = 1;
@@ -54,6 +51,14 @@ public class EntityMovement : AmbientTypeHolder
     protected virtual void Start()
     {
         _rb = GetComponent<Rigidbody>();
+    }
+    public void SetSounds(ref Dictionary<SoundIDs, SoundEffectsHandler> sounds)
+    {
+        _walkInsideEffectsHandler = sounds[SoundIDs.WalkInside];
+        _walkOutsideEffectsHandler = sounds[SoundIDs.WalkOutside];
+        _walkRainEffectsHandler = sounds[SoundIDs.WalkRain];
+        _landInsideEffectHandler = sounds[SoundIDs.FallInterior];
+        _landOutsideEffectHandler = sounds[SoundIDs.FallExterior];
     }
 
     #region Draw Debug

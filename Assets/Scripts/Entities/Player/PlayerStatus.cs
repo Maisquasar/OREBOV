@@ -22,6 +22,7 @@ public enum SoundIDs
     TransformToShadow,
     TransformToHuman,
     TransformationFail,
+    EnemySus,
 }
 
 public class PlayerStatus : Entity
@@ -361,6 +362,7 @@ public class PlayerStatus : Entity
 
     public void StressPlayer(float delay)
     {
+        if (Dead) return;
         if (delay > _stressTimer) _stressTimer = delay;
         _soundBoard[SoundIDs.Stress].PlaySound();
     }

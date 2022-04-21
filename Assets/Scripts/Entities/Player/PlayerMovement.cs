@@ -36,14 +36,6 @@ public class PlayerMovement : EntityMovement
     private bool _fallDefine = false;
 
     PlayerStatus _playerStatus;
-    public void SetSounds(ref Dictionary<SoundIDs, SoundEffectsHandler> sounds)
-    {
-        _walkInsideEffectsHandler = sounds[SoundIDs.WalkInside];
-        _walkOutsideEffectsHandler = sounds[SoundIDs.WalkOutside];
-        _walkRainEffectsHandler = sounds[SoundIDs.WalkRain];
-        _landInsideEffectHandler = sounds[SoundIDs.FallInterior];
-        _landOutsideEffectHandler = sounds[SoundIDs.FallExterior];
-    }
 
     private new void Start()
     {
@@ -126,6 +118,19 @@ public class PlayerMovement : EntityMovement
                 {
                     StartCoroutine(PlayClimb());
                 }
+            }
+        }
+    }
+
+    public void CheckForClimbLadder()
+    {
+        RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.back, edgeDetectorDistance + 0.5f, GroundType, QueryTriggerInteraction.Ignore);
+        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        foreach (var ray in downRay)
+        {
+            if (topRay.Length == 0 && !IsClimbing)
+            {
+                StartCoroutine(PlayClimb());
             }
         }
     }
