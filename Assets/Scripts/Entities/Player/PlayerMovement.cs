@@ -159,10 +159,13 @@ public class PlayerMovement : EntityMovement
     // Move the player.
     public override void Move(float move)
     {
-        base.Move(move);
         // If climbing then can't move
         if (IsClimbing || IsPushing || IsPulling || IsHide || ClimbingLadder)
+        {
+            base.Move(0);
             return;
+        }
+        base.Move(move);
         _lastMove = move;
 
         // Set move speed.
