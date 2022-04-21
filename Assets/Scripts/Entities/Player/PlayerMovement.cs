@@ -276,6 +276,8 @@ public class PlayerMovement : EntityMovement
     [HideInInspector] public bool IsHide = false;
     public IEnumerator PlayHide()
     {
+        lastZPos = transform.position.z;
+        CanHide = false;
         animator.SetBool("Hide", true);
         IsHide = true;
         Quaternion target = Quaternion.Euler(0, 0, 0);
@@ -285,15 +287,20 @@ public class PlayerMovement : EntityMovement
         _playerStatus.IsHide = true;
     }
 
+    float lastZPos;
+    [HideInInspector] public bool CanHide = true;
     public IEnumerator StopHide()
     {
         _playerStatus.IsHide = false;
         animator.SetBool("Hide", false);
-        yield return new WaitForSeconds(1.1f);
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(LerpFromTo(transform.position, new Vector3(transform.position.x, transform.position.y, lastZPos), 0.6f));
+        yield return new WaitForSeconds(0.6f);
         IsHide = false;
-        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.back * 1f, 0.2f));
         Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
         StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
+        yield return new WaitForSeconds(0.5f);
+        CanHide = true;
     }
 
     IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)

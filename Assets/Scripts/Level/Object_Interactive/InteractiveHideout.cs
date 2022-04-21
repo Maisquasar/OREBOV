@@ -21,6 +21,7 @@ public class InteractiveHideout : InteractiveObject
     {
         base.Start();
         ObjectType = InteractObject.InteractObjects.Hideout;
+        _playerStatus = FindObjectOfType<PlayerStatus>();
     }
 
     protected override void ActiveItem(GameObject player)
@@ -45,6 +46,12 @@ public class InteractiveHideout : InteractiveObject
         }
     }
 
+    public override void ItemInteraction(GameObject player)
+    {
+        if (_playerStatus.MoveDir.x == 0 && _playerStatus.Controller.CanHide) 
+            ActiveItem(player);
+    }
+
     public override void UpdateItem(Vector2 axis)
     {
         base.UpdateItem(axis);
@@ -55,6 +62,7 @@ public class InteractiveHideout : InteractiveObject
     {
         if (ObjectActive)
         {
+            Debug.Log("Disable");
             base.DeactiveItem();
 
             // Cancel player fading if it already running
