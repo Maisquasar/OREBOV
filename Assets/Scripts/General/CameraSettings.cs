@@ -18,6 +18,6 @@ public class CameraSettings : MonoBehaviour
     void Update()
     {
         if (FollowPlayer)
-            transform.position = new Vector3(_player.transform.position.x + 1 * _ratio, _player.transform.position.y * _ratio + 4, transform.position.z);
+            transform.position = new Vector3(_player.transform.position.x + 1 * _ratio, _player.transform.position.y * _ratio + 4, _player.transform.position.z - 10);
     }
 }
