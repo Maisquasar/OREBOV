@@ -30,6 +30,7 @@ public class MobileEnemy : Enemy
 
     override public void Start()
     {
+        base.Start();
         _controller = GetComponent<MobileEnemyMovement>();
         _objectManager = FindObjectOfType<ObjectManager>();
         _currentCheckpoint = 0;
@@ -94,7 +95,7 @@ public class MobileEnemy : Enemy
 
         // Enemy Interaction
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
-        if (objectClose != null)
+        if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.Switch)
         {
             if (objectClose.DefaultActive != objectClose._objectActive && State != EnemyState.CHASE)
             {

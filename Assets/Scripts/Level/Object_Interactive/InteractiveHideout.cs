@@ -20,8 +20,9 @@ public class InteractiveHideout : InteractiveObject
 
 
 
-    private void Start()
+    override protected void Start()
     {
+        base.Start();
         ObjectType = InteractObject.InteractObjects.Hideout;
     }
 
@@ -44,9 +45,6 @@ public class InteractiveHideout : InteractiveObject
 
             StartCoroutine(_startCoroutine);
         }
-
-
-
     }
 
     public override void UpdateItem(Vector2 axis)
@@ -69,7 +67,6 @@ public class InteractiveHideout : InteractiveObject
             _objectActive = false;
 
             StartCoroutine(_endCoroutine);
-
         }
     }
 
