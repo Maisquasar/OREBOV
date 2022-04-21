@@ -42,7 +42,7 @@ public class InteractiveMovement : InteractiveObject
         _playerStatus = _playerGO.GetComponent<PlayerStatus>();
 
         _rigidbodyPlayer.isKinematic = true;
-        _rigidbodyPlayer.useGravity = false;
+        _playerStatus.Controller._gravityScale = 0;
         _playerInteraction.LinkObject(this);
         _climbLadder.PlaySound();
 
@@ -79,8 +79,8 @@ public class InteractiveMovement : InteractiveObject
             _playerGO.transform.position = Vector3.Lerp(initial, goTo, t / duration);
             yield return 0;
         }
-
         _playerGO.transform.position = goTo;
+
         climb = false;
         _playerStatus.Controller.Climb(false);
         FinishVerticalMouvement();
@@ -91,6 +91,7 @@ public class InteractiveMovement : InteractiveObject
     {
         ObjectActive = false;
         _rigidbodyPlayer.isKinematic = false;
+        _playerStatus.Controller._gravityScale = 1;
         _playerInteraction.UnlinkObject();
     }
 

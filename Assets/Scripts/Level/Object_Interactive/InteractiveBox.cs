@@ -30,8 +30,9 @@ public class InteractiveBox : InteractiveObject
     private Vector3 delta;
     private bool _hasMove;
 
-    private void Start()
+    override protected void Start()
     {
+        base.Start();
         ObjectType = InteractObjects.Box;
     }
 
@@ -75,6 +76,7 @@ public class InteractiveBox : InteractiveObject
             _playerInteract.CanStopNow = true;
             _startMovement = false;
 
+            DisableAnimations();
             base.DeactiveItem();
             _playerInteract.UnlinkObject();
             _playerAnimator.SetPush(true);
@@ -86,11 +88,20 @@ public class InteractiveBox : InteractiveObject
 
     }
 
-
+    private void DisableAnimations()
+    {
+        _playerStatus.Controller.Pull(false);
+        _playerStatus.Controller.Push(false);
+    }
 
     public override void UpdateItem(Vector2 axis)
     {
         base.UpdateItem(axis);
+
+        if (axis.x == 0)
+        {
+            DisableAnimations();
+        }
 
         Debug.DrawRay(transform.position + new Vector3(1, 0, 0) * transform.localScale.x / 2f, new Vector3(1, 0, 0) * _speedBox, Color.green);
         if (axis.normalized.x != 0 && (!UseOnlyInShadow || _playerStatus.IsShadow))

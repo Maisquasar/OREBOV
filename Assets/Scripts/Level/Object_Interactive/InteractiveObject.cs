@@ -88,7 +88,8 @@ public class InteractiveObject : AmbientTypeHolder
 
     public virtual void CancelUpdate()
     {
-        DeactiveItem();
+        if (ObjectType != InteractObjects.Ladder)
+            DeactiveItem();
     }
 
     private void OnDrawGizmos()

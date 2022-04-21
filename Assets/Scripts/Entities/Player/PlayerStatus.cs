@@ -71,7 +71,7 @@ public class PlayerStatus : Entity
     }
 
 
-       #region Initiate Script 
+    #region Initiate Script 
     private void Start()
     {
         InitComponent();
@@ -177,16 +177,16 @@ public class PlayerStatus : Entity
     public void PlayRightAnimation(float axis)
     {
         if (axis == 0)
+        {
             return;
+        }
         if (transform.position.x < _playerInteraction.InteractiveObjectPos.x && axis > 0 || (transform.position.x > _playerInteraction.InteractiveObjectPos.x && axis < 0))
         {
-            if (!Controller.IsPulling)
-                StartCoroutine(Controller.PlayPush());
+            Controller.Push(true);
         }
         else
         {
-            if (!Controller.IsPushing)
-                StartCoroutine(Controller.PlayPull());
+            Controller.Pull(true);
         }
     }
 
@@ -274,10 +274,6 @@ public class PlayerStatus : Entity
             Gizmos.color = Color.red;
         else
             Gizmos.color = Color.green;
-        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
-        {
-            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction);
-        }
     }
 
     private bool CheckForObstacles()
@@ -362,7 +358,7 @@ public class PlayerStatus : Entity
             StartCoroutine(Controller.StopHide());
         }
     }
-    
+
     public void StressPlayer(float delay)
     {
         if (delay > _stressTimer) _stressTimer = delay;
