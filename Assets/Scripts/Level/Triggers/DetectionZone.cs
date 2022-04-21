@@ -24,6 +24,7 @@ public class DetectionZone : Trigger
         {
             if (CheckForObstacles() || _playerAnimator.IsInAmination || _playerStatus.IsShadow || _playerStatus.IsHide)
             {
+                Enemy.PlayerDetected = false;
                 return;
             }
 
