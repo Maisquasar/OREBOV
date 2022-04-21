@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a971ecba9402c4408deb0eed5c66a21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowOnLoad: 0
   Enemy: {fileID: 6836573686707726331}
   DistanceDetection: 0
 --- !u!64 &2885020999107868414
@@ -206,6 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a971ecba9402c4408deb0eed5c66a21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowOnLoad: 0
   Enemy: {fileID: 6836573686707726331}
   DistanceDetection: 0
 --- !u!136 &3129812721763778327
@@ -567,14 +569,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CloseDetectionZone: {fileID: 7094194991351903705}
   FOVCone: {fileID: 2885020999107868409}
+  State: 0
+  _weapon: {fileID: 0}
   DetectionRange: 2
+  _maxVibrationIntensity: 0.5
+  _distanceVibration: 10
   DetectionTime: 100
-  DistanceVibration: 7
   GaugeAdd: 25
   GaugeRemove: 10
   PlayerDetected: 0
   TimeStamp: 0
-  Controller: {fileID: 6836573686707726335}
+  _controller: {fileID: 0}
 --- !u!114 &6836573686707726335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,11 +593,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
+  AmbientType: 0
   GroundType:
     serializedVersion: 2
     m_Bits: 4294967295
+  WallType:
+    serializedVersion: 2
+    m_Bits: 0
   ray: []
   speed: 0
+  _walkInsideEffectsHandler: {fileID: 0}
+  _walkOutsideEffectsHandler: {fileID: 0}
+  _walkRainEffectsHandler: {fileID: 0}
+  _jumpImpactEffectHandler: {fileID: 0}
   canTurn: 1
 --- !u!54 &606432442
 Rigidbody:

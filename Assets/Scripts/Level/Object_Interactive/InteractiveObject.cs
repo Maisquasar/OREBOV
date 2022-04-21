@@ -12,39 +12,41 @@ namespace InteractObject
         Box,
         Switch,
         Hideout,
-        OilLight
+        Ladder
     }
 
 }
 
-public class InteractiveObject : MonoBehaviour
+public class InteractiveObject : AmbientTypeHolder
 {
-    
-
     [Header("Object State")]
-    [SerializeField] public bool _isSelected;
-    [SerializeField] public bool _objectActive = false;
-    [SerializeField] public bool _useOnlyInShadow;
-
-    [HideInInspector] public bool _deactiveInteraction = false;
+    [HideInInspector] public bool IsSelected;
+    [HideInInspector] public bool ObjectActive = false;
+    public bool UseOnlyInShadow;
+    public float ObjectInteractionArea = 0;
+    [HideInInspector] public bool DefaultState;
+    [HideInInspector] public bool DeactiveInteraction = false;
+    [HideInInspector] public InteractObjects ObjectType;
 
     [Header("UI Postion")]
     [SerializeField] private Vector3 _uiHintPosition;
-    
     public Vector3 HintPosition { get { return transform.position + _uiHintPosition; } }
-    
+
     [Header("Sound")]
     [SerializeField] protected bool _activeSound = false;
-    [SerializeField] protected AudioClip _soundActiveTrigger;
-    [SerializeField] protected AudioClip _soundDeactiveTrigger;
-    [HideInInspector] public InteractObjects ObjectType;
+    [SerializeField] protected SoundEffectsHandler _soundActiveTrigger;
+    [SerializeField] protected SoundEffectsHandler _soundDeactiveTrigger;
 
-    [Header("Debug")]
+    [Header("Debug  Settings")]
     [SerializeField] protected bool _debug;
 
     protected GameObject _playerGO;
     protected Vector2 _axis;
 
+    protected virtual void Start()
+    {
+        DefaultState = ObjectActive;
+    }
 
     public virtual void ItemInteraction(GameObject player)
     {
@@ -54,14 +56,24 @@ public class InteractiveObject : MonoBehaviour
     protected virtual void ActiveItem(GameObject player)
     {
         if (_activeSound)
-            AudioSource.PlayClipAtPoint(_soundActiveTrigger, transform.position);
+            _soundActiveTrigger.PlaySound();
         _playerGO = player;
+        ObjectActive = true;
+    }
+
+    protected virtual void ActiveItem(Enemy enemy)
+    {
+        if (_activeSound)
+            _soundActiveTrigger.PlaySound();
+        _playerGO = enemy.gameObject;
+        ObjectActive = true;
     }
 
     protected virtual void DeactiveItem()
     {
         if (_activeSound)
-            AudioSource.PlayClipAtPoint(_soundDeactiveTrigger, transform.position);
+            _soundDeactiveTrigger.PlaySound();
+        ObjectActive = false;
     }
 
     public virtual void UpdateItem(Vector2 axis)
@@ -71,7 +83,7 @@ public class InteractiveObject : MonoBehaviour
 
     protected virtual void UpdateItemInternally()
     {
-        if (_isSelected) ItemSelected();
+        if (IsSelected) ItemSelected();
     }
 
     protected virtual void ItemSelected()
@@ -86,12 +98,16 @@ public class InteractiveObject : MonoBehaviour
 
     public virtual void CancelUpdate()
     {
-        DeactiveItem();
+        if (ObjectType == InteractObjects.Box || ObjectType == InteractObjects.Hideout)
+            DeactiveItem();
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawSphere(HintPosition, 0.112f);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, ObjectInteractionArea);
     }
 }

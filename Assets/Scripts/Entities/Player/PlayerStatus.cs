@@ -6,10 +6,29 @@ using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
 using States;
 using InteractObject;
+using System;
 
+public enum SoundIDs
+{
+    WalkInside,
+    WalkOutside,
+    WalkRain,
+    FallInterior,
+    FallExterior,
+    Stress,
+    Death,
+    ClimbBox,
+    ClimbWall,
+    TransformToShadow,
+    TransformToHuman,
+    TransformationFail,
+    EnemySus,
+}
 
 public class PlayerStatus : Entity
 {
+    private Dictionary<SoundIDs, SoundEffectsHandler> _soundBoard = new Dictionary<SoundIDs, SoundEffectsHandler>();
+
     public PlayerAction PlayerActionState;
     [HideInInspector] public Vector3 CheckpointPos;
 
@@ -20,7 +39,7 @@ public class PlayerStatus : Entity
     private float deadZone;
 
     [Header("Sounds")]
-    [SerializeField] private SoundEffectsHandler _shadowEffectHandler;
+    [SerializeField] private GameObject _soundEffectsHandler;
 
     public PlayerMovement Controller;
     private ShadowCaster _caster;
@@ -31,11 +50,15 @@ public class PlayerStatus : Entity
     private Vector3 _previousPos;
     private Vector3 _shadowPos;
 
+    public bool IsHide = false;
+    [HideInInspector]
     private bool _isDead = false;
     private bool _isJumping = false;
     private bool _isShadow = false;
     private bool _respawn = false; // To execute repawn only once.
     private bool _exactPos = false; // To execute LerpTo only once.
+    private float _stressTimer = 0.0f;
+    public bool IsShadow { get { return _isShadow; } }
 
     public Vector2 MoveDir { get { return _movementDir; } }
     public bool Dead
@@ -47,7 +70,6 @@ public class PlayerStatus : Entity
             if (value == true) PlayerDeath();
         }
     }
-    public bool IsShadow { get { return _isShadow; } }
 
 
     #region Initiate Script 
@@ -55,6 +77,28 @@ public class PlayerStatus : Entity
     {
         InitComponent();
         CheckpointPos = transform.position;
+        foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
+        {
+            bool found = false;
+            foreach (var id in Enum.GetValues(typeof(SoundIDs)))
+            {
+                if (id.ToString().Equals(item.SoundName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    try
+                    {
+                        _soundBoard.Add((SoundIDs)id, item);
+                        found = true;
+                    }
+                    catch (ArgumentException)
+                    {
+                        Debug.LogWarning("Duplicate element " + item.SoundName + "in sound effects");
+                    }
+                    break;
+                }
+            }
+            if (!found) Debug.LogWarning("Element " + item.SoundName + " not found in sound IDs");
+        }
+        gameObject.GetComponent<PlayerMovement>().SetSounds(ref _soundBoard);
     }
 
 
@@ -68,18 +112,24 @@ public class PlayerStatus : Entity
 
     #endregion
 
-    // Update is called once per frame
-    void Update()
+    // Update is called once per 
+    private void Update()
     {
         if (Dead)
+        {
+            _stressTimer = 0.0f;
+            _soundBoard[SoundIDs.Stress].StopSound();
             return;
+        }
+        if (_stressTimer > 0) _stressTimer -= Time.deltaTime;
+        else if (_soundBoard[SoundIDs.Stress].Active) _soundBoard[SoundIDs.Stress].StopSound();
         _shadowPos = _caster.GetShadowPos();
-        if (!_playerAnimator.IsInAmination && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
+        if (_playerInteraction.Interaction != PlayerInteraction.InteractionState.Link)
         {
             Controller.Move(_movementDir.x);
             Controller.ChangeState(ref PlayerActionState);
         }
-        if (_isShadow)
+        if (_isShadow && !_playerAnimator.IsInMovement)
         {
             if (!_caster.CanTransform(false))
             {
@@ -100,9 +150,10 @@ public class PlayerStatus : Entity
             }
             else
             {
-                if (_caster.ShadowDepth < transform.position.z - 0.2f && !_playerAnimator.IsInMovement && !_playerAnimator.IsInAmination)
+                //if (_caster.ShadowDepth < transform.position.z - 0.2f && _movementDir.y < deadZone && !_playerAnimator.IsInAmination)
+                if (_caster.ShadowDepth < transform.position.z - 0.05f && !_playerAnimator.IsInAmination)
                 {
-                    _playerAnimator.MovePlayerDepthTo(new Vector2(_caster.ShadowHeight, _caster.ShadowDepth));
+                    _playerAnimator.MovePlayerPos(new Vector2(_caster.ShadowHeight, _caster.ShadowDepth), _caster.ShadowDeltaX);
                 }
             }
         }
@@ -124,26 +175,25 @@ public class PlayerStatus : Entity
         return inputs;
     }
 
-
-
     public void PlayRightAnimation(float axis)
     {
         if (axis == 0)
+        {
             return;
+        }
         if (transform.position.x < _playerInteraction.InteractiveObjectPos.x && axis > 0 || (transform.position.x > _playerInteraction.InteractiveObjectPos.x && axis < 0))
         {
-            if (!Controller.IsPulling)
-                StartCoroutine(Controller.PlayPush());
+            Controller.Push(true);
         }
         else
         {
-            if (!Controller.IsPushing)
-                StartCoroutine(Controller.PlayPull());
+            Controller.Pull(true);
         }
     }
 
     public void OnJump(CallbackContext context)
     {
+        //if (Controller.IsTouchingWall && (PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link && !_playerAnimator.IsInAmination)
         if ((PlayerActionState == PlayerAction.IDLE || PlayerActionState == PlayerAction.RUN) && _playerInteraction.Interaction != PlayerInteraction.InteractionState.Link && !_playerAnimator.IsInAmination)
             if (context.started)
                 Controller.Jump();
@@ -156,15 +206,20 @@ public class PlayerStatus : Entity
         if (_isShadow)
         {
             OnTransformToPlayer();
+            _soundBoard[SoundIDs.TransformToHuman].PlaySound();
         }
         else
         {
             if (_caster.CanTransform(true))
             {
                 OnTransformToShadow();
+                _soundBoard[SoundIDs.TransformToShadow].PlaySound();
+            }
+            else
+            {
+                _soundBoard[SoundIDs.TransformationFail].PlaySound();
             }
         }
-        _shadowEffectHandler.PlaySound();
     }
 
     public void OnTransformToShadow()
@@ -172,6 +227,7 @@ public class PlayerStatus : Entity
         StartCoroutine(_playerAnimator.TransformToShadowAnim());
         _isShadow = true;
         Controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
+        Controller.WallType ^= LayerMask.GetMask("Shadows", "NoShadows");
     }
 
     public void OnTransformToPlayer()
@@ -180,25 +236,27 @@ public class PlayerStatus : Entity
         StartCoroutine(_playerAnimator.TransformToPlayerAnim());
         _isShadow = false;
         Controller.GroundType ^= LayerMask.GetMask("Shadows", "NoShadows");
+        Controller.WallType ^= LayerMask.GetMask("Shadows", "NoShadows");
     }
 
     public void OnInteract(CallbackContext context)
     {
         if ((PlayerActionState != PlayerAction.IDLE && PlayerActionState != PlayerAction.RUN && PlayerActionState != PlayerAction.INTERACT) || _playerInteraction.Interaction == PlayerInteraction.InteractionState.None)
             return;
-        if (_isJumping || Controller.IsClimbing || !Controller.IsGrounded || _playerAnimator.IsInAmination)
+        if (_isJumping || Controller.IsClimbing || !Controller.IsGrounded || _playerAnimator.IsInAmination || Controller.IsHide)
             return;
 
         if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
         {
-
             _exactPos = false;
         }
 
+
         if (_playerInteraction.ObjectType == InteractObjects.Box)
         {
-            if (_playerInteraction.InteractiveObjectPos.y + 0.25f < transform.position.y || CheckForObstacles())
+            if (_playerInteraction.InteractiveObjectPos.y < transform.position.y || CheckForObstacles())
                 return;
+
             PlayerActionState = PlayerAction.INTERACT;
             if (_exactPos)
                 _playerInteraction.InteractionInput(context.started, context.canceled);
@@ -217,17 +275,13 @@ public class PlayerStatus : Entity
             Gizmos.color = Color.red;
         else
             Gizmos.color = Color.green;
-        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
-        {
-            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction);
-        }
     }
 
     private bool CheckForObstacles()
     {
         if (_playerInteraction.Object != null)
         {
-            if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction) - 0.1f, Controller.GroundType, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(transform.position, Vector3.right * Controller.Direction, Vector3.Distance(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction) - 0.2f, Controller.WallType, QueryTriggerInteraction.Ignore))
                 return true;
         }
         return false;
@@ -235,10 +289,16 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Debug.Log("Test");
+        transform.position = CheckpointPos;
         _playerAnimator.enabled = true;
         _playerInteraction.enabled = true;
         Controller.enabled = true;
+        _isDead = false;
+        PlayerActionState = PlayerAction.IDLE;
+        Controller.SetDead(false);
+        _respawn = false;
+        StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
     }
 
     //Set Player to the right Position
@@ -274,7 +334,8 @@ public class PlayerStatus : Entity
 
     private void PlayerDeath()
     {
-        Controller.SetDead();
+        Controller.SetDead(true);
+        _soundBoard[SoundIDs.Death].PlaySound();
         if (Dead && !_respawn)
             StartCoroutine(WaitBeforeRespawn());
     }
@@ -284,5 +345,30 @@ public class PlayerStatus : Entity
         _respawn = true;
         yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
         Respawn();
+    }
+
+
+    public void Hide(bool hide)
+    {
+        if (hide)
+        {
+            StartCoroutine(Controller.PlayHide());
+        }
+        else
+        {
+            StartCoroutine(Controller.StopHide());
+        }
+    }
+
+    public void StressPlayer(float delay)
+    {
+        if (Dead) return;
+        if (delay > _stressTimer) _stressTimer = delay;
+        _soundBoard[SoundIDs.Stress].PlaySound();
+    }
+
+    public void PlaySound(SoundIDs sound)
+    {
+        _soundBoard[sound].PlaySound();
     }
 }

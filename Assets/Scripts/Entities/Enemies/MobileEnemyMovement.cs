@@ -6,8 +6,8 @@ public class MobileEnemyMovement : EntityMovement
 {
     [SerializeField] AnimationCurve _velocityCurve;
 
-    Vector3 GoTo;
-    float time;
+    Vector3 _goTo;
+    float _time;
 
     private new void Start()
     {
@@ -21,32 +21,43 @@ public class MobileEnemyMovement : EntityMovement
     {
         base.OnDrawGizmos();
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(GoTo, 1);
+        Gizmos.DrawSphere(_goTo, 1);
     }
 
-    public void Move(float move)
+    private void Update()
     {
-        if (GoTo == null)
+        if (!DetectWall())
+            animator.SetFloat("VelocityX", _rb.velocity.x);
+        else
+            animator.SetFloat("VelocityX", 0);
+    }
+
+    public override void Move(float move)
+    {
+        base.Move(move);
+        if (_goTo == null)
             return;
         move *= speed;
-        if (GoTo.x > transform.position.x)
-            _direction = 1;
-        else if (GoTo.x < transform.position.x)
-            _direction = -1;
+        if ((_goTo.x > transform.position.x && Mathf.Sign(move) == -1) || (_goTo.x < transform.position.x && Mathf.Sign(move) == 1))
+            move *= -1;
 
         if (_grounded)
-            _rb.velocity = new Vector2(_velocityCurve.Evaluate(time) * move, _rb.velocity.y);
+            _rb.velocity = new Vector2(_velocityCurve.Evaluate(_time) * move, _rb.velocity.y);
 
-        if ((move > 0 && _direction == -1 || move < 0 && _direction == 1) && _grounded && _endOfCoroutine)
+        if (_grounded && _endOfCoroutine)
         {
-            StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
+            if (move < 0 && _direction == 1)
+                StartCoroutine(Flip(Quaternion.Euler(0, 180, 0), Quaternion.Euler(0, 0, 0), 0.1f));
+            else if (move > 0 && _direction == -1)
+                StartCoroutine(Flip(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 180, 0), 0.1f));
         }
-        time += Time.deltaTime;
+        _time += Time.deltaTime;
     }
+
 
     public void NewCheckpoint(Vector3 to)
     {
-        GoTo = to;
+        _goTo = to;
     }
 
     override protected void WallDetection()

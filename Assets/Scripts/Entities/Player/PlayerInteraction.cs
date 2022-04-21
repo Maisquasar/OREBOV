@@ -36,8 +36,22 @@ public class PlayerInteraction : MonoBehaviour
     public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
     public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
-    public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
-    public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
+    public Vector3 InteractiveObjectPos
+    {
+        get
+        {
+            if (_objectInteractive != null) return _objectInteractive.transform.position;
+            else return Vector3.zero;
+        }
+    }
+    public Vector3 InteractiveObjectScale
+    {
+        get
+        {
+            if (_objectInteractive != null) return _objectInteractive.transform.localScale;
+            else return Vector3.zero;
+        }
+    }
     public InteractiveObject Object { get { return _objectInteractive; } }
     public InteractionState Interaction { get { return _interactionState; } }
 
@@ -54,16 +68,29 @@ public class PlayerInteraction : MonoBehaviour
 
         if (_interactionState == InteractionState.Link)
         {
-            _objectInteractive.UpdateItem(_axis);
+            if (_objectInteractive.ObjectType == InteractObjects.Ladder)
+            {
+                _objectInteractive.UpdateItem(_axis);
+                return;
+            }
+
+            if (_objectManager.IsObjectInRange(transform.position, transform.forward, _detectDistance, _detectionDirection, _objectInteractive))
+                _objectInteractive.UpdateItem(_axis);
+            else
+            {
+                _objectInteractive.CancelUpdate();
+                UnlinkObject();
+            }
+
+
         }
         else
         {
-
             InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward, _detectDistance, _detectionDirection);
             if (objectClose != null)
             {
-                    UnselectObject(objectClose);
-                if (objectClose._useOnlyInShadow && _playerStatus.IsShadow || !objectClose._useOnlyInShadow)
+                UnselectObject(objectClose);
+                if (CanBeSelected(objectClose))
                 {
                     ChangeSelectedObject(objectClose);
                 }
@@ -77,7 +104,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(_objectManager == null)
+        if (_objectManager == null)
         {
             Debug.LogError("Object Manager is missing in Player Interaction");
         }
@@ -88,6 +115,7 @@ public class PlayerInteraction : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, GameMetric.GetUnityValue(_detectDistance));
         }
+
     }
 
     #region Input Managing
@@ -95,6 +123,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (started)
             PressInput();
+
+
 
         if (canceled)
             CancelInput();
@@ -118,7 +148,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         if (!CanStopNow)
         {
-            _objectInteractive._deactiveInteraction = true;
+            _objectInteractive.DeactiveInteraction = true;
         }
     }
 
@@ -146,7 +176,7 @@ public class PlayerInteraction : MonoBehaviour
     {
 
         _objectInteractive = interactiveObject;
-        _objectInteractive._isSelected = true;
+        _objectInteractive.IsSelected = true;
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractive.HintPosition;
         _uiInteract.transform.rotation = _uiRot;
@@ -154,11 +184,19 @@ public class PlayerInteraction : MonoBehaviour
         _interactionState = InteractionState.Selected;
     }
 
+    private bool CanBeSelected(InteractiveObject interactiveObject)
+    {
+        if (interactiveObject.transform.position.y >= transform.position.y && (interactiveObject.UseOnlyInShadow && _playerStatus.IsShadow || !interactiveObject.UseOnlyInShadow))
+            return true;
+        else
+            return false;
+    }
+
     private void UnselectObject()
     {
         if (_objectInteractive)
         {
-            _objectInteractive._isSelected = false;
+            _objectInteractive.IsSelected = false;
             _objectInteractive = null;
             _uiInteract.SetActive(false);
             _uiInteract.transform.SetParent(transform);
@@ -170,7 +208,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (_objectInteractive && _objectInteractive != obj)
         {
-            _objectInteractive._isSelected = false;
+            _objectInteractive.IsSelected = false;
             _objectInteractive = null;
             _uiInteract.SetActive(false);
         }

@@ -19,15 +19,21 @@ public class DetectionZone : Trigger
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.GetComponent<PlayerStatus>())
+        Component t = other.gameObject.GetComponent(typeof(PlayerStatus));
+        if (t != null)
         {
-            if (CheckForObstacles() || _playerStatus.IsShadow || _playerAnimator.IsInAmination)
+            if (CheckForObstacles() || _playerAnimator.IsInAmination || _playerStatus.IsShadow || _playerStatus.IsHide)
+            {
+                Enemy.PlayerDetected = false;
                 return;
-            Enemy.PlayerDetected = true;
+            }
+
+            if (DistanceDetection == 0)
+                Enemy.TimeStamp = 0;
             if (DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
                 Enemy.TimeStamp = 0;
-            else if (DistanceDetection == 0)
-                Enemy.TimeStamp = 0;
+            Enemy.PlayerDetected = true;
+            ((PlayerStatus)t).StressPlayer(5.0f);
         }
     }
 
@@ -35,7 +41,7 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            if (CheckForObstacles() || _playerStatus.IsShadow || _playerAnimator.IsInAmination)
+            if (_playerStatus.IsHide || _playerStatus.IsShadow)
                 return;
             Enemy.PlayerDetected = false;
             StartCoroutine(WaitForNextFrame());
@@ -46,7 +52,7 @@ public class DetectionZone : Trigger
     {
         if (Enemy.Controller == null)
             return false;
-        if (Physics.Raycast(Enemy.transform.position, Vector3.right * Enemy.Controller.Direction, Vector3.Distance(Enemy.transform.position, _playerStatus.transform.position), Enemy.Controller.GroundType, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(Enemy.transform.position, _playerStatus.transform.position - Enemy.transform.position, Vector3.Distance(Enemy.transform.position, _playerStatus.transform.position), Enemy.Controller.WallType, QueryTriggerInteraction.Ignore))
             return true;
         return false;
     }

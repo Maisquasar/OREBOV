@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(EnemyCheckpointManager))]
-public class LookAtPointEditor2 : Editor
+[CanEditMultipleObjects]
+public class EnemyCheckpointManagerUI : Editor
 {
     SerializedProperty TmpCheckpoints;
 
