@@ -51,7 +51,6 @@ public class MobileEnemy : Enemy
 
     protected override void EndShooting()
     {
-
         base.EndShooting();
         _controller.animator.SetBool("Shooting", false);
     }
@@ -97,7 +96,7 @@ public class MobileEnemy : Enemy
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
         if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.Switch)
         {
-            if (objectClose.DefaultActive != objectClose._objectActive && State != EnemyState.CHASE)
+            if (objectClose.DefaultState != objectClose.ObjectActive && State != EnemyState.CHASE)
             {
                 State = EnemyState.INTERACT;
                 _controller.NewCheckpoint(new Vector3(objectClose.transform.position.x, transform.position.y, transform.position.z));

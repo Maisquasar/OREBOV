@@ -7,21 +7,16 @@ using UnityEngine.Events;
 public class InteractiveSwitch : InteractiveObject
 {
     [Header("Switch")]
-    private GameObject _handle;
-    [SerializeField]
-    private float _handleAmplitude = 0.0442f;
-    [SerializeField]
-    private float _activationCooldown = 0.0f;
-    [SerializeField]
-    private float _autoDesactivateTimer = 0.0f;
-    [SerializeField]
-    private float _handleSpeed = 0.3f;
+    [SerializeField] private float _handleAmplitude = 0.0442f;
+    [SerializeField] private float _activationCooldown = 0.0f;
+    [SerializeField] private float _autoDesactivateTimer = 0.0f;
+    [SerializeField] private float _handleSpeed = 0.3f;
+    
     [Header("Objects")]
-    [SerializeField]
-    private UnityEvent _activateEvent = new UnityEvent();
-    [SerializeField]
-    private UnityEvent _desactivateEvent = new UnityEvent();
-    private void Start()
+    [SerializeField]private UnityEvent _activateEvent = new UnityEvent();
+    [SerializeField] private UnityEvent _desactivateEvent = new UnityEvent();
+    private GameObject _handle;
+    protected override void Start()
     {
         ObjectType = InteractObjects.Switch;
         _handle = transform.GetChild(0).gameObject;
@@ -30,87 +25,59 @@ public class InteractiveSwitch : InteractiveObject
     protected override void ActiveItem(GameObject player)
     {
         if (_activationCooldown > 0) return;
-        if (_objectActive)
+        if (ObjectActive)
         {
             base.DeactiveItem();
-            StartCoroutine(desactivateLever());
-
-            _objectActive = false;
+            StartCoroutine(ActivateLever(false));
+            ObjectActive = false;
         }
         else
         {
             base.ActiveItem(player);
-            StartCoroutine(activateLever());
-            _objectActive = true;
+            StartCoroutine(ActivateLever(true));
+            ObjectActive = true;
         }
     }
 
     protected override void ActiveItem(Enemy enemy)
     {
         if (_activationCooldown > 0) return;
-        if (_objectActive)
+        if (ObjectActive)
         {
             base.DeactiveItem();
-            StartCoroutine(desactivateLever());
-            _objectActive = false;
+            StartCoroutine(ActivateLever(false));
+            ObjectActive = false;
         }
         else
         {
             base.ActiveItem(enemy);
-            StartCoroutine(activateLever());
-            _objectActive = true;
+            StartCoroutine(ActivateLever(true));
+            ObjectActive = true;
         }
     }
 
-    protected override void DeactiveItem()
-    {
-    }
-
-    private IEnumerator activateLever()
+    private IEnumerator ActivateLever(bool state)
     {
         _activationCooldown = _handleSpeed;
         bool active = false;
+        int sign = state == true ? 1 : -1;
         while (_activationCooldown > 0)
         {
             Vector3 tmp = _handle.transform.localPosition;
-            tmp.z = 2 * _handleAmplitude * (_activationCooldown / _handleSpeed) - _handleAmplitude;
+            tmp.z = sign * 2 * _handleAmplitude * (_activationCooldown / _handleSpeed) - (sign * _handleAmplitude);
             _handle.transform.localPosition = tmp;
             if (!active && tmp.z < 0)
             {
                 active = true;
-                _activateEvent.Invoke();
+                if (state) _activateEvent.Invoke();
+                else _desactivateEvent.Invoke();
             }
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
-        }
-        if (_autoDesactivateTimer > 0)
-        {
-            yield return new WaitForSeconds(_autoDesactivateTimer);
-            base.DeactiveItem();
-            yield return desactivateLever();
-            _objectActive = false;
         }
         yield return null;
     }
 
-    private IEnumerator desactivateLever()
-    {
-        _activationCooldown = _handleSpeed;
-        bool active = false;
-        while (_activationCooldown > 0)
-        {
-            Vector3 tmp = _handle.transform.localPosition;
-            tmp.z = -2 * _handleAmplitude * (_activationCooldown / _handleSpeed) + _handleAmplitude;
-            _handle.transform.localPosition = tmp;
-            if (!active && tmp.z > 0)
-            {
-                active = true;
-                _desactivateEvent.Invoke();
-            }
-            _activationCooldown -= Time.deltaTime;
-            yield return Time.deltaTime;
-        }
-        yield return null;
-    }
+   
 
 }

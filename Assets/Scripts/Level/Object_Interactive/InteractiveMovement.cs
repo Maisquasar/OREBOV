@@ -50,7 +50,7 @@ public class InteractiveMovement : InteractiveObject
 
     protected void Update()
     {
-        if (_objectActive && !climb)
+        if (ObjectActive  && !climb)
         {
             StartCoroutine(LerpFromTo(_posStart + Vector3.left * 0.2f * _playerStatus.Controller.Direction, _posEnd + Vector3.left * 0.2f * _playerStatus.Controller.Direction + Vector3.down * 0.4f, _movementTime));
         }
@@ -86,7 +86,7 @@ public class InteractiveMovement : InteractiveObject
 
     protected override void DeactiveItem()
     {
-        _objectActive = false;
+        ObjectActive = false;
         _rigidbodyPlayer.isKinematic = false;
         _playerInteraction.UnlinkObject();
     }
