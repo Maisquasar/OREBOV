@@ -30,12 +30,13 @@ public class MobileEnemy : Enemy
 
     override public void Start()
     {
-        base.Start();
         _controller = GetComponent<MobileEnemyMovement>();
+        _entityController = _controller;
         _objectManager = FindObjectOfType<ObjectManager>();
         _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
         State = EnemyState.NORMAL;
+        base.Start();
     }
 
     IEnumerator WaitStart()

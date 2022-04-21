@@ -36,14 +36,6 @@ public class PlayerMovement : EntityMovement
     private bool _fallDefine = false;
 
     PlayerStatus _playerStatus;
-    public void SetSounds(ref Dictionary<SoundIDs, SoundEffectsHandler> sounds)
-    {
-        _walkInsideEffectsHandler = sounds[SoundIDs.WalkInside];
-        _walkOutsideEffectsHandler = sounds[SoundIDs.WalkOutside];
-        _walkRainEffectsHandler = sounds[SoundIDs.WalkRain];
-        _landInsideEffectHandler = sounds[SoundIDs.FallInterior];
-        _landOutsideEffectHandler = sounds[SoundIDs.FallExterior];
-    }
 
     private new void Start()
     {
