@@ -16,7 +16,6 @@ public class DetectionZone : Trigger
         _playerAnimator = FindObjectOfType<PlayerAnimator>();
         _playerStatus = _playerAnimator.GetComponent<PlayerStatus>();
     }
-
     private void OnTriggerStay(Collider other)
     {
         Component t = other.gameObject.GetComponent(typeof(PlayerStatus));
@@ -24,6 +23,8 @@ public class DetectionZone : Trigger
         {
             if (CheckForObstacles() || _playerAnimator.IsInAmination || _playerStatus.IsShadow || _playerStatus.IsHide)
             {
+                if (Enemy.PlayerDetected)
+                    StartCoroutine(WaitForNextFrame());
                 Enemy.PlayerDetected = false;
                 return;
             }
@@ -41,9 +42,9 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            if (_playerStatus.IsHide || _playerStatus.IsShadow)
-                return;
             Enemy.PlayerDetected = false;
+            if (_playerStatus.IsShadow || _playerStatus.IsHide)
+                return;
             StartCoroutine(WaitForNextFrame());
         }
     }
