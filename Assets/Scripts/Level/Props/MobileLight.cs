@@ -49,7 +49,6 @@ public class MobileLight : MonoBehaviour
         if (_actualTime < duration)
         {
             transform.position = Vector3.Lerp(initial, goTo, _actualTime / duration);
-            Debug.Log(transform.position);
             _actualTime += Time.deltaTime;
         }
         else

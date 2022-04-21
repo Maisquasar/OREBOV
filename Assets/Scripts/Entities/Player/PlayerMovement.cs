@@ -60,6 +60,9 @@ public class PlayerMovement : EntityMovement
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(edgeDetectorDistance, topEdgeDetectorHeight, 0));
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, topEdgeDetectorHeight, 0));
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(LastPosBeforeFall, 0.5f);
     }
 
     #endregion
@@ -82,6 +85,7 @@ public class PlayerMovement : EntityMovement
             {
                 _playerStatus.Dead = true;
             }
+            LastPosBeforeFall = transform.position;
         }
 
         if (DetectWall() || (_playerStatus.GetComponent<PlayerAnimator>().IsInAmination && !_playerStatus.IsShadow))
