@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5389569, g: 0.49585652, b: 0.5960121, a: 1}
+  m_IndirectSpecularColor: {r: 0.5387913, g: 0.49572992, b: 0.59595966, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -35828,6 +35828,14 @@ PrefabInstance:
       propertyPath: _objectManager
       value: 
       objectReference: {fileID: 1027799560}
+    - target: {fileID: 5666957167554232153, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[13].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 558164828}
+    - target: {fileID: 5666957167554232153, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[13].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CallPauseMenu
+      objectReference: {fileID: 0}
     - target: {fileID: 7783926925033352603, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -35844,6 +35852,10 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[13].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 558164828}
+    - target: {fileID: 8295763475748190761, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: _objectManager
+      value: 
+      objectReference: {fileID: 1027799560}
     - target: {fileID: 8668594363708895839, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -73128,7 +73140,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-278832
+  m_Name: pb_Mesh-30612
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

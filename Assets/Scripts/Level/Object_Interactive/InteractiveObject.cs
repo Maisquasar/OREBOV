@@ -36,7 +36,6 @@ public class InteractiveObject : AmbientTypeHolder
     [SerializeField] protected bool _activeSound = false;
     [SerializeField] protected SoundEffectsHandler _soundActiveTrigger;
     [SerializeField] protected SoundEffectsHandler _soundDeactiveTrigger;
-    [HideInInspector] public InteractObjects ObjectType;
 
     [Header("Debug  Settings")]
     [SerializeField] protected bool _debug;
@@ -74,7 +73,7 @@ public class InteractiveObject : AmbientTypeHolder
     {
         if (_activeSound)
             _soundDeactiveTrigger.PlaySound();
-        _objectActive = false;
+        ObjectActive = false;
     }
 
     public virtual void UpdateItem(Vector2 axis)
@@ -99,7 +98,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     public virtual void CancelUpdate()
     {
-        if (ObjectType != InteractObjects.Ladder)
+        if (ObjectType == InteractObjects.Box || ObjectType == InteractObjects.Hideout)
             DeactiveItem();
     }
 

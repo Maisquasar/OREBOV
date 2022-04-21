@@ -151,6 +151,9 @@ MonoBehaviour:
   DeactiveInteraction: 0
   ObjectType: 0
   _uiHintPosition: {x: 0, y: 0, z: 0}
+  _activeSound: 0
+  _soundActiveTrigger: {fileID: 0}
+  _soundDeactiveTrigger: {fileID: 0}
   _debug: 0
   _startPoint: {fileID: 8664129559980023031}
   _endPoint: {fileID: 8664129560933592506}
@@ -168,7 +171,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -270,7 +273,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c609c98f12459534d9318066cf3ebfa0, type: 3}
   _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
   _randomPlaySound: 0
-  _playAtStart: 1
+  _playAtStart: 0
   _looped: 1
   _playCount: 1
   _playCountRandomChances: 0
@@ -330,6 +333,9 @@ MonoBehaviour:
   DeactiveInteraction: 0
   ObjectType: 0
   _uiHintPosition: {x: 0, y: 0, z: 0}
+  _activeSound: 0
+  _soundActiveTrigger: {fileID: 0}
+  _soundDeactiveTrigger: {fileID: 0}
   _debug: 0
   _startPoint: {fileID: 8664129560933592506}
   _endPoint: {fileID: 8664129559980023031}
@@ -347,7 +353,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -449,7 +455,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c609c98f12459534d9318066cf3ebfa0, type: 3}
   _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
   _randomPlaySound: 0
-  _playAtStart: 1
+  _playAtStart: 0
   _looped: 1
   _playCount: 1
   _playCountRandomChances: 0

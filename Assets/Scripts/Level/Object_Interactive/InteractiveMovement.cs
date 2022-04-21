@@ -93,6 +93,7 @@ public class InteractiveMovement : InteractiveObject
         _rigidbodyPlayer.isKinematic = false;
         _playerStatus.Controller._gravityScale = 1;
         _playerInteraction.UnlinkObject();
+        _climbLadder.StopSound();
     }
 
 }

@@ -16,7 +16,6 @@ public class InteractiveSwitch : InteractiveObject
     [Header("Objects")]
     [SerializeField]private UnityEvent _activateEvent = new UnityEvent();
     [SerializeField] private UnityEvent _desactivateEvent = new UnityEvent();
-    private GameObject _handle;
     protected override void Start()
     {
         ObjectType = InteractObjects.Switch;
@@ -30,13 +29,11 @@ public class InteractiveSwitch : InteractiveObject
         {
             base.DeactiveItem();
             StartCoroutine(ActivateLever(false));
-            ObjectActive = false;
         }
         else
         {
             base.ActiveItem(player);
             StartCoroutine(ActivateLever(true));
-            ObjectActive = true;
         }
     }
 
@@ -47,13 +44,11 @@ public class InteractiveSwitch : InteractiveObject
         {
             base.DeactiveItem();
             StartCoroutine(ActivateLever(false));
-            ObjectActive = false;
         }
         else
         {
             base.ActiveItem(enemy);
             StartCoroutine(ActivateLever(true));
-            ObjectActive = true;
         }
     }
 
@@ -76,13 +71,13 @@ public class InteractiveSwitch : InteractiveObject
             _activationCooldown -= Time.deltaTime;
             yield return Time.deltaTime;
         }
-        if (_autoDesactivateTimer > 0)
+        if (state &&_autoDesactivateTimer > 0)
         {
             _activationCooldown = _autoDesactivateTimer;
             yield return new WaitForSeconds(_autoDesactivateTimer);
             base.DeactiveItem();
-            yield return desactivateLever();
-            _objectActive = false;
+            yield return ActivateLever(false);
+            ObjectActive = false;
         }
         yield return null;
     }
