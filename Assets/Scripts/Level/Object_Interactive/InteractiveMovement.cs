@@ -17,6 +17,9 @@ public class InteractiveMovement : InteractiveObject
     SoundEffectsHandler _climbLadder;
 
     [SerializeField] float _exitDirection = 1;
+    [SerializeField] bool IsDown;
+    [SerializeField] bool LockPosition = true;
+    [SerializeField] float ExitDistance;
 
     private PlayerInteraction _playerInteraction;
     private Rigidbody _rigidbodyPlayer;
@@ -52,6 +55,11 @@ public class InteractiveMovement : InteractiveObject
 
     private void OnDrawGizmos()
     {
+        if (!LockPosition)
+        {
+            transform.position = new Vector3(_startPoint.position.x, transform.position.y, transform.position.z);
+            return;
+        }
         _playerStatus = FindObjectOfType<PlayerStatus>();
         transform.position = new Vector3(transform.position.x, transform.position.y, _playerStatus.transform.position.z);
     }
@@ -75,7 +83,8 @@ public class InteractiveMovement : InteractiveObject
         _posStart = _endPoint.position;
         _posEnd = _endPoint.position + dir.normalized * 1f;
         */
-        StartCoroutine(_playerStatus.Controller.LerpFromTo(_playerStatus.transform.position, _playerStatus.transform.position + Vector3.right * _exitDirection * 1f, 0.2f));
+        if (IsDown)
+            StartCoroutine(_playerStatus.Controller.LerpFromTo(_playerStatus.transform.position, _playerStatus.transform.position + Vector3.forward * ExitDistance + Vector3.up * 1f, 0.2f));
     }
 
     bool climb = false;

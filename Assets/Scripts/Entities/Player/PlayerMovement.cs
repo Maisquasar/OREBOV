@@ -130,6 +130,19 @@ public class PlayerMovement : EntityMovement
         }
     }
 
+    public void CheckForClimbLadder()
+    {
+        RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.back, edgeDetectorDistance + 0.5f, GroundType, QueryTriggerInteraction.Ignore);
+        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        foreach (var ray in downRay)
+        {
+            if (topRay.Length == 0 && !IsClimbing)
+            {
+                StartCoroutine(PlayClimb());
+            }
+        }
+    }
+
     public void ChangeState(ref PlayerAction State)
     {
         if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
