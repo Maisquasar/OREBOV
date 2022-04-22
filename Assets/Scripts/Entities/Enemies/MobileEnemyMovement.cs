@@ -6,6 +6,8 @@ public class MobileEnemyMovement : EntityMovement
 {
     [SerializeField] AnimationCurve _velocityCurve;
 
+    public Vector3 GoTo { get { return _goTo; } }
+
     Vector3 _goTo;
     float _time;
 
@@ -26,8 +28,6 @@ public class MobileEnemyMovement : EntityMovement
 
     private void Update()
     {
-        if (_goTo == Vector3.zero)
-            Debug.Log("Test");
         if (!DetectWall())
             animator.SetFloat("VelocityX", _rb.velocity.x);
         else
@@ -59,6 +59,7 @@ public class MobileEnemyMovement : EntityMovement
 
     public void NewCheckpoint(Vector3 to)
     {
+        Debug.Log("New Checkpoint");
         _goTo = to;
     }
 

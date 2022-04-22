@@ -56,7 +56,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void ActiveItem(GameObject player)
     {
-        if (_activeSound)
+        if (_activeSound && _soundActiveTrigger != null)
             _soundActiveTrigger.PlaySound();
         _playerGO = player;
         ObjectActive = true;
@@ -64,7 +64,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void ActiveItem(Enemy enemy)
     {
-        if (_activeSound)
+        if (_activeSound && _soundActiveTrigger != null)
             _soundActiveTrigger.PlaySound();
         _playerGO = enemy.gameObject;
         ObjectActive = true;
@@ -72,7 +72,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void DeactiveItem()
     {
-        if (_activeSound)
+        if (_activeSound && _soundActiveTrigger != null)
             _soundDeactiveTrigger.PlaySound();
         ObjectActive = false;
     }

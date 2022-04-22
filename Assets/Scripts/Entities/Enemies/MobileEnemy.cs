@@ -37,7 +37,6 @@ public class MobileEnemy : Enemy
         _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
         State = EnemyState.NORMAL;
-        base.Start();
     }
 
     IEnumerator WaitStart()
@@ -66,6 +65,10 @@ public class MobileEnemy : Enemy
     override public void Update()
     {
         base.Update();
+        if (_controller.GoTo == Vector3.zero)
+        {
+            CheckpointChange();
+        }
         if (_player != null && _player.Dead)
             return;
         if (_checkpointManager == null)
@@ -81,11 +84,17 @@ public class MobileEnemy : Enemy
 
         if (!stillWaiting)
         {
-            if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
-                _controller.Move(_controller.Direction);
-            if (State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x)
+            if ((_followPlayerOnDetection && State != EnemyState.SUSPICIOUS) || !_followPlayerOnDetection)
+                if ((int)transform.position.x != (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x || State == EnemyState.CHASE)
+                    _controller.Move(_controller.Direction);
+            if (State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x && !WaitForToggle)
             {
                 CheckpointChange();
+            }
+            // If Time = -1
+            else if (WaitForToggle && State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x && !_hasRotated)
+            {
+                Rotate();
             }
             else if (State == EnemyState.CHASE && (int)transform.position.x == (int)lastPlayerPos.x)
             {
@@ -113,6 +122,7 @@ public class MobileEnemy : Enemy
                 State = EnemyState.NORMAL;
             }
         }
+
         // Check if same position every {_secondCheckStuck} in seconds.
         if (_timeStamp <= Time.time && _checkpointManager.Checkpoints[_currentCheckpoint].Time != -1)
         {
@@ -129,6 +139,12 @@ public class MobileEnemy : Enemy
         }
     }
 
+    bool _hasRotated = false;
+    void Rotate()
+    {
+        _hasRotated = true;
+        StartCoroutine(LerpFromTo(transform.rotation, transform.rotation * Quaternion.Euler(0, _checkpointManager.Checkpoints[_currentCheckpoint].Angle, 0), 0.2f));
+    }
 
     void StopFollowingPlayer()
     {
@@ -149,7 +165,8 @@ public class MobileEnemy : Enemy
     int _precCheckpoint;
     public void CheckpointChange()
     {
-        _precCheckpoint = _currentCheckpoint;
+        _hasRotated = false;
+        Debug.Log($"From to : {_checkpointManager.Checkpoints[_currentCheckpoint]}");
         StartCoroutine(WaitCheckpoint());
         if (!_checkpointManager.Reverse)
         {
@@ -185,13 +202,19 @@ public class MobileEnemy : Enemy
                 }
             }
         }
-        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time != -1)
-            _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
+        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time == -1)
+        {
+            Debug.Log("Wait Toggle : true");
+            WaitForToggle = true;
+        }
+        Debug.Log($"Go to : {_checkpointManager.Checkpoints[_currentCheckpoint]}");
+        _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
 
-
+    bool WaitForToggle = false;
     public void GoToNextCheckpoint()
     {
+        WaitForToggle = false;
         stillWaiting = false;
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
@@ -234,7 +257,6 @@ public class MobileEnemy : Enemy
         stillWaiting = true;
         StartCoroutine(LerpFromTo(transform.rotation, transform.rotation * Quaternion.Euler(0, _checkpointManager.Checkpoints[indexAtStart].Angle, 0), _checkpointManager.Checkpoints[indexAtStart].Time * 25 / 100));
         yield return new WaitForSeconds(_checkpointManager.Checkpoints[indexAtStart].Time);
-        if (_checkpointManager.Checkpoints[indexAtStart].Time != -1)
-            stillWaiting = false;
+        stillWaiting = false;
     }
 }
