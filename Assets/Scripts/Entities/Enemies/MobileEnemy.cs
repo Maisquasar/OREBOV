@@ -47,6 +47,7 @@ public class MobileEnemy : Enemy
 
     public override void Shoot()
     {
+        transform.LookAt(_player.transform.position);
         _controller.animator.SetBool("Shooting", true);
     }
 

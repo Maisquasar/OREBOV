@@ -195,7 +195,7 @@ public class CameraBehavior : MonoBehaviour
             SetWindowPosition();
             DrawRectWindown();
         }
-        refreshFPS();
+        RefreshFPS();
     }
 
 
