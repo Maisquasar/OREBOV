@@ -47,7 +47,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1761019904338098820}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 5253260931567479999}
@@ -166,13 +166,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'FPS:     18,6
+  m_text: 'FPS:     120,3
 
-    MinFPS:  18,6
+    MinFPS:  19,0
 
-    MaxFPS:  19,7
+    MaxFPS:  120,3
 
-    DeltaTime:  53,9'
+    DeltaTime: 
+    8,3'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -455,6 +456,7 @@ MonoBehaviour:
   _camLayer:
     serializedVersion: 2
     m_Bits: 0
+  _debugCanvas: {fileID: 0}
   _fpsCounter: {fileID: 6140817009176707964}
   tex: {fileID: 2800000, guid: 174b4604a041d15478a9aca98d1faf36, type: 3}
   WindowSizeCheckpoint: {x: 0, y: 0}
