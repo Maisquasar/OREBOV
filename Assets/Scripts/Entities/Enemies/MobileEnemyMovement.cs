@@ -63,9 +63,9 @@ public class MobileEnemyMovement : EntityMovement
 
     override protected void WallDetection()
     {
-        for (int i = 0; i < ray.Count; i++)
+        for (int i = 0; i < _wallRays.Count; i++)
         {
-            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            Vector3 WallPos = transform.position + new Vector3(0, _wallRays[i], 0);
             RaycastHit[] tmpHit = Physics.RaycastAll(WallPos, Vector3.right * _direction, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore);
             for (int j = 0; j < tmpHit.Length; j++)
             {
@@ -81,9 +81,9 @@ public class MobileEnemyMovement : EntityMovement
 
     protected override bool DetectWall()
     {
-        for (int i = 0; i < ray.Count; i++)
+        for (int i = 0; i < _wallRays.Count; i++)
         {
-            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            Vector3 WallPos = transform.position + new Vector3(0, _wallRays[i], 0);
             RaycastHit[] tmp = Physics.RaycastAll(WallPos, Vector3.right * _direction, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore);
             for (int j = 0; j < tmp.Length; j++)
             {

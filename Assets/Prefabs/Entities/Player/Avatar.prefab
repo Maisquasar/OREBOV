@@ -1500,10 +1500,14 @@ MonoBehaviour:
   WallType:
     serializedVersion: 2
     m_Bits: 4225
-  ray:
+  _wallRays:
   - 0.5
   - 0
   - -0.5
+  _groundRays:
+  - 0.29
+  - 0
+  - -0.29
   speed: 3
   _globalGravity: -9.81
   _gravityScale: 1
@@ -3075,7 +3079,7 @@ MonoBehaviour:
   _soundName: Stress
   _audioClipArray:
   - {fileID: 8300000, guid: 264f705866fd5f240a2efea8e0576e22, type: 3}
-  _mixer: {fileID: 7992309737490739314, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _mixer: {fileID: 0}
   _randomPlaySound: 0
   _playAtStart: 0
   _looped: 1
