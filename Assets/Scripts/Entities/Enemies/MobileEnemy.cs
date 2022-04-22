@@ -166,7 +166,6 @@ public class MobileEnemy : Enemy
     public void CheckpointChange()
     {
         _hasRotated = false;
-        Debug.Log($"From to : {_checkpointManager.Checkpoints[_currentCheckpoint]}");
         StartCoroutine(WaitCheckpoint());
         if (!_checkpointManager.Reverse)
         {
@@ -204,10 +203,8 @@ public class MobileEnemy : Enemy
         }
         if (_checkpointManager.Checkpoints[_currentCheckpoint].Time == -1)
         {
-            Debug.Log("Wait Toggle : true");
             WaitForToggle = true;
         }
-        Debug.Log($"Go to : {_checkpointManager.Checkpoints[_currentCheckpoint]}");
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
 

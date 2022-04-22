@@ -59,7 +59,6 @@ public class MobileEnemyMovement : EntityMovement
 
     public void NewCheckpoint(Vector3 to)
     {
-        Debug.Log("New Checkpoint");
         _goTo = to;
     }
 
