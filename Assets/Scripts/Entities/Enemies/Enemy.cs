@@ -97,7 +97,6 @@ public class Enemy : Entity
             if (TimeStamp <= 0)
             {
                 _player.Dead = true;
-                Debug.Log("Shoot!!");
                 Shoot();
                 if (_weapon != null)
                     _weapon.Shoot();

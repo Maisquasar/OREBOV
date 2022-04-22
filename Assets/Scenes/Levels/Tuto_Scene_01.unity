@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.53866625, g: 0.49568725, b: 0.59599304, a: 1}
+  m_IndirectSpecularColor: {r: 0.53887415, g: 0.49577594, b: 0.5959883, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -24897,6 +24897,10 @@ PrefabInstance:
     - target: {fileID: 1167675288713135261, guid: d44a3d0c31afece47bcbdf8e4d0cfb52, type: 3}
       propertyPath: _speedBox
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167675288713135261, guid: d44a3d0c31afece47bcbdf8e4d0cfb52, type: 3}
+      propertyPath: UseOnlyInShadow
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1167675288713135261, guid: d44a3d0c31afece47bcbdf8e4d0cfb52, type: 3}
       propertyPath: _timeBetweenMove
@@ -94018,6 +94022,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1167675288713135264, guid: d44a3d0c31afece47bcbdf8e4d0cfb52, type: 3}
       propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167675288713135264, guid: d44a3d0c31afece47bcbdf8e4d0cfb52, type: 3}
+      propertyPath: m_DynamicOccludee
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1167675288713135265, guid: d44a3d0c31afece47bcbdf8e4d0cfb52, type: 3}
