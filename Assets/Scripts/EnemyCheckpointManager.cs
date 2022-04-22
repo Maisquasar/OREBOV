@@ -8,7 +8,7 @@ public class EnemyCheckpointManager : MonoBehaviour
     [SerializeField] public List<EnemyCheckpoint> Checkpoints = new List<EnemyCheckpoint>();
     [SerializeField] public MobileEnemy _enemy;
     [SerializeField] public float StartTime;
-    [SerializeField] public bool Reverse;
+    [HideInInspector] public bool Reverse;
 
     // Start is called before the first frame update
     void Start()

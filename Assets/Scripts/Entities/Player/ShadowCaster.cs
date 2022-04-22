@@ -10,14 +10,15 @@ public class ShadowCaster : MonoBehaviour
     [SerializeField] List<Vector2> DepthRayCastPosition;
     [SerializeField] float HitBoxRadius = 0.5f;
     [SerializeField] float ShadowHeightDeltaMin = 0.2f;
-    [SerializeField] float ShadowDepthDelta = 1.0f;
+    [SerializeField] float _shadowDepthDelta = 1.0f;
     private bool[] _pointsHit;
     private Vector3[] _pointsPos;
     private Vector3 _oldShadowPos;
     private float _shadowDepth;
     private float _shadowHeight;
 	private float _shadowDeltaX;
-    public float ShadowDepth { get { return _shadowDepth - HitBoxRadius - ShadowDepthDelta; } }
+    public float ShadowDepth { get { return _shadowDepth - HitBoxRadius - _shadowDepthDelta; } }
+    public float ShadowDepthDelta { get { return _shadowDepthDelta; } set { _shadowDepthDelta = value; } }
     public float ShadowHeight { get { return _shadowHeight; } }
     public float ShadowDeltaX { get { return _shadowDeltaX; } }
 
@@ -167,7 +168,7 @@ public class ShadowCaster : MonoBehaviour
                 RaycastHit rayHit;
                 if (Physics.Raycast(origin, direction, out rayHit, 10000, _maskDepth, QueryTriggerInteraction.Ignore) && rayHit.distance > 0)
                 {
-                    Vector3 outValue = rayHit.point + Vector3.back * (HitBoxRadius + ShadowDepthDelta);
+                    Vector3 outValue = rayHit.point + Vector3.back * (HitBoxRadius + _shadowDepthDelta);
                     if (Mathf.Abs(outValue.y-transform.position.y) < ShadowHeightDeltaMin) outValue.y = transform.position.y;
                     _oldShadowPos = outValue;
                     return outValue;
@@ -175,5 +176,29 @@ public class ShadowCaster : MonoBehaviour
             }
         }
         return _oldShadowPos;
+    }
+
+    public bool IsInLight()
+    {
+        LightSubType[] lights = LightManager.GetUsableLights();
+        for (int i = 0; i < lights.Length; i++)
+        {
+            Vector3 origin;
+            Vector3 direction;
+            if (getLightVectors(lights[i], new Vector2(), out origin, out direction))
+            {
+                if (ShowAllRays)
+                {
+                    CanTransform(true);
+                    Gizmos.color = Color.yellow;
+                    for (int j = 0; j < ShadowRayCastPosition.Count; j++)
+                    {
+                        if (_pointsHit[j]) continue;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

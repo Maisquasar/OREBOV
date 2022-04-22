@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CameraBehavior : MonoBehaviour
 {
@@ -27,7 +26,11 @@ public class CameraBehavior : MonoBehaviour
     [Range(0, 100f)]
     [SerializeField] private float _stopCamDistance;
     [SerializeField] private LayerMask _camLayer;
-
+    [SerializeField] private TextMeshProUGUI _fpsCounter;
+    [SerializeField] private Texture2D tex;
+    private float _maxFPS = 60.0f;
+    private float _minFPS = 60.0f;
+    private int _timer;
 
     // Checkpoint variable
     [HideInInspector] public Vector2 WindowSizeCheckpoint;
@@ -64,6 +67,10 @@ public class CameraBehavior : MonoBehaviour
 
     #endregion
 
+    private void Update()
+    {
+        refreshFPS();
+    }
     private void FixedUpdate()
     {
         if (_camState == CameraBehaviorState.FollowTarget) UpdateFollowMode();
@@ -126,6 +133,46 @@ public class CameraBehavior : MonoBehaviour
         return Physics.Raycast(pos, Vector3.right, out hit, distance, _camLayer, QueryTriggerInteraction.Ignore);
     }
 
+    private void refreshFPS()
+    {
+        float fps = 1 / Time.deltaTime;
+        if (_timer != (int)(Time.time/5))
+        {
+            _timer = (int)(Time.time/5);
+            _minFPS = fps;
+            _maxFPS = fps;
+        }
+        else
+        {
+            if (fps > _maxFPS) _maxFPS = fps;
+            if (fps < _minFPS) _minFPS = fps;
+        }
+        _fpsCounter.text = String.Format("FPS:    {0: 0.0}\nMinFPS: {1: 0.0}\nMaxFPS: {2: 0.0}\nDeltaTime: {3: 0.0}", fps, _minFPS, _maxFPS, Time.deltaTime*1000);
+        refreshGraph();
+    }
+
+    private void refreshGraph()
+    {
+        Color32[] array = tex.GetPixels32();
+        for (int i = 0; i < tex.height; i++)
+        {
+            for (int j = 0; j < tex.width-1; j++)
+            {
+                int index = i * tex.width + j;
+                array[index] = array[index + 1];
+            }
+        }
+        float timeMs = Time.deltaTime * 1000;
+        Color32 color = timeMs < 17.5f ? new Color32(0, 255, 0, 255) : (timeMs < 35.0f ? new Color32(255, 255, 0, 255) : new Color32(255,0,0,255));
+        int max = (timeMs > 100) ? tex.height : (int)(timeMs / 100 * tex.height);
+        for (int i = 0; i < tex.height; i++)
+        {
+            array[(i + 1) * tex.width - 1] = (i < max) ? color : new Color32(0,0,0,0);
+        }
+        tex.SetPixels32(array);
+        tex.Apply();
+    }
+
 
     private void OnDrawGizmos()
     {
@@ -134,12 +181,12 @@ public class CameraBehavior : MonoBehaviour
         {
             Debug.LogError("Missing Player");
         }
-        if (_showWindow)
+        else if (_showWindow)
         {
             SetWindowPosition();
             DrawRectWindown();
         }
-
+        refreshFPS();
     }
 
 

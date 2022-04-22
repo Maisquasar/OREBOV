@@ -28,14 +28,18 @@ public class EnemyCheckpointManagerUI : Editor
         Selection.activeGameObject.GetComponent<EnemyCheckpointManager>()._enemy = EditorGUILayout.ObjectField(Selection.activeGameObject.GetComponent<EnemyCheckpointManager>()._enemy, typeof(MobileEnemy), true) as MobileEnemy;
         GUILayout.EndHorizontal();
 
-        // Rever field
+        // Reverse field
         GUILayout.BeginHorizontal();
-        Selection.activeGameObject.GetComponent<EnemyCheckpointManager>().Reverse = GUILayout.Toggle(Selection.activeGameObject.GetComponent<EnemyCheckpointManager>().Reverse, "Reverse Movement");
+        Selection.activeGameObject.GetComponent<EnemyCheckpointManager>().Reverse = EditorGUILayout.Toggle("Reverse Movement", Selection.activeGameObject.GetComponent<EnemyCheckpointManager>().Reverse);
         GUILayout.EndHorizontal();
 
         if (GUILayout.Button("Detect Checkpoints"))
         {
             Selection.activeGameObject.GetComponent<EnemyCheckpointManager>().DetectCheckpoints();
+            EditorUtility.SetDirty(serializedObject.targetObject);
+        }
+        if (GUI.changed)
+        {
             EditorUtility.SetDirty(serializedObject.targetObject);
         }
         EditorGUILayout.PropertyField(TmpCheckpoints);

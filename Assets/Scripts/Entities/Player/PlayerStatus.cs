@@ -58,6 +58,7 @@ public class PlayerStatus : Entity
     private bool _respawn = false; // To execute repawn only once.
     private bool _exactPos = false; // To execute LerpTo only once.
     private float _stressTimer = 0.0f;
+    public bool IsInLight { get { return _caster.IsInLight(); } }
     public bool IsShadow { get { return _isShadow; } }
 
     public Vector2 MoveDir { get { return _movementDir; } }
@@ -121,6 +122,7 @@ public class PlayerStatus : Entity
             _soundBoard[SoundIDs.Stress].StopSound();
             return;
         }
+        
         if (_stressTimer > 0) _stressTimer -= Time.deltaTime;
         else if (_soundBoard[SoundIDs.Stress].Active) _soundBoard[SoundIDs.Stress].StopSound();
         _shadowPos = _caster.GetShadowPos();
@@ -334,6 +336,7 @@ public class PlayerStatus : Entity
 
     private void PlayerDeath()
     {
+        Debug.Log("Dead");
         Controller.SetDead(true);
         _soundBoard[SoundIDs.Death].PlaySound();
         if (Dead && !_respawn)
