@@ -23,9 +23,17 @@ public class DetectionZone : Trigger
         {
             if (CheckForObstacles() || _playerAnimator.IsInAmination || _playerStatus.IsShadow || _playerStatus.IsHide)
             {
-                if (Enemy.PlayerDetected)
+                if (DistanceDetection > 0 && _playerStatus.MoveDir != Vector2.zero)
+                {
+                    Enemy.PlayerDetected = true;
+                    if (DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
+                        Enemy.TimeStamp = 0;
+                }
+                else if (Enemy.PlayerDetected)
+                {
                     StartCoroutine(WaitForNextFrame());
-                Enemy.PlayerDetected = false;
+                    Enemy.PlayerDetected = false;
+                }
                 return;
             }
 
