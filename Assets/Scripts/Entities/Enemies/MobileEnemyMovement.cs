@@ -46,10 +46,10 @@ public class MobileEnemyMovement : EntityMovement
 
         if (_grounded && _endOfCoroutine)
         {
-            if (move < 0 && _direction == 1)
-                StartCoroutine(Flip(Quaternion.Euler(0, 180, 0), Quaternion.Euler(0, 0, 0), 0.1f));
-            else if (move > 0 && _direction == -1)
-                StartCoroutine(Flip(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 180, 0), 0.1f));
+            if (move < 0 && _direction == 1 || move < 0 && transform.rotation != Quaternion.Euler(0, 0, 0))
+                StartCoroutine(Flip(transform.rotation, Quaternion.Euler(0, 0, 0), 0.1f));
+            else if (move > 0 && _direction == -1 || move > 0 && transform.rotation != Quaternion.Euler(0, 180, 0))
+                StartCoroutine(Flip(transform.rotation, Quaternion.Euler(0, 180, 0), 0.1f));
         }
         _time += Time.deltaTime;
     }
