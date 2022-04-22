@@ -16,7 +16,7 @@ public class UIPanelSelection : MonoBehaviour ,ISelectHandler
         {
             _toActive.SetActive(true);
             _toDeactive.SetActive(false);
-            _optionsMenuScript.StartCoroutine(_optionsMenuScript.Test(_firstObjectToSelect));
+            _optionsMenuScript.StartCoroutine(_optionsMenuScript.SetSelectedObject(_firstObjectToSelect));
         }
 
     }
