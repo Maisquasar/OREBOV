@@ -60,6 +60,7 @@ public class MobileEnemyMovement : EntityMovement
         _goTo = to;
     }
 
+
     override protected void WallDetection()
     {
         for (int i = 0; i < ray.Count; i++)
