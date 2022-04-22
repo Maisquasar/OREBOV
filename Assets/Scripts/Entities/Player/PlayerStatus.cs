@@ -351,11 +351,11 @@ public class PlayerStatus : Entity
     }
 
 
-    public void Hide(bool hide)
+    public void Hide(bool hide, float distance)
     {
         if (hide)
         {
-            StartCoroutine(Controller.PlayHide());
+            StartCoroutine(Controller.PlayHide(distance));
         }
         else
         {

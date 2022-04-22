@@ -8,6 +8,7 @@ public class InteractiveHideout : InteractiveObject
     [SerializeField] private float _playerFadingTime;
     [SerializeField] private float _playerFadingTimer;
     [SerializeField] private bool _isFading;
+    [SerializeField] private float JumpDistance = 1f;
 
     private IEnumerator _startCoroutine;
     private IEnumerator _endCoroutine;
@@ -38,7 +39,7 @@ public class InteractiveHideout : InteractiveObject
             if (_isFading) StopCoroutine(_endCoroutine);
 
             ObjectActive = true;
-            _playerStatus.Hide(true);
+            _playerStatus.Hide(true, JumpDistance);
             _playerInteraction.LinkObject(this);
             _startCoroutine = PlayerFading(true);
 
@@ -69,7 +70,7 @@ public class InteractiveHideout : InteractiveObject
 
             _endCoroutine = PlayerFading(false);
             _playerInteraction.UnlinkObject();
-            _playerStatus.Hide(false);
+            _playerStatus.Hide(false, JumpDistance);
             ObjectActive = false;
 
             StartCoroutine(_endCoroutine);

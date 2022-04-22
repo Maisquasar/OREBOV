@@ -291,14 +291,14 @@ public class PlayerMovement : EntityMovement
     }
 
     [HideInInspector] public bool IsHide = false;
-    public IEnumerator PlayHide()
+    public IEnumerator PlayHide(float distance)
     {
         lastZPos = transform.position.z;
         CanHide = false;
         animator.SetBool("Hide", true);
         IsHide = true;
         Quaternion target = Quaternion.Euler(0, 0, 0);
-        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.forward * 1f, 0.2f));
+        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.forward * distance, 0.2f));
         yield return StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
         yield return new WaitForSeconds(1.133f);
         _playerStatus.IsHide = true;
