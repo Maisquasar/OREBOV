@@ -139,6 +139,7 @@ public class MobileEnemy : Enemy
     Vector3 lastPlayerPos;
     override public void GoToPlayer(Vector3 lastPlayerPos)
     {
+        stillWaiting = false;
         this.lastPlayerPos = lastPlayerPos;
         Debug.Log("Follow Player");
         State = EnemyState.CHASE;
@@ -146,8 +147,10 @@ public class MobileEnemy : Enemy
     }
 
     bool decrease = false;
+    int _precCheckpoint;
     public void CheckpointChange()
     {
+        _precCheckpoint = _currentCheckpoint;
         StartCoroutine(WaitCheckpoint());
         if (!_checkpointManager.Reverse)
         {
@@ -183,6 +186,14 @@ public class MobileEnemy : Enemy
                 }
             }
         }
+        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time != -1)
+            _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
+    }
+
+
+    public void GoToNextCheckpoint()
+    {
+        stillWaiting = false;
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
 
@@ -190,6 +201,8 @@ public class MobileEnemy : Enemy
     {
         stillWaiting = true;
         yield return new WaitForSeconds(SearchTime);
+        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time == -1)
+            _currentCheckpoint = _precCheckpoint;
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
         State = EnemyState.NORMAL;
         stillWaiting = false;
@@ -222,6 +235,7 @@ public class MobileEnemy : Enemy
         stillWaiting = true;
         StartCoroutine(LerpFromTo(transform.rotation, transform.rotation * Quaternion.Euler(0, _checkpointManager.Checkpoints[indexAtStart].Angle, 0), _checkpointManager.Checkpoints[indexAtStart].Time * 25 / 100));
         yield return new WaitForSeconds(_checkpointManager.Checkpoints[indexAtStart].Time);
-        stillWaiting = false;
+        if (_checkpointManager.Checkpoints[indexAtStart].Time != -1)
+            stillWaiting = false;
     }
 }
