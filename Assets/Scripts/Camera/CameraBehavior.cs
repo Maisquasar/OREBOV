@@ -157,10 +157,10 @@ public class CameraBehavior : MonoBehaviour
             if (fps < _minFPS) _minFPS = fps;
         }
         _fpsCounter.text = String.Format("FPS:    {0: 0.0}\nMinFPS: {1: 0.0}\nMaxFPS: {2: 0.0}\nDeltaTime: {3: 0.0}", fps, _minFPS, _maxFPS, Time.deltaTime*1000);
-        refreshGraph();
+        RefreshGraph();
     }
 
-    private void refreshGraph()
+    private void RefreshGraph()
     {
         Color32[] array = tex.GetPixels32();
         for (int i = 0; i < tex.height; i++)
