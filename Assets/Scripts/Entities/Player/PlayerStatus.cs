@@ -291,7 +291,6 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        Debug.Log("Test");
         transform.position = CheckpointPos;
         _playerAnimator.enabled = true;
         _playerInteraction.enabled = true;
@@ -338,7 +337,6 @@ public class PlayerStatus : Entity
 
     private void PlayerDeath()
     {
-        Debug.Log("Dead");
         Controller.SetDead(true);
         _soundBoard[SoundIDs.Death].PlaySound();
         if (Dead && !_respawn)

@@ -26,7 +26,6 @@ public class UIObjectSelection : MonoBehaviour , ISelectHandler, IDeselectHandle
 
     public void OnSelect(BaseEventData eventData)
     {
-        Debug.Log("Test");
         _text.color = _selected;
     }
 

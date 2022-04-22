@@ -143,6 +143,7 @@ public class CameraBehavior : MonoBehaviour
 
     private void refreshFPS()
     {
+        if (!_debugCanvas.enabled) return;
         float fps = 1 / Time.deltaTime;
         if (_timer != (int)(Time.time/5))
         {

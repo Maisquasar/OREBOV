@@ -112,7 +112,6 @@ public class CameraTrigger : Trigger
             if (_checkPlayerState && _playerStatus.IsShadow != _isShadow)
             {
                 _resetTrigger = true;
-                Debug.Log("test");
                 return;
             }
         }

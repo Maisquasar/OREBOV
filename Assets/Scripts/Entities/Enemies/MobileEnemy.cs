@@ -131,7 +131,6 @@ public class MobileEnemy : Enemy
 
     void StopFollowingPlayer()
     {
-        Debug.Log("Stop following Player");
         State = EnemyState.NORMAL;
         StartCoroutine(WaitPlayerSearch());
     }
@@ -141,7 +140,6 @@ public class MobileEnemy : Enemy
     {
         stillWaiting = false;
         this.lastPlayerPos = lastPlayerPos;
-        Debug.Log("Follow Player");
         State = EnemyState.CHASE;
         _controller.NewCheckpoint(lastPlayerPos);
     }

@@ -42,7 +42,6 @@ public class GameVisualSettings : MonoBehaviour
     private int ManageIndex(int currentIndex, int maxIndex)
     {
         int index = currentIndex;
-        Debug.Log("Index =  " + index);
         if (currentIndex < 0) return index = maxIndex - 1;
         if (currentIndex >= maxIndex) return index = 0;
         return index;

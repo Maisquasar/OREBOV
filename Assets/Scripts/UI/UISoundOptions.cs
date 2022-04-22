@@ -34,7 +34,6 @@ public class UISoundOptions : MonoBehaviour
     {
         float generalRatio = Mathf.Abs(_minVolume) + Mathf.Abs(_maxVolume);
         _currentVolume = (_slider.value * generalRatio) - _minVolume;
-        Debug.Log(_mixer.SetFloat(_soundParameter, GetVolume(_slider.value)));
     }
 
     private float GetVolume(float value)

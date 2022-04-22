@@ -62,7 +62,6 @@ public class InteractiveHideout : InteractiveObject
     {
         if (ObjectActive)
         {
-            Debug.Log("Disable");
             base.DeactiveItem();
 
             // Cancel player fading if it already running

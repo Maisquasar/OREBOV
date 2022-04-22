@@ -86,7 +86,6 @@ public class Elevator : SwitchableObjects
             var Distance = Vector3.Distance(transform.position, Goto);
             var Distance2 = Vector3.Distance(Goto, _initialPos);
             float tmp = (Distance * Timer) / Distance2;
-            Debug.Log(tmp);
             StartCoroutine(LerpFromTo(transform.position, Goto, tmp));
         }
     }
