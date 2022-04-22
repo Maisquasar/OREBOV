@@ -334,6 +334,7 @@ public class PlayerStatus : Entity
 
     private void PlayerDeath()
     {
+        Debug.Log("Dead");
         Controller.SetDead(true);
         _soundBoard[SoundIDs.Death].PlaySound();
         if (Dead && !_respawn)
