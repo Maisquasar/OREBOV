@@ -107,6 +107,10 @@ public class MobileEnemy : Enemy
                     State = EnemyState.NORMAL;
                 }
             }
+            else if (State == EnemyState.INTERACT)
+            {
+                State = EnemyState.NORMAL;
+            }
         }
         // Check if same position every {_secondCheckStuck} in seconds.
         if (_timeStamp <= Time.time)
