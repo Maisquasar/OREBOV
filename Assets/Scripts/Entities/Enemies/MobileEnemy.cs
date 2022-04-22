@@ -6,7 +6,7 @@ using States;
 public class MobileEnemy : Enemy
 {
     [Header("Controller")]
-    [HideInInspector] public MobileEnemyMovement _controller;
+    [SerializeField] public MobileEnemyMovement _controller;
 
 
     [Tooltip("The time the enemy search the player after follow him")]
@@ -30,13 +30,13 @@ public class MobileEnemy : Enemy
 
     override public void Start()
     {
-        _controller = GetComponent<MobileEnemyMovement>();
+        if (_controller == null)
+            _controller = GetComponent<MobileEnemyMovement>();
         _entityController = _controller;
         _objectManager = FindObjectOfType<ObjectManager>();
         _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
         State = EnemyState.NORMAL;
-        base.Start();
     }
 
     IEnumerator WaitStart()
@@ -65,6 +65,10 @@ public class MobileEnemy : Enemy
     override public void Update()
     {
         base.Update();
+        if (_controller.GoTo == Vector3.zero)
+        {
+            CheckpointChange();
+        }
         if (_player != null && _player.Dead)
             return;
         if (_checkpointManager == null)
@@ -80,11 +84,17 @@ public class MobileEnemy : Enemy
 
         if (!stillWaiting)
         {
-            if (_followPlayerOnDetection && State != EnemyState.SUSPICIOUS || !_followPlayerOnDetection)
-                _controller.Move(_controller.Direction);
-            if (State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x)
+            if ((_followPlayerOnDetection && State != EnemyState.SUSPICIOUS) || !_followPlayerOnDetection)
+                if ((int)transform.position.x != (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x || State == EnemyState.CHASE)
+                    _controller.Move(_controller.Direction);
+            if (State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x && !WaitForToggle)
             {
                 CheckpointChange();
+            }
+            // If Time = -1
+            else if (WaitForToggle && State != EnemyState.CHASE && (int)transform.position.x == (int)_checkpointManager.Checkpoints[_currentCheckpoint].transform.position.x && !_hasRotated)
+            {
+                Rotate();
             }
             else if (State == EnemyState.CHASE && (int)transform.position.x == (int)lastPlayerPos.x)
             {
@@ -94,7 +104,7 @@ public class MobileEnemy : Enemy
 
         // Enemy Interaction
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
-        if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.Switch)
+        if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.LightSwitch)
         {
             if (objectClose.DefaultState != objectClose.ObjectActive && State != EnemyState.CHASE)
             {
@@ -112,8 +122,9 @@ public class MobileEnemy : Enemy
                 State = EnemyState.NORMAL;
             }
         }
+
         // Check if same position every {_secondCheckStuck} in seconds.
-        if (_timeStamp <= Time.time)
+        if (_timeStamp <= Time.time && _checkpointManager.Checkpoints[_currentCheckpoint].Time != -1)
         {
             if (_precPoS == (Vector3)transform.position && State == EnemyState.CHASE)
             {
@@ -128,6 +139,12 @@ public class MobileEnemy : Enemy
         }
     }
 
+    bool _hasRotated = false;
+    void Rotate()
+    {
+        _hasRotated = true;
+        StartCoroutine(LerpFromTo(transform.rotation, transform.rotation * Quaternion.Euler(0, _checkpointManager.Checkpoints[_currentCheckpoint].Angle, 0), 0.2f));
+    }
 
     void StopFollowingPlayer()
     {
@@ -148,7 +165,7 @@ public class MobileEnemy : Enemy
     int _precCheckpoint;
     public void CheckpointChange()
     {
-        _precCheckpoint = _currentCheckpoint;
+        _hasRotated = false;
         StartCoroutine(WaitCheckpoint());
         if (!_checkpointManager.Reverse)
         {
@@ -184,13 +201,17 @@ public class MobileEnemy : Enemy
                 }
             }
         }
-        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time != -1)
-            _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
+        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time == -1)
+        {
+            WaitForToggle = true;
+        }
+        _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
 
-
+    bool WaitForToggle = false;
     public void GoToNextCheckpoint()
     {
+        WaitForToggle = false;
         stillWaiting = false;
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
     }
@@ -199,7 +220,7 @@ public class MobileEnemy : Enemy
     {
         stillWaiting = true;
         yield return new WaitForSeconds(SearchTime);
-        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time == -1)
+        if (_checkpointManager.Checkpoints[_precCheckpoint].Time == -1)
             _currentCheckpoint = _precCheckpoint;
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
         State = EnemyState.NORMAL;
@@ -233,7 +254,6 @@ public class MobileEnemy : Enemy
         stillWaiting = true;
         StartCoroutine(LerpFromTo(transform.rotation, transform.rotation * Quaternion.Euler(0, _checkpointManager.Checkpoints[indexAtStart].Angle, 0), _checkpointManager.Checkpoints[indexAtStart].Time * 25 / 100));
         yield return new WaitForSeconds(_checkpointManager.Checkpoints[indexAtStart].Time);
-        if (_checkpointManager.Checkpoints[indexAtStart].Time != -1)
-            stillWaiting = false;
+        stillWaiting = false;
     }
 }
