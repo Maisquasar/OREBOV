@@ -71,7 +71,7 @@ public class CameraBehavior : MonoBehaviour
 
     private void Update()
     {
-        refreshFPS();
+        RefreshFPS();
     }
     private void FixedUpdate()
     {
@@ -141,7 +141,7 @@ public class CameraBehavior : MonoBehaviour
             _debugCanvas.enabled = !_debugCanvas.enabled;
     }
 
-    private void refreshFPS()
+    private void RefreshFPS()
     {
         if (!_debugCanvas.enabled) return;
         float fps = 1 / Time.deltaTime;
