@@ -26,6 +26,8 @@ public class MobileEnemyMovement : EntityMovement
 
     private void Update()
     {
+        if (_goTo == Vector3.zero)
+            Debug.Log("Test");
         if (!DetectWall())
             animator.SetFloat("VelocityX", _rb.velocity.x);
         else
@@ -35,7 +37,7 @@ public class MobileEnemyMovement : EntityMovement
     public override void Move(float move)
     {
         base.Move(move);
-        if (_goTo == null)
+        if (_goTo == Vector3.zero || _goTo == null)
             return;
         move *= speed;
         if ((_goTo.x > transform.position.x && Mathf.Sign(move) == -1) || (_goTo.x < transform.position.x && Mathf.Sign(move) == 1))

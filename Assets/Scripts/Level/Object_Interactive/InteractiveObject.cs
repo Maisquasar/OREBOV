@@ -11,6 +11,7 @@ namespace InteractObject
     {
         Box,
         Switch,
+        LightSwitch,
         Hideout,
         Ladder
     }

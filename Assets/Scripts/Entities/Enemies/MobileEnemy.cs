@@ -6,7 +6,7 @@ using States;
 public class MobileEnemy : Enemy
 {
     [Header("Controller")]
-    [HideInInspector] public MobileEnemyMovement _controller;
+    [SerializeField] public MobileEnemyMovement _controller;
 
 
     [Tooltip("The time the enemy search the player after follow him")]
@@ -30,7 +30,8 @@ public class MobileEnemy : Enemy
 
     override public void Start()
     {
-        _controller = GetComponent<MobileEnemyMovement>();
+        if (_controller == null)
+            _controller = GetComponent<MobileEnemyMovement>();
         _entityController = _controller;
         _objectManager = FindObjectOfType<ObjectManager>();
         _currentCheckpoint = 0;
@@ -94,7 +95,7 @@ public class MobileEnemy : Enemy
 
         // Enemy Interaction
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
-        if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.Switch)
+        if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.LightSwitch)
         {
             if (objectClose.DefaultState != objectClose.ObjectActive && State != EnemyState.CHASE)
             {
@@ -113,7 +114,7 @@ public class MobileEnemy : Enemy
             }
         }
         // Check if same position every {_secondCheckStuck} in seconds.
-        if (_timeStamp <= Time.time)
+        if (_timeStamp <= Time.time && _checkpointManager.Checkpoints[_currentCheckpoint].Time != -1)
         {
             if (_precPoS == (Vector3)transform.position && State == EnemyState.CHASE)
             {
@@ -199,7 +200,7 @@ public class MobileEnemy : Enemy
     {
         stillWaiting = true;
         yield return new WaitForSeconds(SearchTime);
-        if (_checkpointManager.Checkpoints[_currentCheckpoint].Time == -1)
+        if (_checkpointManager.Checkpoints[_precCheckpoint].Time == -1)
             _currentCheckpoint = _precCheckpoint;
         _controller.NewCheckpoint(_checkpointManager.Checkpoints[_currentCheckpoint].transform.position);
         State = EnemyState.NORMAL;

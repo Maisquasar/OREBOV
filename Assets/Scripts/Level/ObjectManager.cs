@@ -22,6 +22,8 @@ public class ObjectManager : MonoBehaviour
 
         for (int i = 0; i < _interactiveObjectList.Length; i++)
         {
+            if (_interactiveObjectList[i] == null)
+                continue;
             Vector3 pos = _interactiveObjectList[i].transform.position + (position - _interactiveObjectList[i].transform.position).normalized * _interactiveObjectList[i].ObjectInteractionArea;    
             if (Vector3.Distance(position, pos) < distanceObject)
             {
