@@ -21,4 +21,9 @@ public class GeneralMenuFeature : MonoBehaviour
     {
         SceneManager.LoadScene(index);
     }
+
+    public static void SwitchGameObjectState(GameObject item)
+    {
+        item.SetActive(!item.activeSelf);
+    }
 }
