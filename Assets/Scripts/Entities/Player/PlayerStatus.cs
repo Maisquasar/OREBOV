@@ -122,7 +122,7 @@ public class PlayerStatus : Entity
             _soundBoard[SoundIDs.Stress].StopSound();
             return;
         }
-        
+
         if (_stressTimer > 0) _stressTimer -= Time.deltaTime;
         else if (_soundBoard[SoundIDs.Stress].Active) _soundBoard[SoundIDs.Stress].StopSound();
         _shadowPos = _caster.GetShadowPos();
@@ -291,7 +291,6 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        Debug.Log("Test");
         transform.position = CheckpointPos;
         _playerAnimator.enabled = true;
         _playerInteraction.enabled = true;
@@ -334,9 +333,10 @@ public class PlayerStatus : Entity
         transform.position = goTo;
     }
 
+
+
     private void PlayerDeath()
     {
-        Debug.Log("Dead");
         Controller.SetDead(true);
         _soundBoard[SoundIDs.Death].PlaySound();
         if (Dead && !_respawn)

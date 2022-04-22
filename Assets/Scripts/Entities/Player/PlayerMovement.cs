@@ -297,7 +297,6 @@ public class PlayerMovement : EntityMovement
         CanHide = false;
         animator.SetBool("Hide", true);
         IsHide = true;
-        Debug.Log(IsHide);
         Quaternion target = Quaternion.Euler(0, 0, 0);
         StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.forward * 1f, 0.2f));
         yield return StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
@@ -316,7 +315,6 @@ public class PlayerMovement : EntityMovement
         yield return new WaitForSeconds(0.6f);
         IsHide = false;
         _playerStatus.IsHide = false;
-        Debug.Log(IsHide);
         Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
         StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
         yield return new WaitForSeconds(0.5f);

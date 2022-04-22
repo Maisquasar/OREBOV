@@ -11,7 +11,6 @@ public class UIOptionsMenu : MonoBehaviour
     {
         yield return new WaitForSeconds(0.01f);
         _eventSystem.SetSelectedGameObject(uiObject);
-        Debug.Log(uiObject.name);
         yield return null;
     }
 

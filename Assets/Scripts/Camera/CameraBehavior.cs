@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputAction;
 
 public class CameraBehavior : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class CameraBehavior : MonoBehaviour
     [Range(0, 100f)]
     [SerializeField] private float _stopCamDistance;
     [SerializeField] private LayerMask _camLayer;
+    [SerializeField] private Canvas _debugCanvas;
     [SerializeField] private TextMeshProUGUI _fpsCounter;
     [SerializeField] private Texture2D tex;
     private float _maxFPS = 60.0f;
@@ -133,8 +135,15 @@ public class CameraBehavior : MonoBehaviour
         return Physics.Raycast(pos, Vector3.right, out hit, distance, _camLayer, QueryTriggerInteraction.Ignore);
     }
 
+    public void ToggleDebug(CallbackContext context)
+    {
+        if (context.started)
+            _debugCanvas.enabled = !_debugCanvas.enabled;
+    }
+
     private void refreshFPS()
     {
+        if (!_debugCanvas.enabled) return;
         float fps = 1 / Time.deltaTime;
         if (_timer != (int)(Time.time/5))
         {
