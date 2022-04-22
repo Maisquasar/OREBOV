@@ -17,7 +17,7 @@ public class InteractiveLightSwitch : InteractiveObject
     protected override void Start()
     {
         base.Start();
-        ObjectType = InteractObjects.Switch;
+        ObjectType = InteractObjects.LightSwitch;
         if (!_handle) _handle = transform.GetChild(0).gameObject;
     }
 

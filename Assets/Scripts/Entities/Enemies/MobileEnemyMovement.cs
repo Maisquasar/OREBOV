@@ -6,6 +6,8 @@ public class MobileEnemyMovement : EntityMovement
 {
     [SerializeField] AnimationCurve _velocityCurve;
 
+    public Vector3 GoTo { get { return _goTo; } }
+
     Vector3 _goTo;
     float _time;
 
@@ -35,7 +37,7 @@ public class MobileEnemyMovement : EntityMovement
     public override void Move(float move)
     {
         base.Move(move);
-        if (_goTo == null)
+        if (_goTo == Vector3.zero || _goTo == null)
             return;
         move *= speed;
         if ((_goTo.x > transform.position.x && Mathf.Sign(move) == -1) || (_goTo.x < transform.position.x && Mathf.Sign(move) == 1))
