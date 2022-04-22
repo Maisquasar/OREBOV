@@ -9,27 +9,41 @@ public class DetectionZone : Trigger
     private PlayerAnimator _playerAnimator;
     private PlayerStatus _playerStatus;
     [HideInInspector] public float DistanceDetection = 0;
-
+    [HideInInspector] public bool LinkToLight = false;
     public override void Start()
     {
         base.Start();
         _playerAnimator = FindObjectOfType<PlayerAnimator>();
         _playerStatus = _playerAnimator.GetComponent<PlayerStatus>();
     }
-
     private void OnTriggerStay(Collider other)
     {
         Component t = other.gameObject.GetComponent(typeof(PlayerStatus));
         if (t != null)
         {
+            if (_playerAnimator == null)
+            {
+                GetPlayerComponents();
+            }
             if (CheckForObstacles() || _playerAnimator.IsInAmination || _playerStatus.IsShadow || _playerStatus.IsHide)
             {
+                if (DistanceDetection > 0 && _playerStatus.MoveDir != Vector2.zero)
+                {
+                    Enemy.PlayerDetected = true;
+                    if (DistanceDetection != -1 && DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
+                        Enemy.TimeStamp = 0;
+                }
+                else if (Enemy.PlayerDetected)
+                {
+                    StartCoroutine(WaitForNextFrame());
+                    Enemy.PlayerDetected = false;
+                }
                 return;
             }
 
             if (DistanceDetection == 0)
                 Enemy.TimeStamp = 0;
-            if (DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
+            if (DistanceDetection != -1 && DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
                 Enemy.TimeStamp = 0;
             Enemy.PlayerDetected = true;
             ((PlayerStatus)t).StressPlayer(5.0f);
@@ -40,16 +54,16 @@ public class DetectionZone : Trigger
     {
         if (other.gameObject.GetComponent<PlayerStatus>())
         {
-            if (_playerStatus.IsHide || _playerStatus.IsShadow)
-                return;
             Enemy.PlayerDetected = false;
+            if (_playerStatus.IsShadow || _playerStatus.IsHide)
+                return;
             StartCoroutine(WaitForNextFrame());
         }
     }
 
     private bool CheckForObstacles()
     {
-        if (Enemy.Controller == null)
+        if (Enemy.Controller == null || LinkToLight)
             return false;
         if (Physics.Raycast(Enemy.transform.position, _playerStatus.transform.position - Enemy.transform.position, Vector3.Distance(Enemy.transform.position, _playerStatus.transform.position), Enemy.Controller.WallType, QueryTriggerInteraction.Ignore))
             return true;
@@ -61,5 +75,11 @@ public class DetectionZone : Trigger
         yield return new WaitForEndOfFrame();
         if (!Enemy.PlayerDetected)
             Enemy.GoToPlayer(_playerStatus.transform.position);
+    }
+
+    private void GetPlayerComponents()
+    {
+        _playerAnimator = FindObjectOfType<PlayerAnimator>();
+        _playerStatus = _playerAnimator.GetComponent<PlayerStatus>();
     }
 }

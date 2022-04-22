@@ -36,14 +36,6 @@ public class PlayerMovement : EntityMovement
     private bool _fallDefine = false;
 
     PlayerStatus _playerStatus;
-    public void SetSounds(ref Dictionary<SoundIDs, SoundEffectsHandler> sounds)
-    {
-        _walkInsideEffectsHandler = sounds[SoundIDs.WalkInside];
-        _walkOutsideEffectsHandler = sounds[SoundIDs.WalkOutside];
-        _walkRainEffectsHandler = sounds[SoundIDs.WalkRain];
-        _landInsideEffectHandler = sounds[SoundIDs.FallInterior];
-        _landOutsideEffectHandler = sounds[SoundIDs.FallExterior];
-    }
 
     private new void Start()
     {
@@ -68,6 +60,9 @@ public class PlayerMovement : EntityMovement
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(edgeDetectorDistance, topEdgeDetectorHeight, 0));
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, topEdgeDetectorHeight, 0));
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(LastPosBeforeFall, 0.5f);
     }
 
     #endregion
@@ -90,15 +85,17 @@ public class PlayerMovement : EntityMovement
             {
                 _playerStatus.Dead = true;
             }
+            LastPosBeforeFall = transform.position;
         }
 
-        if (!DetectWall())
-            animator.SetFloat("VelocityX", _rb.velocity.x);
-        else
+        if (DetectWall() || (_playerStatus.GetComponent<PlayerAnimator>().IsInAmination && !_playerStatus.IsShadow))
             animator.SetFloat("VelocityX", 0);
+        else
+            animator.SetFloat("VelocityX", _rb.velocity.x);
 
         animator.SetFloat("VelocityY", _rb.velocity.y);
         animator.SetBool("Grounded", _grounded);
+
         CheckForClimb();
     }
 
@@ -129,6 +126,19 @@ public class PlayerMovement : EntityMovement
         }
     }
 
+    public void CheckForClimbLadder()
+    {
+        RaycastHit[] topRay = Physics.RaycastAll(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), Vector3.back, edgeDetectorDistance + 0.5f, GroundType, QueryTriggerInteraction.Ignore);
+        RaycastHit[] downRay = Physics.RaycastAll(transform.position + new Vector3(0, edgeDetectorHeight, 0), Vector3.right, edgeDetectorDistance, GroundType, QueryTriggerInteraction.Ignore);
+        foreach (var ray in downRay)
+        {
+            if (topRay.Length == 0 && !IsClimbing)
+            {
+                StartCoroutine(PlayClimb());
+            }
+        }
+    }
+
     public void ChangeState(ref PlayerAction State)
     {
         if (State != PlayerAction.INTERACT && State != PlayerAction.PUSHING)
@@ -153,10 +163,13 @@ public class PlayerMovement : EntityMovement
     // Move the player.
     public override void Move(float move)
     {
-        base.Move(move);
         // If climbing then can't move
-        if (IsClimbing || IsPushing || IsPulling || IsHide)
+        if (IsClimbing || IsPushing || IsPulling || IsHide || ClimbingLadder)
+        {
+            base.Move(0);
             return;
+        }
+        base.Move(move);
         _lastMove = move;
 
         // Set move speed.
@@ -213,6 +226,11 @@ public class PlayerMovement : EntityMovement
 
     protected override void LandOnGround()
     {
+        if (IsClimbing || _playerStatus.Dead)
+        {
+            _grounded = true;
+            return;
+        }
         base.LandOnGround();
     }
 
@@ -257,65 +275,53 @@ public class PlayerMovement : EntityMovement
     }
 
     [HideInInspector] public bool IsPushing = false;
-    // Play push animation.
-    public IEnumerator PlayPush()
-    {
-        if (!IsPushing)
-        {
-            IsPushing = true;
-            animator.Play("Push");
-            yield return new WaitForSeconds(1f);
-            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                yield return null;
-            }
-            IsPushing = false;
-        }
-        yield return null;
-    }
 
     [HideInInspector] public bool IsPulling = false;
-    // Play pull animation.
-    public IEnumerator PlayPull()
+
+    public void Push(bool value)
     {
-        if (!IsPulling)
-        {
-            IsPulling = true;
-            animator.Play("Pull");
-            yield return new WaitForSeconds(1f);
-            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                yield return null;
-            }
-            IsPulling = false;
-        }
-        yield return null;
+        animator.SetBool("Pushing", value);
+        animator.SetBool("Pulling", false);
+    }
+
+    public void Pull(bool value)
+    {
+        animator.SetBool("Pulling", value);
+        animator.SetBool("Pushing", false);
     }
 
     [HideInInspector] public bool IsHide = false;
-    public IEnumerator PlayHide()
+    public IEnumerator PlayHide(Vector3 position)
     {
+        lastZPos = transform.position.z;
+        CanHide = false;
         animator.SetBool("Hide", true);
         IsHide = true;
         Quaternion target = Quaternion.Euler(0, 0, 0);
-        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.forward * 1f, 0.2f));
+        StartCoroutine(LerpFromTo(transform.position, new Vector3(position.x, transform.position.y, position.z), 0.2f));
         yield return StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
         yield return new WaitForSeconds(1.133f);
         _playerStatus.IsHide = true;
     }
 
+    float lastZPos;
+    [HideInInspector] public bool CanHide = true;
     public IEnumerator StopHide()
     {
         _playerStatus.IsHide = false;
         animator.SetBool("Hide", false);
-        yield return new WaitForSeconds(1.1f);
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(LerpFromTo(transform.position, new Vector3(transform.position.x, transform.position.y, lastZPos), 0.6f));
+        yield return new WaitForSeconds(0.6f);
         IsHide = false;
-        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.back * 1f, 0.2f));
+        _playerStatus.IsHide = false;
         Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
         StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
+        yield return new WaitForSeconds(0.5f);
+        CanHide = true;
     }
 
-    IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
+    public IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
     {
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {

@@ -22,6 +22,7 @@ public enum SoundIDs
     TransformToShadow,
     TransformToHuman,
     TransformationFail,
+    EnemySus,
 }
 
 public class PlayerStatus : Entity
@@ -57,6 +58,7 @@ public class PlayerStatus : Entity
     private bool _respawn = false; // To execute repawn only once.
     private bool _exactPos = false; // To execute LerpTo only once.
     private float _stressTimer = 0.0f;
+    public bool IsInLight { get { return _caster.IsInLight(); } }
     public bool IsShadow { get { return _isShadow; } }
 
     public Vector2 MoveDir { get { return _movementDir; } }
@@ -71,7 +73,7 @@ public class PlayerStatus : Entity
     }
 
 
-       #region Initiate Script 
+    #region Initiate Script 
     private void Start()
     {
         InitComponent();
@@ -120,6 +122,7 @@ public class PlayerStatus : Entity
             _soundBoard[SoundIDs.Stress].StopSound();
             return;
         }
+
         if (_stressTimer > 0) _stressTimer -= Time.deltaTime;
         else if (_soundBoard[SoundIDs.Stress].Active) _soundBoard[SoundIDs.Stress].StopSound();
         _shadowPos = _caster.GetShadowPos();
@@ -177,16 +180,16 @@ public class PlayerStatus : Entity
     public void PlayRightAnimation(float axis)
     {
         if (axis == 0)
+        {
             return;
+        }
         if (transform.position.x < _playerInteraction.InteractiveObjectPos.x && axis > 0 || (transform.position.x > _playerInteraction.InteractiveObjectPos.x && axis < 0))
         {
-            if (!Controller.IsPulling)
-                StartCoroutine(Controller.PlayPush());
+            Controller.Push(true);
         }
         else
         {
-            if (!Controller.IsPushing)
-                StartCoroutine(Controller.PlayPull());
+            Controller.Pull(true);
         }
     }
 
@@ -274,10 +277,6 @@ public class PlayerStatus : Entity
             Gizmos.color = Color.red;
         else
             Gizmos.color = Color.green;
-        if (_playerInteraction.Interaction == PlayerInteraction.InteractionState.Selected)
-        {
-            Gizmos.DrawLine(transform.position, _playerInteraction.InteractiveObjectPos - new Vector3(_playerInteraction.InteractiveObjectScale.x / 2, 0, 0) * Controller.Direction);
-        }
     }
 
     private bool CheckForObstacles()
@@ -292,7 +291,6 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        Debug.Log("Test");
         transform.position = CheckpointPos;
         _playerAnimator.enabled = true;
         _playerInteraction.enabled = true;
@@ -335,6 +333,8 @@ public class PlayerStatus : Entity
         transform.position = goTo;
     }
 
+
+
     private void PlayerDeath()
     {
         Controller.SetDead(true);
@@ -351,20 +351,21 @@ public class PlayerStatus : Entity
     }
 
 
-    public void Hide(bool hide)
+    public void Hide(bool hide, Vector3 position)
     {
         if (hide)
         {
-            StartCoroutine(Controller.PlayHide());
+            StartCoroutine(Controller.PlayHide(position));
         }
         else
         {
             StartCoroutine(Controller.StopHide());
         }
     }
-    
+
     public void StressPlayer(float delay)
     {
+        if (Dead) return;
         if (delay > _stressTimer) _stressTimer = delay;
         _soundBoard[SoundIDs.Stress].PlaySound();
     }

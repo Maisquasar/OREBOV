@@ -52,7 +52,7 @@ public class Elevator : SwitchableObjects
     }
     bool cancel = false;
 
-    bool CoroutineEnd = true;
+    [HideInInspector] public bool CoroutineEnd = true;
     IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
     {
         CoroutineEnd = false;
@@ -86,7 +86,6 @@ public class Elevator : SwitchableObjects
             var Distance = Vector3.Distance(transform.position, Goto);
             var Distance2 = Vector3.Distance(Goto, _initialPos);
             float tmp = (Distance * Timer) / Distance2;
-            Debug.Log(tmp);
             StartCoroutine(LerpFromTo(transform.position, Goto, tmp));
         }
     }

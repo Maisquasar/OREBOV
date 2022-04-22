@@ -33,27 +33,29 @@ public class MobileLight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!atDestination && CoroutineEnd)
+        if (!atDestination)
         {
-            StartCoroutine(LerpFromTo(transform.position, Goto, Timer));
+            Lerp(_initialPos, Goto, Timer);
         }
-        else if (CoroutineEnd)
+        else
         {
-            StartCoroutine(LerpFromTo(transform.position, _initialPos, Timer));
+            Lerp(Goto, _initialPos, Timer);
         }
     }
 
-    bool CoroutineEnd = true;
-    IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
+    float _actualTime = 0;
+    private void Lerp(Vector3 initial, Vector3 goTo, float duration)
     {
-        CoroutineEnd = false;
-        for (float t = 0f; t < duration; t += Time.deltaTime)
+        if (_actualTime < duration)
         {
-            transform.position = Vector3.Lerp(initial, goTo, t / duration);
-            yield return 0;
+            transform.position = Vector3.Lerp(initial, goTo, _actualTime / duration);
+            _actualTime += Time.deltaTime;
         }
-        transform.position = goTo;
-        CoroutineEnd = true;
-        atDestination = !atDestination;
+        else
+        {
+            transform.position = goTo;
+            _actualTime = 0;
+            atDestination = !atDestination;
+        }
     }
 }

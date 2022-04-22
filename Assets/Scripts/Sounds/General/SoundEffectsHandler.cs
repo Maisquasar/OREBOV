@@ -43,11 +43,6 @@ public class SoundEffectsHandler : MonoBehaviour
 
     private void CheckComponentIsValid()
     {
-        if (_audioClipArray.Length == 0)
-        {
-            Debug.LogError(" No sound in the " + gameObject.name + " for the " + _soundName + " sound effect handler . This component disable for play mode ");
-            this.enabled = false;
-        }
         if (_audioClipArray.Length == 1)
         {
             _randomPlaySound = false;
@@ -75,7 +70,7 @@ public class SoundEffectsHandler : MonoBehaviour
 
     public void PlaySound()
     {
-        if (_active) return;
+        if (_active || _audioClipArray.Length == 0) return;
         if (_looped) _active = true;
         if (_playCount == 1 && _playCountRandomChances == 0) playSoundOnce();
         else StartCoroutine(playSoundMultiple());
@@ -83,7 +78,7 @@ public class SoundEffectsHandler : MonoBehaviour
 
     public void StopSound()
     {
-        if (!_active) return;
+        if (!_active || _audioClipArray.Length == 0) return;
         StopAllCoroutines();
         _active = false;
         foreach (AudioSource item in _audioSources)

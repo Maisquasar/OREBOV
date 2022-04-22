@@ -44,6 +44,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "Debug",
+                    "type": "Button",
+                    "id": "cc17ef3e-6934-4c2f-9664-4b1ffdf40061",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -281,7 +289,7 @@
                 {
                     "name": "",
                     "id": "3a0eba94-d4b2-4851-a34b-fcde4ab41069",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/backspace",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -308,6 +316,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bc20d693-ba68-4ddc-a18a-6ab116677296",
+                    "path": "<Keyboard>/f3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Debug",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

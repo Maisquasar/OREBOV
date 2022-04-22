@@ -36,8 +36,22 @@ public class PlayerInteraction : MonoBehaviour
     public bool CanStopNow = true; // Used to Lock the player during pushing animation
 
     public InteractObjects ObjectType { get { return _objectInteractive.ObjectType; } }
-    public Vector3 InteractiveObjectPos { get { return _objectInteractive.transform.position; } }
-    public Vector3 InteractiveObjectScale { get { return _objectInteractive.transform.localScale; } }
+    public Vector3 InteractiveObjectPos
+    {
+        get
+        {
+            if (_objectInteractive != null) return _objectInteractive.transform.position;
+            else return Vector3.zero;
+        }
+    }
+    public Vector3 InteractiveObjectScale
+    {
+        get
+        {
+            if (_objectInteractive != null) return _objectInteractive.transform.localScale;
+            else return Vector3.zero;
+        }
+    }
     public InteractiveObject Object { get { return _objectInteractive; } }
     public InteractionState Interaction { get { return _interactionState; } }
 
@@ -134,7 +148,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         if (!CanStopNow)
         {
-            _objectInteractive._deactiveInteraction = true;
+            _objectInteractive.DeactiveInteraction = true;
         }
     }
 
@@ -162,7 +176,7 @@ public class PlayerInteraction : MonoBehaviour
     {
 
         _objectInteractive = interactiveObject;
-        _objectInteractive._isSelected = true;
+        _objectInteractive.IsSelected = true;
         _uiInteract.SetActive(true);
         _uiInteract.transform.position = _objectInteractive.HintPosition;
         _uiInteract.transform.rotation = _uiRot;
@@ -172,7 +186,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private bool CanBeSelected(InteractiveObject interactiveObject)
     {
-        if (interactiveObject.transform.position.y >= transform.position.y && (interactiveObject._useOnlyInShadow && _playerStatus.IsShadow || !interactiveObject._useOnlyInShadow))
+        if (interactiveObject.transform.position.y >= transform.position.y && (interactiveObject.UseOnlyInShadow && _playerStatus.IsShadow || !interactiveObject.UseOnlyInShadow))
             return true;
         else
             return false;
@@ -182,7 +196,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (_objectInteractive)
         {
-            _objectInteractive._isSelected = false;
+            _objectInteractive.IsSelected = false;
             _objectInteractive = null;
             _uiInteract.SetActive(false);
             _uiInteract.transform.SetParent(transform);
@@ -194,7 +208,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (_objectInteractive && _objectInteractive != obj)
         {
-            _objectInteractive._isSelected = false;
+            _objectInteractive.IsSelected = false;
             _objectInteractive = null;
             _uiInteract.SetActive(false);
         }

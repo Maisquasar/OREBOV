@@ -10,10 +10,8 @@ public class WindowTrigger : Trigger
     [SerializeField] private LayerMask _triggerMask;
 
     [Header("Trigger Setting")]
-    [SerializeField]
-    private bool _reverse;
-    [SerializeField]
-    private float _speedOfTransition;
+    [SerializeField] private bool _reverse;
+    [SerializeField]private float _speedOfTransition;
 
     private float _transitionTimer;
     private bool _isInFront;
@@ -25,14 +23,21 @@ public class WindowTrigger : Trigger
 
     [SerializeField] private Vector2 startWindowSize = new Vector3();
     [SerializeField] private Vector2 startWindowOffset = new Vector3();
+
     private bool _isTransfom;
     private bool _firstContact = true;
+    
     private BoxCollider _boxCollider;
     private CameraBehavior _cameraBehavior;
 
     override public void Start()
     {
         base.Start();
+        InitComponents();
+    }
+
+    private void InitComponents()
+    {
         _cameraBehavior = Camera.main.GetComponent<CameraBehavior>();
         _boxCollider = GetComponent<BoxCollider>();
     }
@@ -56,15 +61,8 @@ public class WindowTrigger : Trigger
 
         if (other.tag == _tagTrigger)
         {
-            Debug.Log(other.gameObject.name);
-            bool _testPos = _isInFront;
 
-            if (other.transform.position.x > transform.position.x + _boxCollider.center.x)
-                _testPos = true;
-            if (other.transform.position.x < transform.position.x + _boxCollider.center.x)
-                _testPos = false;
-
-            if (_testPos != _isInFront)
+            if (CheckIsTrigger(other)) 
             {
                 if (_isTransfom)
                 {
@@ -73,16 +71,25 @@ public class WindowTrigger : Trigger
                     _isTransfom = false;
                 }
                 StartCoroutine(WindowTransition());
-                _isInFront = _testPos;
+                _isInFront =  !_isInFront;
             }
         }
+    }
 
+    private bool CheckIsTrigger(Collider other)
+    {
+        bool _testPos = _isInFront;
 
+        if (other.transform.position.x > transform.position.x + _boxCollider.center.x)
+            _testPos = true;
+        if (other.transform.position.x < transform.position.x + _boxCollider.center.x)
+            _testPos = false;
+
+        return  _testPos != _isInFront;
     }
 
     private IEnumerator WindowTransition()
     {
-        Debug.Log("Collide");
 
         _isTransfom = true;
         while (_transitionTimer < _speedOfTransition)

@@ -1,19 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using States;
 
-
 public class Enemy : Entity
 {
-    private EntityMovement _entityController;
+    protected EntityMovement _entityController;
+
+    private Dictionary<SoundIDs, SoundEffectsHandler> _soundBoard = new Dictionary<SoundIDs, SoundEffectsHandler>();
 
     [Header("Detection Zones")]
     [SerializeField] public DetectionZone CloseDetectionZone;
     [SerializeField] public DetectionZone FOVCone;
     [HideInInspector] public EnemyState State;
     [SerializeField] protected Weapon _weapon;
+    [SerializeField] private GameObject _soundEffectsHandler;
 
     [Header("Range Settings")]
     [Tooltip("The Distance to the player to kill him instant for cone, Indiced by purple line")]
@@ -41,6 +44,28 @@ public class Enemy : Entity
         FOVCone.DistanceDetection = DetectionRange;
         if (_weapon == null)
             _weapon = new Weapon();
+        foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
+        {
+            bool found = false;
+            foreach (var id in Enum.GetValues(typeof(SoundIDs)))
+            {
+                if (id.ToString().Equals(item.SoundName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    try
+                    {
+                        _soundBoard.Add((SoundIDs)id, item);
+                        found = true;
+                    }
+                    catch (ArgumentException)
+                    {
+                        Debug.LogWarning("Duplicate element " + item.SoundName + "in sound effects");
+                    }
+                    break;
+                }
+            }
+            if (!found) Debug.LogWarning("Element " + item.SoundName + " not found in sound IDs");
+        }
+        _entityController.SetSounds(ref _soundBoard);
     }
 
     private void OnDrawGizmos()
@@ -59,7 +84,11 @@ public class Enemy : Entity
             if (TimeStamp > 0 && PlayerDetected)
             {
                 TimeStamp -= Time.deltaTime * GaugeAdd;
-                State = EnemyState.SUSPICIOUS;
+                if (State != EnemyState.SUSPICIOUS)
+                {
+                    _soundBoard[SoundIDs.EnemySus].PlaySound();
+                    State = EnemyState.SUSPICIOUS;
+                }
             }
             else if (TimeStamp < DetectionTime)
             {
@@ -68,7 +97,6 @@ public class Enemy : Entity
             if (TimeStamp <= 0)
             {
                 _player.Dead = true;
-                Debug.Log("Shoot!!");
                 Shoot();
                 if (_weapon != null)
                     _weapon.Shoot();

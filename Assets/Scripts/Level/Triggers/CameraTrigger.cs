@@ -26,11 +26,8 @@ public class CameraTrigger : Trigger
     private PlayerStatus _playerStatus;
 
     private bool _isActivate = false;
-    private bool _resetTrigger = true;
+    public bool _resetTrigger = true;
     private bool _goToEnd = true;
-
-
-    #region Inititate Script
 
     public override void Start()
     {
@@ -38,6 +35,9 @@ public class CameraTrigger : Trigger
         InitCheckpointLight();
         base.Start();
     }
+
+    #region Inititate Script
+
 
 
     private void InitCamera()
@@ -69,6 +69,7 @@ public class CameraTrigger : Trigger
     private void OnTriggerStay(Collider other)
     {
         if (_resetTrigger) DetectPlayer(other);
+        else ResetTriggetTest(other);
 
     }
 
@@ -93,6 +94,8 @@ public class CameraTrigger : Trigger
                 _resetTrigger = false;
                 return;
             }
+
+
             if (!_checkPlayerState)
             {
                 ActiveCameraMove();
@@ -101,6 +104,18 @@ public class CameraTrigger : Trigger
         }
     }
 
+
+    private void ResetTriggetTest(Collider other)
+    {
+        if (other.gameObject.tag == "Player" && _goToEnd)
+        {
+            if (_checkPlayerState && _playerStatus.IsShadow != _isShadow)
+            {
+                _resetTrigger = true;
+                return;
+            }
+        }
+    }
     private void GetPlayerStatus(Collider other)
     {
         if (_playerStatus == null)
@@ -129,12 +144,12 @@ public class CameraTrigger : Trigger
         StartCoroutine(LerpFromToWindowSize(_cameraBehavior.WindowSize, _windowSize, switchTo[1].TravelTime));
         StartCoroutine(LerpFromToWindowOffset(_cameraBehavior.WindowOffset, _windowOffset, switchTo[1].TravelTime));
         for (int i = 0; i < switchTo.Count - 1; i++)
-        {   
-            
-            StartCoroutine(LerpFromTo(switchTo[i].transform.position, switchTo[i + 1].transform.position, switchTo[i + 1].TravelTime));
-         
+        {
 
-            
+            StartCoroutine(LerpFromTo(switchTo[i].transform.position, switchTo[i + 1].transform.position, switchTo[i + 1].TravelTime));
+
+
+
             yield return StartCoroutine(LerpFromTo(switchTo[i].transform.rotation, switchTo[i + 1].transform.rotation, switchTo[i + 1].TravelTime));
             if (reverse)
                 Swap();
@@ -191,7 +206,7 @@ public class CameraTrigger : Trigger
     {
         if (_resetFreeMouvement) _cameraBehavior.DeactiveFreeMode();
         _isActivate = false;
-       
+
     }
 
     // Swap values between startPos and SwitchTo.
@@ -205,7 +220,7 @@ public class CameraTrigger : Trigger
     {
         Vector2 _sizeTemp = _cameraBehavior.WindowSize;
         Vector2 _offsetTemp = _cameraBehavior.WindowOffset;
-       
+
         if (reverse)
         {
             _windowOffset = _offsetTemp;

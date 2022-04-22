@@ -1,72 +1,78 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using static UnityEngine.InputSystem.InputAction;
 
 public class CameraBehavior : MonoBehaviour
 {
-
- 
-
     private enum CameraBehaviorState
     {
         FollowTarget,
         FreeMovement,
     }
 
-    [SerializeField]
-    private CameraBehaviorState _camState;
+    [SerializeField] private CameraBehaviorState _camState;
 
     [Header("Camera Window")]
-    [SerializeField]
-    private GameObject _mainTarget;
-    public GameObject MainTarget { get { return _mainTarget; } }
-
-    [Space]
+    [SerializeField] private GameObject _mainTarget;
     [SerializeField] private bool _showWindow;
     public Vector2 WindowSize;
     public Vector2 WindowOffset;
 
-
-    [SerializeField]
     [Range(0f, 10f)]
-    private float _camWindownSpeed;
-
-    [SerializeField]
+    [SerializeField] private float _camWindownSpeed;
     [Range(0f, 10000f)]
-    private float _camSpeed;
+    [SerializeField] private float _camSpeed;
 
-    [Range(0,100f)]
+    [Range(0, 100f)]
     [SerializeField] private float _stopCamDistance;
     [SerializeField] private LayerMask _camLayer;
+    [SerializeField] private Canvas _debugCanvas;
+    [SerializeField] private TextMeshProUGUI _fpsCounter;
+    [SerializeField] private Texture2D tex;
+    private float _maxFPS = 60.0f;
+    private float _minFPS = 60.0f;
+    private int _timer;
 
-
-    [HideInInspector]
-    public Vector2 WindowSizeCheckpoint;
-    [HideInInspector]
-    public Vector2 WindowOffsetCheckpoint;
-    [HideInInspector]
-    public Vector3 PositionCheckpoint;
-    [HideInInspector]
-    public Quaternion RotationCheckpoint; 
+    // Checkpoint variable
+    [HideInInspector] public Vector2 WindowSizeCheckpoint;
+    [HideInInspector] public Vector2 WindowOffsetCheckpoint;
+    [HideInInspector] public Vector3 PositionCheckpoint;
+    [HideInInspector] public Quaternion RotationCheckpoint;
 
     private PlayerStatus _player;
     private Vector3 _windowCenter;
     private Vector3 _windowOrigin;
-    private Vector2 dir;
-    private bool _inScreen;
+    private Vector2 _dir;
 
 
     public void Start()
     {
+        InitCameraPosition();
+        InitComponents();
+    }
+
+    #region Initialisation
+    private void InitComponents()
+    {
+        _player = _mainTarget.GetComponent<PlayerStatus>();
+    }
+
+    private void InitCameraPosition()
+    {
+
         Vector3 naturalOffset = transform.position - _mainTarget.transform.position;
         transform.position = new Vector3(_mainTarget.transform.position.x, _mainTarget.transform.position.y + naturalOffset.y, transform.position.z);
         _windowCenter = transform.position + (Vector3)WindowOffset;
         _windowOrigin = _windowCenter + (Vector3)(WindowSize / 2f);
-        _player = _mainTarget.GetComponent<PlayerStatus>();
-
     }
 
+    #endregion
+
+    private void Update()
+    {
+        refreshFPS();
+    }
     private void FixedUpdate()
     {
         if (_camState == CameraBehaviorState.FollowTarget) UpdateFollowMode();
@@ -74,12 +80,14 @@ public class CameraBehavior : MonoBehaviour
 
     private void UpdateFollowMode()
     {
-
         SetWindowPosition();
-        _inScreen = WindownCamContains(_mainTarget.transform.position);
         FollowPlayer();
     }
 
+
+    /// <summary>
+    /// Set the window position by the camera position
+    /// </summary>
     private void SetWindowPosition()
     {
         _windowCenter = Vector3.Lerp(_windowCenter, new Vector3(transform.position.x, transform.position.y, _mainTarget.transform.position.z) + (Vector3)WindowOffset, _camWindownSpeed);
@@ -87,6 +95,9 @@ public class CameraBehavior : MonoBehaviour
         _windowOrigin = _windowCenter - (Vector3)(WindowSize / 2f);
     }
 
+    /// <summary>
+    /// Set the window position by the camera position
+    /// </summary>
     private Vector3 SetWindowPosition(Vector3 pos)
     {
 
@@ -98,8 +109,6 @@ public class CameraBehavior : MonoBehaviour
     private void FollowPlayer()
     {
 
-        if (_player.MoveDir.x != 0)
-            dir.x = Mathf.Sign(_player.MoveDir.x);
         if (!WindownCamContains(_mainTarget.transform.position))
         {
             Vector3 target = Vector3.zero;
@@ -108,7 +117,7 @@ public class CameraBehavior : MonoBehaviour
             if (!WindownCamContainsY(_mainTarget.transform.position)) target.y = _mainTarget.transform.position.y - _windowCenter.y + -Mathf.Sign(_mainTarget.transform.position.y - _windowCenter.y) * (WindowSize.y / 2f);
 
             if (!CheckWall())
-                    transform.position += Vector3.Lerp(Vector3.zero, target, _camSpeed);
+                transform.position += Vector3.Lerp(Vector3.zero, target, _camSpeed);
 
         }
 
@@ -122,9 +131,55 @@ public class CameraBehavior : MonoBehaviour
         float sign = Mathf.Sign(distance);
         distance = -sign * Mathf.Clamp(Mathf.Abs(distance), 0, WindowOffset.x);
         Vector3 pos = new Vector3(_mainTarget.transform.position.x, _mainTarget.transform.position.y, _mainTarget.transform.position.z);
-        Debug.DrawRay(pos, Vector3.right * distance );
         RaycastHit hit = new RaycastHit();
-        return Physics.Raycast(pos, Vector3.right , out hit, distance, _camLayer, QueryTriggerInteraction.Ignore);
+        return Physics.Raycast(pos, Vector3.right, out hit, distance, _camLayer, QueryTriggerInteraction.Ignore);
+    }
+
+    public void ToggleDebug(CallbackContext context)
+    {
+        if (context.started)
+            _debugCanvas.enabled = !_debugCanvas.enabled;
+    }
+
+    private void refreshFPS()
+    {
+        if (!_debugCanvas.enabled) return;
+        float fps = 1 / Time.deltaTime;
+        if (_timer != (int)(Time.time/5))
+        {
+            _timer = (int)(Time.time/5);
+            _minFPS = fps;
+            _maxFPS = fps;
+        }
+        else
+        {
+            if (fps > _maxFPS) _maxFPS = fps;
+            if (fps < _minFPS) _minFPS = fps;
+        }
+        _fpsCounter.text = String.Format("FPS:    {0: 0.0}\nMinFPS: {1: 0.0}\nMaxFPS: {2: 0.0}\nDeltaTime: {3: 0.0}", fps, _minFPS, _maxFPS, Time.deltaTime*1000);
+        refreshGraph();
+    }
+
+    private void refreshGraph()
+    {
+        Color32[] array = tex.GetPixels32();
+        for (int i = 0; i < tex.height; i++)
+        {
+            for (int j = 0; j < tex.width-1; j++)
+            {
+                int index = i * tex.width + j;
+                array[index] = array[index + 1];
+            }
+        }
+        float timeMs = Time.deltaTime * 1000;
+        Color32 color = timeMs < 17.5f ? new Color32(0, 255, 0, 255) : (timeMs < 35.0f ? new Color32(255, 255, 0, 255) : new Color32(255,0,0,255));
+        int max = (timeMs > 100) ? tex.height : (int)(timeMs / 100 * tex.height);
+        for (int i = 0; i < tex.height; i++)
+        {
+            array[(i + 1) * tex.width - 1] = (i < max) ? color : new Color32(0,0,0,0);
+        }
+        tex.SetPixels32(array);
+        tex.Apply();
     }
 
 
@@ -135,12 +190,12 @@ public class CameraBehavior : MonoBehaviour
         {
             Debug.LogError("Missing Player");
         }
-        if (_showWindow)
+        else if (_showWindow)
         {
             SetWindowPosition();
             DrawRectWindown();
         }
-
+        refreshFPS();
     }
 
 
@@ -172,48 +227,22 @@ public class CameraBehavior : MonoBehaviour
         return true;
     }
 
-    private bool WindownCamContains(Vector3 position, Vector3 camPos)
-    {
-        Vector3 _wOrigin = SetWindowPosition(camPos);
-        if (position.x < _wOrigin.x || position.x > _wOrigin.x + WindowSize.x) return false;
-        if (position.y < _wOrigin.y || position.y > _wOrigin.y + WindowSize.y) return false;
-
-
-        return true;
-    }
-
     private bool WindownCamContainsX(Vector3 position)
     {
-
         if (position.x < _windowOrigin.x || position.x > _windowOrigin.x + WindowSize.x) return false;
-
-
         return true;
     }
 
     private bool WindownCamContainsY(Vector3 position)
     {
         if (position.y < _windowOrigin.y || position.y > _windowOrigin.y + WindowSize.y) return false;
-
-
         return true;
     }
 
     // Active the free mode camera
     public void ActiveFreeMode()
     {
-        if (_camState == CameraBehaviorState.FollowTarget)
-        {
-
-            _camState = CameraBehaviorState.FreeMovement;
-            return;
-        }
-
-        if (_camState == CameraBehaviorState.FreeMovement)
-        {
-            _camState = CameraBehaviorState.FollowTarget;
-            return;
-        }
+        _camState = CameraBehaviorState.FreeMovement;
     }
 
     public void DeactiveFreeMode()
