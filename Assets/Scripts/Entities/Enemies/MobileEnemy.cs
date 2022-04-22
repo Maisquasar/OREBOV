@@ -47,6 +47,10 @@ public class MobileEnemy : Enemy
 
     public override void Shoot()
     {
+        var lookPos = _player.transform.position - transform.position;
+        lookPos.y = 0;
+        transform.rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation *= Quaternion.Euler(0, 90, 0);
         _controller.animator.SetBool("Shooting", true);
     }
 

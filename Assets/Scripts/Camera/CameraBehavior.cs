@@ -71,7 +71,7 @@ public class CameraBehavior : MonoBehaviour
 
     private void Update()
     {
-        refreshFPS();
+        RefreshFPS();
     }
     private void FixedUpdate()
     {
@@ -141,7 +141,7 @@ public class CameraBehavior : MonoBehaviour
             _debugCanvas.enabled = !_debugCanvas.enabled;
     }
 
-    private void refreshFPS()
+    private void RefreshFPS()
     {
         if (!_debugCanvas.enabled) return;
         float fps = 1 / Time.deltaTime;
@@ -157,10 +157,10 @@ public class CameraBehavior : MonoBehaviour
             if (fps < _minFPS) _minFPS = fps;
         }
         _fpsCounter.text = String.Format("FPS:    {0: 0.0}\nMinFPS: {1: 0.0}\nMaxFPS: {2: 0.0}\nDeltaTime: {3: 0.0}", fps, _minFPS, _maxFPS, Time.deltaTime*1000);
-        refreshGraph();
+        RefreshGraph();
     }
 
-    private void refreshGraph()
+    private void RefreshGraph()
     {
         Color32[] array = tex.GetPixels32();
         for (int i = 0; i < tex.height; i++)
@@ -195,7 +195,7 @@ public class CameraBehavior : MonoBehaviour
             SetWindowPosition();
             DrawRectWindown();
         }
-        refreshFPS();
+        RefreshFPS();
     }
 
 
