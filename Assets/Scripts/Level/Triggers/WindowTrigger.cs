@@ -90,7 +90,6 @@ public class WindowTrigger : Trigger
 
     private IEnumerator WindowTransition()
     {
-        Debug.Log("Collide");
 
         _isTransfom = true;
         while (_transitionTimer < _speedOfTransition)
