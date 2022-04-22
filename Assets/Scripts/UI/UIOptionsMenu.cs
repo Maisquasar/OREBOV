@@ -19,4 +19,16 @@ public class UIOptionsMenu : MonoBehaviour
         Screen.fullScreen = !Screen.fullScreen;
         
     }
+
+    public void SetVSync()
+    {
+        if (QualitySettings.vSyncCount == 0)
+        {
+            QualitySettings.vSyncCount = 1;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 0;
+        }
+    }
 }
