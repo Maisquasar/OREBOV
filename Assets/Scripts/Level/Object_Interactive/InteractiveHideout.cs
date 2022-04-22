@@ -39,7 +39,7 @@ public class InteractiveHideout : InteractiveObject
             if (_isFading) StopCoroutine(_endCoroutine);
 
             ObjectActive = true;
-            _playerStatus.Hide(true, JumpDistance);
+            _playerStatus.Hide(true, transform.position);
             _playerInteraction.LinkObject(this);
             _startCoroutine = PlayerFading(true);
 
@@ -70,7 +70,7 @@ public class InteractiveHideout : InteractiveObject
 
             _endCoroutine = PlayerFading(false);
             _playerInteraction.UnlinkObject();
-            _playerStatus.Hide(false, JumpDistance);
+            _playerStatus.Hide(false, transform.position);
             ObjectActive = false;
 
             StartCoroutine(_endCoroutine);
