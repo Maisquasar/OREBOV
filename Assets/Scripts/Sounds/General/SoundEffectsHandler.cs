@@ -11,6 +11,7 @@ public class SoundEffectsHandler : MonoBehaviour
     [SerializeField] private AudioMixerGroup _mixer;
     [SerializeField] [Range(0.0f,1.0f)] private float _volume = 1.0f;
     [SerializeField] private bool _randomPlaySound;
+    [SerializeField] private bool _randomLeftRightPanning;
     [SerializeField] private bool _playAtStart;
     [SerializeField] private bool _looped;
     [Header("Play Count")]
@@ -120,6 +121,14 @@ public class SoundEffectsHandler : MonoBehaviour
         if (_multiSources)
         {
             index = findFirstAudioSource();
+        }
+        if (_randomLeftRightPanning)
+        {
+            _audioSources[index].panStereo = Random.Range(-1.0f, 1.0f);
+        }
+        else
+        {
+            _audioSources[index].panStereo = 0.0f;
         }
         _audioSources[index].clip = _audioClipArray[_indexAudioClip];
         _audioSources[index].outputAudioMixerGroup = _mixer;
