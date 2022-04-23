@@ -26,6 +26,11 @@ public class ShadowCaster : MonoBehaviour
     private int _mask = 0;
     private int _maskDepth = 0;
 
+    private void Start()
+    {
+        _oldShadowPos = transform.position;
+    }
+
     private bool getLightVectors(LightSubType obj, Vector2 delta, out Vector3 origin, out Vector3 direction)
     {
         origin = new Vector3();
