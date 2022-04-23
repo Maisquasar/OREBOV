@@ -28,6 +28,8 @@ public class PlayerMovement : EntityMovement
     [Space]
     [SerializeField] float FallDamageHeight = 8;
     [HideInInspector] public bool IsClimbing = false;
+    [HideInInspector] public bool ClimbingLadder = false;
+    [HideInInspector] public bool Stair = false;
 
     Vector3 LastPosBeforeFall;
     private float _lastMove;
@@ -164,7 +166,7 @@ public class PlayerMovement : EntityMovement
     public override void Move(float move)
     {
         // If climbing then can't move
-        if (IsClimbing || IsPushing || IsPulling || IsHide || ClimbingLadder)
+        if (IsClimbing || IsPushing || IsPulling || IsHide || ClimbingLadder || Stair)
         {
             base.Move(0);
             return;
@@ -341,12 +343,25 @@ public class PlayerMovement : EntityMovement
         transform.rotation = goTo;
     }
 
-    [HideInInspector] public bool ClimbingLadder = false;
+   
     public void Climb(bool value, int direction = 1)
     {
         ClimbingLadder = value;
         animator.SetBool("Ladder Climb", ClimbingLadder);
         animator.SetInteger("Direction", direction);
+    }
+
+    public void ActiveStair(bool value,  bool up)
+    {
+        Stair = value;
+        if(up)
+        {
+            animator.SetBool("StairUp", Stair);
+        }
+        else
+        {
+            animator.SetBool("StairDown", Stair);
+        }
     }
 }
 

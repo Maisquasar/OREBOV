@@ -38,7 +38,7 @@ public class InteractiveMovement : InteractiveObject
     }
 
     protected override void ActiveItem(GameObject player)
-    {
+    {   
         base.ActiveItem(player);
         _movementTimer = 0;
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
