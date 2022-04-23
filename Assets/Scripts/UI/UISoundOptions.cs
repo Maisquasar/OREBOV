@@ -14,9 +14,6 @@ public class UISoundOptions : MonoBehaviour
     [Range(0f, 20f)]
     [SerializeField] private float _maxVolume;
 
-    [Range(-80f, 0f)]
-    [SerializeField] private float _minVolume;
-
     [Range(-80f, 20f)]
     [SerializeField] private float _startVolume;
     [SerializeField]
@@ -24,23 +21,24 @@ public class UISoundOptions : MonoBehaviour
 
     private void Start()
     {
+        /*
         _currentVolume = _startVolume;
         float generalRatio = Mathf.Abs(_minVolume) + Mathf.Abs(_maxVolume);
         _slider.value = (_currentVolume + Mathf.Abs(_minVolume)) / generalRatio;
         _mixer.SetFloat(_soundParameter, GetVolume(_slider.value));
+        */
     }
 
     public void ChangeVolume()
     {
-        float generalRatio = Mathf.Abs(_minVolume) + Mathf.Abs(_maxVolume);
-        _currentVolume = (_slider.value * generalRatio) - _minVolume;
         _mixer.SetFloat(_soundParameter, GetVolume(_slider.value));
     }
 
     private float GetVolume(float value)
     {
         if (value <= 0) value = 0.000001f;
-        float decibels = Mathf.Abs(_minVolume) * Mathf.Log10(value) + -_maxVolume * Mathf.Log10(1 - value);
-        return decibels;
+        return Mathf.Abs(_maxVolume) * Mathf.Log10(value);
     }
+
+
 }

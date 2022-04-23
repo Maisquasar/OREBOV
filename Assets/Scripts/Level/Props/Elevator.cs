@@ -7,6 +7,9 @@ public class Elevator : SwitchableObjects
     MobilePoint _mobilePoint;
 
     [SerializeField] float Timer;
+    [SerializeField] SoundEffectsHandler _startSound;
+    [SerializeField] SoundEffectsHandler _stopSound;
+    [SerializeField] SoundEffectsHandler _loopSound;
 
     BelowElevatorDetector _detector;
 
@@ -35,20 +38,25 @@ public class Elevator : SwitchableObjects
         {
             cancel = true;
             StartCoroutine(WaitForRestart());
+            _loopSound.StopSound();
+            _stopSound.PlaySound();
         }
     }
 
     bool atDestination = false;
     public override void Activate()
     {
-        if (!atDestination && CoroutineEnd)
+        if (!CoroutineEnd) return;
+        if (!atDestination)
         {
             StartCoroutine(LerpFromTo(transform.position, Goto, Timer));
         }
-        else if (CoroutineEnd)
+        else
         {
             StartCoroutine(LerpFromTo(transform.position, _initialPos, Timer));
         }
+        _startSound.PlaySound();
+        _loopSound.PlaySound();
     }
     bool cancel = false;
 
@@ -69,6 +77,8 @@ public class Elevator : SwitchableObjects
         transform.position = goTo;
         CoroutineEnd = true;
         atDestination = !atDestination;
+        _loopSound.StopSound();
+        _stopSound.PlaySound();
     }
 
     IEnumerator WaitForRestart()
@@ -88,5 +98,7 @@ public class Elevator : SwitchableObjects
             float tmp = (Distance * Timer) / Distance2;
             StartCoroutine(LerpFromTo(transform.position, Goto, tmp));
         }
+        _startSound.PlaySound();
+        _loopSound.PlaySound();
     }
 }

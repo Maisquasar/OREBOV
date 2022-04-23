@@ -6,6 +6,14 @@ using UnityEngine.EventSystems;
 public class UIOptionsMenu : MonoBehaviour
 {
     [SerializeField] private EventSystem _eventSystem;
+    [SerializeField] private GameObject _fullScreenButton;
+    [SerializeField] private GameObject _vSyncButton;
+
+    private void Start()
+    {
+        _fullScreenButton.SetActive(Screen.fullScreen);
+        _vSyncButton.SetActive(QualitySettings.vSyncCount != 0);
+    }
 
     public IEnumerator SetSelectedObject(GameObject uiObject)
     {
@@ -17,7 +25,6 @@ public class UIOptionsMenu : MonoBehaviour
     public void SetFullScreen()
     {
         Screen.fullScreen = !Screen.fullScreen;
-        
     }
 
     public void SetVSync()
