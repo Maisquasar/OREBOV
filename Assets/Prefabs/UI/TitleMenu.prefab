@@ -837,7 +837,7 @@ GameObject:
   - component: {fileID: 2028285702}
   - component: {fileID: 2028285705}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: VSyncButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1394,7 +1394,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.4
+  m_fontSize: 59.55
   m_fontSizeBase: 172
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2174,7 +2174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: -1
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 2028285701}
     m_SelectOnDown: {fileID: 0}
@@ -4802,7 +4802,7 @@ GameObject:
   - component: {fileID: 475580130981660199}
   - component: {fileID: 60595221}
   m_Layer: 5
-  m_Name: Button
+  m_Name: FullScreenButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5141,9 +5141,6 @@ MonoBehaviour:
   _slider: {fileID: 1262738881881519262}
   _soundParameter: EffectVolume
   _maxVolume: 20
-  _minVolume: -80
-  _startVolume: 1
-  _currentVolume: 0
 --- !u!1 &5288245174737537248
 GameObject:
   m_ObjectHideFlags: 0
@@ -6254,9 +6251,6 @@ MonoBehaviour:
   _slider: {fileID: 7432396741646227439}
   _soundParameter: MasterVolume
   _maxVolume: 20
-  _minVolume: -80
-  _startVolume: -10
-  _currentVolume: 0
 --- !u!1 &6547816787036992432
 GameObject:
   m_ObjectHideFlags: 0
@@ -6702,9 +6696,6 @@ MonoBehaviour:
   _slider: {fileID: 4399347548243575518}
   _soundParameter: MusicVolume
   _maxVolume: 20
-  _minVolume: -80
-  _startVolume: -10
-  _currentVolume: 0
 --- !u!1 &7183611685623703112
 GameObject:
   m_ObjectHideFlags: 0
