@@ -65,6 +65,7 @@ public class MobileEnemy : Enemy
         _checkpointManager = manage;
     }
 
+    bool wasChange = false;
     // Update is called once per frame
     override public void Update()
     {
@@ -110,13 +111,16 @@ public class MobileEnemy : Enemy
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
         if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.LightSwitch)
         {
-            if (objectClose.DefaultState != objectClose.ObjectActive && State != EnemyState.CHASE)
+            if (objectClose.DefaultState != objectClose.ObjectActive && State != EnemyState.CHASE || wasChange && State != EnemyState.CHASE)
             {
+                wasChange = true;
                 State = EnemyState.INTERACT;
                 _controller.NewCheckpoint(new Vector3(objectClose.transform.position.x, transform.position.y, transform.position.z));
                 if ((int)transform.position.x == (int)objectClose.transform.position.x)
                 {
-                    objectClose.ItemInteraction(this.gameObject);
+                    wasChange = false;
+                    if (objectClose.DefaultState != objectClose.ObjectActive)
+                        objectClose.ItemInteraction(this.gameObject);
                     StartCoroutine(WaitCheckpoint(2, _checkpointManager.Checkpoints[_currentCheckpoint].transform.position));
                     State = EnemyState.NORMAL;
                 }
