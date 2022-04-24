@@ -13,7 +13,8 @@ namespace InteractObject
         Switch,
         LightSwitch,
         Hideout,
-        Ladder
+        Ladder,
+        Stair,
     }
 
 }
@@ -103,7 +104,7 @@ public class InteractiveObject : AmbientTypeHolder
             DeactiveItem();
     }
 
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawSphere(HintPosition, 0.112f);
