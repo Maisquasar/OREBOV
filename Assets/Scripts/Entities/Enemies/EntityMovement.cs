@@ -153,14 +153,15 @@ public class EntityMovement : AmbientTypeHolder
     protected virtual void LandOnGround()
     {
         _grounded = true;
-        if (AmbientType == AmbientSoundType.Interior)
-        {
-            _landInsideEffectHandler.PlaySound();
-        }
-        else
-        {
-            _landOutsideEffectHandler.PlaySound();
-        }
+        if (_landOutsideEffectHandler != null)
+            if (AmbientType == AmbientSoundType.Interior)
+            {
+                _landInsideEffectHandler.PlaySound();
+            }
+            else
+            {
+                _landOutsideEffectHandler.PlaySound();
+            }
     }
 
     protected virtual bool DetectWall()
