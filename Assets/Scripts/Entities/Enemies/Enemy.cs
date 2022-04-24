@@ -79,6 +79,10 @@ public class Enemy : Entity
     // Update is called once per frame
     virtual public void Update()
     {
+        if (_player == null)
+        {
+            _player = FindObjectOfType<PlayerStatus>();
+        }
         if (!_player.Dead)
         {
             if (TimeStamp > 0 && PlayerDetected)
