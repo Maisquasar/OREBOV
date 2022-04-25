@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DetectionLight : MonoBehaviour
 {
+    [SerializeField] bool _instantDie = false;
     PlayerStatus _playerStatus;
     DetectionZone _sphere;
 
@@ -11,7 +12,10 @@ public class DetectionLight : MonoBehaviour
     {
         _playerStatus = FindObjectOfType<PlayerStatus>();
         _sphere = GetComponentInChildren<DetectionZone>();
-        _sphere.DistanceDetection = -1;
+        if (_instantDie)
+            _sphere.DistanceDetection = 0;
+        else
+            _sphere.DistanceDetection = -1;
         _sphere.LinkToLight = true;
     }
     // Update is called once per frame
