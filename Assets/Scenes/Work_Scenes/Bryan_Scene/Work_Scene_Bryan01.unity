@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 3928.9316, g: 2504.5215, b: 1861.0039, a: 1}
+  m_IndirectSpecularColor: {r: 3879.8477, g: 2521.4023, b: 1965.1992, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -300,6 +300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -421,6 +422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -974,6 +976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -1089,29 +1092,41 @@ PrefabInstance:
       value: 16.1
       objectReference: {fileID: 0}
     - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: _interactiveObjectList.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _interactiveObjectList.Array.data[0]
       value: 
-      objectReference: {fileID: 1881868121}
+      objectReference: {fileID: 962160745}
     - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _interactiveObjectList.Array.data[1]
       value: 
-      objectReference: {fileID: 649655211}
+      objectReference: {fileID: 95433680}
     - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _interactiveObjectList.Array.data[2]
       value: 
-      objectReference: {fileID: 95433680}
+      objectReference: {fileID: 264130794}
     - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _interactiveObjectList.Array.data[3]
       value: 
-      objectReference: {fileID: 264130794}
+      objectReference: {fileID: 486579962}
     - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _interactiveObjectList.Array.data[4]
       value: 
-      objectReference: {fileID: 486579962}
+      objectReference: {fileID: 507253338}
     - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _interactiveObjectList.Array.data[5]
       value: 
-      objectReference: {fileID: 507253338}
+      objectReference: {fileID: 649655211}
+    - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: _interactiveObjectList.Array.data[6]
+      value: 
+      objectReference: {fileID: 1210695770}
+    - target: {fileID: 5051980866012536404, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
+      propertyPath: _interactiveObjectList.Array.data[7]
+      value: 
+      objectReference: {fileID: 1881868121}
     - target: {fileID: 5657562784316992918, guid: 7d68082c0f9bafc4ba93a110cd33a75f, type: 3}
       propertyPath: _objectManager
       value: 
@@ -1295,6 +1310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -1387,6 +1403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -1790,6 +1807,17 @@ PrefabInstance:
       objectReference: {fileID: 1217132688}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd464dfdd10fbe34e9c91c768896e211, type: 3}
+--- !u!114 &962160745 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4317667180632582089, guid: bd464dfdd10fbe34e9c91c768896e211, type: 3}
+  m_PrefabInstance: {fileID: 962160744}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8d426f7130e4d040812a0a597edd7a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &974880465
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1954,6 +1982,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -2950,6 +2979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -3947,6 +3977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0

@@ -30,7 +30,7 @@ public class UIScriptCredits : MonoBehaviour
         float _startAlpha = _startColor.a;
         while (_timer > 0)
         {
-            _startColor.a = Mathf.Lerp(_startAlpha, 0f, 1f - (_timer / _fadeOutTime));
+            _startColor.a = Mathf.Lerp(1f, 0f, 1f - (_timer / _fadeOutTime));
             _imageToFade.color = _startColor;
             _timer -= Time.deltaTime;
             yield return Time.deltaTime;
