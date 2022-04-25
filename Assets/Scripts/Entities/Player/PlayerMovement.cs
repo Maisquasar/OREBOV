@@ -7,7 +7,6 @@ using UnityEditor;
 public class PlayerMovement : EntityMovement
 {
     [SerializeField] AnimationCurve velocityCurve;
-    [SerializeField] float _flipTime = 0.1f;
 
     [Space]
     [Header("Jump Settings")]

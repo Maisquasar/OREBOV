@@ -33,7 +33,6 @@ public class Enemy : Entity
     [HideInInspector] public float TimeStamp = 0;
     protected PlayerStatus _player;
 
-    private float _shootTime = 1f;
     public virtual EntityMovement Controller { get { return _entityController; } }
 
     // Start is called before the first frame update
