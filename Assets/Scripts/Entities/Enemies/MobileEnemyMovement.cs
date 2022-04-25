@@ -72,7 +72,7 @@ public class MobileEnemyMovement : EntityMovement
             RaycastHit[] tmpHit = Physics.RaycastAll(WallPos, Vector3.right * _direction, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore);
             for (int j = 0; j < tmpHit.Length; j++)
             {
-                if (!tmpHit[i].transform.GetComponent<PlayerStatus>())
+                if (!tmpHit[j].transform.GetComponent<PlayerStatus>())
                 {
                     Vector3 tmp = _rb.velocity;
                     tmp.x = 0;
@@ -90,7 +90,7 @@ public class MobileEnemyMovement : EntityMovement
             RaycastHit[] tmp = Physics.RaycastAll(WallPos, Vector3.right * _direction, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore);
             for (int j = 0; j < tmp.Length; j++)
             {
-                if (!tmp[i].transform.GetComponent<PlayerStatus>())
+                if (!tmp[j].transform.GetComponent<PlayerStatus>())
                     return true;
             }
         }

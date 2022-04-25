@@ -115,7 +115,7 @@ public class MobileEnemy : Enemy
 
     private void CheckForInteraction()
     {
-        // Get The Closest Object.
+        // Get The Closest Object.d
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
         // If object is a LightSwitch
         if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.LightSwitch)
