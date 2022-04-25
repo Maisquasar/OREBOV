@@ -115,7 +115,10 @@ public class PlayerMovement : EntityMovement
     public void SetDead(bool state)
     {
         animator.SetBool("Dead", state);
-        LastPosBeforeFall = _playerStatus.LastCheckpoint.Position;
+        if (_playerStatus.LastCheckpoint == null)
+            LastPosBeforeFall = _playerStatus.SpawnPos;
+        else
+            LastPosBeforeFall = _playerStatus.LastCheckpoint.Position;
         animator.SetFloat("VelocityX", 0);
     }
 

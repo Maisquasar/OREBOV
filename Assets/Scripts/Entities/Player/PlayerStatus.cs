@@ -35,7 +35,8 @@ public class PlayerStatus : Entity
     [SerializeField] private UIPauseMenu _pauseMenu;
 
     [Header("Inputs")]
-    [SerializeField]        [Range(0f, 1f)]
+    [SerializeField]
+    [Range(0f, 1f)]
     private float deadZone;
 
     [Header("Sounds")]
@@ -52,6 +53,7 @@ public class PlayerStatus : Entity
 
     public bool IsHide = false;
     [HideInInspector]
+    public Vector3 SpawnPos;
     private bool _isDead = false;
     private bool _isJumping = false;
     private bool _isShadow = false;
@@ -76,6 +78,7 @@ public class PlayerStatus : Entity
     #region Initiate Script 
     private void Start()
     {
+        SpawnPos = transform.position + Vector3.up;
         InitComponent();
         // Set the Checkpoint position.
         foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
@@ -292,13 +295,22 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        transform.position = LastCheckpoint.Position;
-        _shadowPos = LastCheckpoint.Position;
+        if (LastCheckpoint == null)
+        {
+            transform.position = SpawnPos;
+            _shadowPos = SpawnPos;
+
+        }
+        else
+        {
+            transform.position = LastCheckpoint.Position;
+            _shadowPos = LastCheckpoint.Position;
+        }
 
         SetCamera();
 
         _playerAnimator.enabled = true;
-        OnTransformToPlayer(); 
+        OnTransformToPlayer();
         _playerInteraction.enabled = true;
         Controller.enabled = true;
         _isDead = false;
@@ -364,7 +376,7 @@ public class PlayerStatus : Entity
         _respawn = true;
         if (_pauseMenu != null) yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
         else yield return new WaitForSeconds(2f);
-       Respawn();
+        Respawn();
     }
 
 
