@@ -12,7 +12,7 @@ public class UIPanelSelection : MonoBehaviour ,ISelectHandler
     [SerializeField] private GameObject _firstObjectToSelect;
     public void OnSelect(BaseEventData eventData)
     {
-        if (!_toActive.activeSelf)
+        if (!_toActive.activeSelf && eventData.selectedObject == this.gameObject)
         {
             _toActive.SetActive(true);
             _toDeactive.SetActive(false);
