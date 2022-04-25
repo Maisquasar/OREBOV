@@ -9,6 +9,7 @@ public class DetectionZone : Trigger
     private PlayerAnimator _playerAnimator;
     private PlayerStatus _playerStatus;
     [SerializeField] public bool IgnoreObstacles = false;
+    [SerializeField] public bool DetectOnShadow = true;
     [HideInInspector] public float DistanceDetection = 0;
     [HideInInspector] public bool LinkToLight = false;
     public override void Start()
@@ -37,7 +38,7 @@ public class DetectionZone : Trigger
                     return;
                 }
                 // Case Player is shadow.
-                if (DistanceDetection > 0 && _playerStatus.MoveDir != Vector2.zero && _playerStatus.IsShadow)
+                if (DistanceDetection > 0 && _playerStatus.MoveDir != Vector2.zero && _playerStatus.IsShadow && DetectOnShadow)
                 {
                     Enemy.PlayerDetected = true;
                     if (DistanceDetection != -1 && DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
