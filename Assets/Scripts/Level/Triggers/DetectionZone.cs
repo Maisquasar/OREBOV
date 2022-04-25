@@ -19,6 +19,8 @@ public class DetectionZone : Trigger
     }
     private void OnTriggerStay(Collider other)
     {
+        if (_playerStatus.Dead)
+            return;
         Component t = other.gameObject.GetComponent(typeof(PlayerStatus));
         if (t != null)
         {
@@ -39,7 +41,9 @@ public class DetectionZone : Trigger
                 {
                     Enemy.PlayerDetected = true;
                     if (DistanceDetection != -1 && DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
+                    {
                         Enemy.TimeStamp = 0;
+                    }
                 }
                 // Case Player was detected.
                 else if (Enemy.PlayerDetected)
