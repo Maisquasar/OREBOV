@@ -5,226 +5,116 @@ using UnityEngine;
 
 public class CameraTrigger : Trigger
 {
-
-    [Tooltip("Ctrl + Shift + F to place the cube to camera position")]
+    private Transform endPos;
+    private Transform startPos;
+    [Tooltip("Does the camera enter free movement after traveling ?")]
+    [SerializeField] private bool _resetFreeMovement = true;
+    [Tooltip("Can the trigger go from start to end, and from end to start if activated again ?")]
     [SerializeField] private bool reverse;
-
-    private List<CameraCheckPoint> switchToCamera = new List<CameraCheckPoint>();
-    [SerializeField] private bool _resetFreeMouvement = true;
+    [Tooltip("The travel time for the camera in seconds")]
+    [SerializeField] private float _startTravelTime = 1.0f;
+    [Tooltip("The reversed travel time for the camera in seconds (only if \"Reverse\" is active)")]
+    [SerializeField] private float _endTravelTime = 1.0f;
+    [Tooltip("The detection plane at which the trigger activates (only if \"Reverse\" is active)")]
+    [SerializeField] private float _detectionPlane = 0f;
 
     [Header("Player Setting")]
+    [Tooltip("Does the player need to be in an specific state for the trigger to activate ?")]
     [SerializeField] private bool _checkPlayerState;
+    [Tooltip("The required state of the player (only if \"Check Player State\" is set to true)")]
     [SerializeField] private bool _isShadow;
-
-    [Header("Camera Setting")]
-    [SerializeField] private Vector2 _windowSize;
-    [SerializeField] private Vector2 _windowOffset;
 
     private Camera _cameraToMove;
     private CameraBehavior _cameraBehavior;
-    private CameraCheckPoint _initialPos;
     private PlayerStatus _playerStatus;
 
-    private bool _isActivate = false;
-    public bool _resetTrigger = true;
-    private bool _goToEnd = true;
+    private bool _isActive = false;
+    private bool _inAnim = false;
+    private bool _playerSide = false;
 
     public override void Start()
     {
-        InitCamera();
-        InitCheckpointLight();
+        endPos = transform.Find("SwitchTo");
+        if (!endPos) Debug.LogError("Cannot find child \"SwitchTo\", did you renamed it ?");
+        startPos = transform.Find("SwitchFrom");
+        if (!startPos) Debug.LogError("Cannot find child \"SwitchFrom\", did you renamed it ?");
+
+        _cameraToMove = Camera.main;
+        _cameraBehavior = _cameraToMove.GetComponent<CameraBehavior>();
+
         base.Start();
     }
 
-    #region Inititate Script
-
-
-
-    private void InitCamera()
+    public void OnDrawGizmos()
     {
-        _cameraToMove = Camera.main;
-        _cameraBehavior = _cameraToMove.GetComponent<CameraBehavior>();
-    }
-    private void InitCheckpointLight()
-    {
-        for (int i = 0; i < transform.childCount; i++)
+        if (reverse)
         {
-            switchToCamera.Add(transform.GetChild(i).GetComponent<CameraCheckPoint>());
+            Gizmos.DrawCube(transform.position + new Vector3(transform.localScale.x * _detectionPlane,0,0), new Vector3(0, transform.localScale.y+1, transform.localScale.z+1));
         }
-        _initialPos = Instantiate<CameraCheckPoint>(switchToCamera[0]);
-        _initialPos.transform.position = _cameraToMove.transform.position;
-        _initialPos.transform.rotation = _cameraToMove.transform.rotation;
-        switchToCamera.Insert(0, _initialPos);
-
     }
 
-    #endregion
-
-    private void OnTriggerEnter(Collider other)
-    {
-        DetectPlayer(other);
-    }
-
-
+    // Check if the player 
     private void OnTriggerStay(Collider other)
     {
-        if (_resetTrigger) DetectPlayer(other);
-        else ResetTriggetTest(other);
-
+        if (other.gameObject.tag != "Player") return;
+        if (!_playerStatus) _playerStatus = other.GetComponent<PlayerStatus>();
+        if (!reverse)
+        {
+            if (!_isActive)
+            {
+                if (_checkPlayerState && (_playerStatus.IsShadow != _isShadow)) return;
+                _isActive = true;
+                if (_inAnim) StopAllCoroutines();
+                StartCoroutine(LerpMovement(_cameraToMove.transform, endPos, false));
+            }
+        }
+        else
+        {
+            _playerSide = GetCurrentSide();
+            if (_checkPlayerState && (_playerStatus.IsShadow != _isShadow)) return;
+            if (_playerSide != _isActive)
+            {
+                if (_inAnim) StopAllCoroutines();
+                StartCoroutine(LerpMovement(_cameraToMove.transform, _isActive ? startPos : endPos, _isActive));
+                _isActive = !_isActive;
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player")
-            _resetTrigger = true;
-
+        if (other.gameObject.tag != "Player") return;
+        if (!reverse) _isActive = false;
     }
 
-
-    // Check if the player 
-    private void DetectPlayer(Collider other)
+    IEnumerator LerpMovement(Transform initialPos, Transform destPos, bool toEnd)
     {
-        if (other.gameObject.tag == "Player" && _goToEnd)
+        _inAnim = true;
+        Vector3 stPos = initialPos.position;
+        Vector3 stRot = initialPos.rotation.eulerAngles;
+        float totalTime = toEnd ? _endTravelTime : _startTravelTime;
+        float timer = totalTime;
+        while (timer > 0)
         {
-
-            GetPlayerStatus(other);
-            if (_checkPlayerState && _playerStatus.IsShadow == _isShadow)
-            {
-                ActiveCameraMove();
-                _resetTrigger = false;
-                return;
-            }
-
-
-            if (!_checkPlayerState)
-            {
-                ActiveCameraMove();
-                _resetTrigger = false;
-            }
+            timer -= Time.deltaTime;
+            _cameraToMove.transform.position = Vector3.Lerp(stPos, destPos.position, (float)(1-timer/totalTime));
+            Quaternion rot = initialPos.rotation;
+            rot.eulerAngles = new Vector3(Mathf.LerpAngle(stRot.x, destPos.rotation.eulerAngles.x, 1 - timer / totalTime),
+                Mathf.LerpAngle(stRot.y, destPos.rotation.eulerAngles.y, 1 - timer / totalTime),
+                Mathf.LerpAngle(stRot.z, destPos.rotation.eulerAngles.z, 1 - timer / totalTime));
+            _cameraToMove.transform.rotation = rot;
+            yield return Time.deltaTime;
         }
-    }
-
-
-    private void ResetTriggetTest(Collider other)
-    {
-        if (other.gameObject.tag == "Player" && _goToEnd)
+        if (_resetFreeMovement)
         {
-            if (_checkPlayerState && _playerStatus.IsShadow != _isShadow)
-            {
-                _resetTrigger = true;
-                return;
-            }
+            _cameraBehavior.DeactiveFreeMode();
         }
-    }
-    private void GetPlayerStatus(Collider other)
-    {
-        if (_playerStatus == null)
-            _playerStatus = other.gameObject.GetComponent<PlayerStatus>();
+        _inAnim = false;
+        yield return null;
     }
 
-    private void ActiveCameraMove()
+    private bool GetCurrentSide()
     {
-        switchToCamera[0].transform.position = _cameraToMove.transform.position;
-        switchToCamera[0].transform.rotation = _cameraToMove.transform.rotation;
-        _resetTrigger = false;
-        if (!_isActivate || reverse)
-            StartCoroutine(GoTo(switchToCamera));
-    }
-
-
-
-
-    IEnumerator GoTo(List<CameraCheckPoint> switchTo)
-    {
-        _goToEnd = false;
-        _isActivate = true;
-        _cameraBehavior.ActiveFreeMode();
-        Vector2 _sizeTemp = _cameraBehavior.WindowSize;
-        Vector2 _offsetTemp = _cameraBehavior.WindowOffset;
-        StartCoroutine(LerpFromToWindowSize(_cameraBehavior.WindowSize, _windowSize, switchTo[1].TravelTime));
-        StartCoroutine(LerpFromToWindowOffset(_cameraBehavior.WindowOffset, _windowOffset, switchTo[1].TravelTime));
-        for (int i = 0; i < switchTo.Count - 1; i++)
-        {
-
-            StartCoroutine(LerpFromTo(switchTo[i].transform.position, switchTo[i + 1].transform.position, switchTo[i + 1].TravelTime));
-
-
-
-            yield return StartCoroutine(LerpFromTo(switchTo[i].transform.rotation, switchTo[i + 1].transform.rotation, switchTo[i + 1].TravelTime));
-            if (reverse)
-                Swap();
-            _goToEnd = true;
-            EndMouvement();
-            if (reverse)
-            {
-                _windowOffset = _offsetTemp;
-                _windowSize = _sizeTemp;
-            }
-        }
-    }
-
-    IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
-    {
-        for (float t = 0f; t < duration; t += Time.deltaTime)
-        {
-            _cameraToMove.transform.position = Vector3.Lerp(initial, goTo, t / duration);
-            yield return 0;
-        }
-        _cameraToMove.transform.position = goTo;
-    }
-
-    IEnumerator LerpFromTo(Quaternion initial, Quaternion goTo, float duration)
-    {
-        for (float t = 0f; t < duration; t += Time.deltaTime)
-        {
-            _cameraToMove.transform.rotation = Quaternion.Lerp(initial, goTo, t / duration);
-            yield return 0;
-        }
-        _cameraToMove.transform.rotation = goTo;
-    }
-
-    IEnumerator LerpFromToWindowSize(Vector2 initial, Vector2 goTo, float duration)
-    {
-        for (float t = 0f; t < duration; t += Time.deltaTime)
-        {
-            _cameraBehavior.WindowSize = Vector2.Lerp(initial, goTo, t / duration);
-            yield return 0;
-        }
-
-    }
-    IEnumerator LerpFromToWindowOffset(Vector2 initial, Vector2 goTo, float duration)
-    {
-        for (float t = 0f; t < duration; t += Time.deltaTime)
-        {
-            _cameraBehavior.WindowOffset = Vector2.Lerp(initial, goTo, t / duration);
-            yield return 0;
-        }
-
-    }
-
-    private void EndMouvement()
-    {
-        if (_resetFreeMouvement) _cameraBehavior.DeactiveFreeMode();
-        _isActivate = false;
-
-    }
-
-    // Swap values between startPos and SwitchTo.
-    private void Swap()
-    {
-        switchToCamera.Reverse();
-
-    }
-
-    private void SwapWindow()
-    {
-        Vector2 _sizeTemp = _cameraBehavior.WindowSize;
-        Vector2 _offsetTemp = _cameraBehavior.WindowOffset;
-
-        if (reverse)
-        {
-            _windowOffset = _offsetTemp;
-            _windowSize = _sizeTemp;
-        }
+        return _playerStatus.transform.position.x > (transform.position.x + _detectionPlane);
     }
 }
