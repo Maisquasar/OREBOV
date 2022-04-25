@@ -35,7 +35,7 @@ public class PlayerStatus : Entity
     [SerializeField] private UIPauseMenu _pauseMenu;
 
     [Header("Inputs")]
-    [Range(0f, 1f)]
+    [SerializeField]        [Range(0f, 1f)]
     private float deadZone;
 
     [Header("Sounds")]
@@ -293,7 +293,10 @@ public class PlayerStatus : Entity
     private void Respawn()
     {
         transform.position = CheckpointPos;
+        _shadowPos = CheckpointPos;
+        
         _playerAnimator.enabled = true;
+        OnTransformToPlayer(); 
         _playerInteraction.enabled = true;
         Controller.enabled = true;
         _isDead = false;
