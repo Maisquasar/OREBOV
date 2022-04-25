@@ -60,9 +60,13 @@ public class CameraTrigger : Trigger
         if (!_playerStatus) _playerStatus = other.GetComponent<PlayerStatus>();
         if (!reverse)
         {
+            if (_checkPlayerState && (_playerStatus.IsShadow != _isShadow))
+            {
+                _isActive = false;
+                return;
+            }
             if (!_isActive)
             {
-                if (_checkPlayerState && (_playerStatus.IsShadow != _isShadow)) return;
                 _isActive = true;
                 if (_inAnim) StopAllCoroutines();
                 StartCoroutine(LerpMovement(_cameraToMove.transform, endPos, false));
@@ -105,9 +109,15 @@ public class CameraTrigger : Trigger
             _cameraToMove.transform.rotation = rot;
             yield return Time.deltaTime;
         }
+        _cameraToMove.transform.position = destPos.position;
+        _cameraToMove.transform.rotation = destPos.rotation;
         if (_resetFreeMovement)
         {
             _cameraBehavior.DeactiveFreeMode();
+        }
+        else
+        {
+            _cameraBehavior.ActiveFreeMode();
         }
         _inAnim = false;
         yield return null;
