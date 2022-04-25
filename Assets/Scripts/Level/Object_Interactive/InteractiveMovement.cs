@@ -53,7 +53,7 @@ public class InteractiveMovement : InteractiveObject
         _posEnd = _endPoint.position;
     }
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
         if (!LockPosition)
         {

@@ -46,6 +46,7 @@ public class MobileEnemyMovement : EntityMovement
         if (_grounded)
             _rb.velocity = new Vector2(_velocityCurve.Evaluate(_time) * move, _rb.velocity.y);
 
+        // Flip Character.
         if (_grounded && _endOfCoroutine)
         {
             if (move < 0 && _direction == 1 || move < 0 && transform.rotation != Quaternion.Euler(0, 0, 0))

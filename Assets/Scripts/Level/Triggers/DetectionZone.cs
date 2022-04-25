@@ -26,18 +26,22 @@ public class DetectionZone : Trigger
             {
                 GetPlayerComponents();
             }
+            // All cases that player is not detected normaly :
             if ((CheckForObstacles() && !IgnoreObstacles)|| _playerAnimator.IsInAmination || _playerStatus.IsShadow || _playerStatus.IsHide)
             {
+                // Case Obstacle between player and enemy then return.
                 if (CheckForObstacles() && !IgnoreObstacles)
                 {
                     return;
                 }
+                // Case Player is shadow.
                 if (DistanceDetection > 0 && _playerStatus.MoveDir != Vector2.zero && _playerStatus.IsShadow)
                 {
                     Enemy.PlayerDetected = true;
                     if (DistanceDetection != -1 && DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))
                         Enemy.TimeStamp = 0;
                 }
+                // Case Player was detected.
                 else if (Enemy.PlayerDetected)
                 {
                     StartCoroutine(WaitForNextFrame());
@@ -46,6 +50,8 @@ public class DetectionZone : Trigger
                 return;
             }
 
+            // Normal case :
+            // If distance Equals 0, instant die, else decrement gauge.
             if (DistanceDetection == 0)
                 Enemy.TimeStamp = 0;
             if (DistanceDetection != -1 && DistanceDetection >= Vector3.Distance(_playerStatus.transform.position, Enemy.transform.position))

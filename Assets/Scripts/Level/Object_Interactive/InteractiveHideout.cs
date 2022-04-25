@@ -8,7 +8,6 @@ public class InteractiveHideout : InteractiveObject
     [SerializeField] private float _playerFadingTime;
     [SerializeField] private float _playerFadingTimer;
     [SerializeField] private bool _isFading;
-    [SerializeField] private float JumpDistance = 1f;
 
     private IEnumerator _startCoroutine;
     private IEnumerator _endCoroutine;
