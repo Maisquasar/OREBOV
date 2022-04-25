@@ -35,7 +35,7 @@ public class PlayerStatus : Entity
     [SerializeField] private UIPauseMenu _pauseMenu;
 
     [Header("Inputs")]
-    [Range(0f, 1f)]
+    [SerializeField]        [Range(0f, 1f)]
     private float deadZone;
 
     [Header("Sounds")]
