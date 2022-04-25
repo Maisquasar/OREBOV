@@ -293,7 +293,10 @@ public class PlayerStatus : Entity
     private void Respawn()
     {
         transform.position = CheckpointPos;
+        _shadowPos = CheckpointPos;
+        
         _playerAnimator.enabled = true;
+        OnTransformToPlayer(); 
         _playerInteraction.enabled = true;
         Controller.enabled = true;
         _isDead = false;
