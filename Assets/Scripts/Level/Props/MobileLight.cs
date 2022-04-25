@@ -5,6 +5,7 @@ using UnityEngine;
 public class MobileLight : MonoBehaviour
 {
     [SerializeField] float Timer;
+    [SerializeField] float _waitingTime = 2f;
 
 
     MobilePoint _mobilePoint;
@@ -35,11 +36,17 @@ public class MobileLight : MonoBehaviour
     {
         if (!atDestination)
         {
-            Lerp(_initialPos, Goto, Timer);
+            if (!_startCoroutine)
+                StartCoroutine(WaitForSeconds(_waitingTime));
+            else if (_coroutineEnd && _startCoroutine)
+                Lerp(_initialPos, Goto, Timer);
         }
-        else
+        else if (_coroutineEnd)
         {
-            Lerp(Goto, _initialPos, Timer);
+            if (!_startCoroutine)
+                StartCoroutine(WaitForSeconds(_mobilePoint.Time));
+            else if (_coroutineEnd && _startCoroutine)
+                Lerp(Goto, _initialPos, Timer);
         }
     }
 
@@ -56,6 +63,17 @@ public class MobileLight : MonoBehaviour
             transform.position = goTo;
             _actualTime = 0;
             atDestination = !atDestination;
+            _startCoroutine = false;
         }
+    }
+
+    bool _coroutineEnd = true;
+    bool _startCoroutine = false;
+    IEnumerator WaitForSeconds(float time)
+    {
+        _startCoroutine = true;
+        _coroutineEnd = false;
+        yield return new WaitForSeconds(time);
+        _coroutineEnd = true;
     }
 }
