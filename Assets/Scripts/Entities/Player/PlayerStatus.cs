@@ -300,7 +300,8 @@ public class PlayerStatus : Entity
         PlayerActionState = PlayerAction.IDLE;
         Controller.SetDead(false);
         _respawn = false;
-        StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
+        if (_pauseMenu != null)
+            StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
     }
 
     //Set Player to the right Position
@@ -347,8 +348,9 @@ public class PlayerStatus : Entity
     IEnumerator WaitBeforeRespawn()
     {
         _respawn = true;
-        yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
-        Respawn();
+        if (_pauseMenu != null) yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
+        else yield return new WaitForSeconds(2f);
+       Respawn();
     }
 
 
