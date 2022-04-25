@@ -29,10 +29,12 @@ public class InteractiveBox : InteractiveObject
 
     private Vector3 delta;
     private bool _hasMove;
+    private Vector3 _localScale;
 
     override protected void Start()
     {
         base.Start();
+        _localScale = transform.localScale;
         ObjectType = InteractObjects.Box;
     }
 

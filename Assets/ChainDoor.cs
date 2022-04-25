@@ -10,6 +10,7 @@ public class ChainDoor : MonoBehaviour
     void Start()
     {
         _animator = GetComponent<Animator>();
+        _animator.SetBool("Open", _isOpen);
     }
 
     public void Toggle()

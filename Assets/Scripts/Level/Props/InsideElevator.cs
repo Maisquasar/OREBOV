@@ -35,6 +35,11 @@ public class InsideElevator : MonoBehaviour
         {
             other.gameObject.transform.SetParent(_parents[other]);
         }
+    }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (_parents[other] != null)
+            other.gameObject.transform.SetParent(_parents[other]);
     }
 }
