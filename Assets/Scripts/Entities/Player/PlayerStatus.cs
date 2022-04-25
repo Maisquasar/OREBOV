@@ -305,10 +305,8 @@ public class PlayerStatus : Entity
         {
             transform.position = LastCheckpoint.Position;
             _shadowPos = LastCheckpoint.Position;
-        }
-
         SetCamera();
-
+        }
         _playerAnimator.enabled = true;
         OnTransformToPlayer();
         _playerInteraction.enabled = true;
