@@ -91,6 +91,17 @@ public class Enemy : Entity
 
     private void EnemyDetection()
     {
+        // Gauge Equals 0, kill player.
+        if (TimeStamp <= 0 && !_player.Dead && Time.timeSinceLevelLoad > 5f && !WaitForDeath)
+        {
+            WaitForDeath = true;
+            _player.Dead = true;
+            Shoot();
+            if (_weapon != null)
+                _weapon.Shoot();
+            StartCoroutine(Shooting(2f));
+        }
+
         // Increment Gauge.
         if (TimeStamp > 0 && PlayerDetected)
         {
@@ -106,22 +117,13 @@ public class Enemy : Entity
         {
             TimeStamp += Time.deltaTime * GaugeRemove;
         }
-        // Gauge Equals 0, kill player.
-        if (TimeStamp <= 0)
-        {
-            _player.Dead = true;
-            Shoot();
-            if (_weapon != null)
-                _weapon.Shoot();
-            StartCoroutine(Shooting(0.5f));
-        }
     }
 
     virtual public void GoToPlayer(Vector3 lastPlayerPos) { }
 
     virtual public void Shoot() { }
 
-
+    bool WaitForDeath = false;
     private IEnumerator Shooting(float time)
     {
         yield return new WaitForSeconds(time);
@@ -133,6 +135,7 @@ public class Enemy : Entity
         PlayerDetected = false;
         TimeStamp = DetectionTime;
         State = EnemyState.NORMAL;
+        WaitForDeath = false;
     }
 
 
