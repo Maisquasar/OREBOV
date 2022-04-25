@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class UIScriptCredits : MonoBehaviour
 {
     // TODO :
@@ -47,6 +48,8 @@ public class UIScriptCredits : MonoBehaviour
             _timer -= Time.deltaTime; 
             yield return Time.deltaTime;
         }
+
+        SceneManager.LoadScene(_sceneIndex);
     }
 
 }
