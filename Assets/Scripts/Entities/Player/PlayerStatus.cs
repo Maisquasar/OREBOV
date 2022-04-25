@@ -30,7 +30,7 @@ public class PlayerStatus : Entity
     private Dictionary<SoundIDs, SoundEffectsHandler> _soundBoard = new Dictionary<SoundIDs, SoundEffectsHandler>();
 
     public PlayerAction PlayerActionState;
-    [HideInInspector] public Vector3 CheckpointPos;
+    [HideInInspector] public Checkpoint LastCheckpoint;
 
     [SerializeField] private UIPauseMenu _pauseMenu;
 
@@ -78,7 +78,6 @@ public class PlayerStatus : Entity
     {
         InitComponent();
         // Set the Checkpoint position.
-        CheckpointPos = transform.position;
         foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
         {
             bool found = false;
@@ -110,6 +109,7 @@ public class PlayerStatus : Entity
         _caster = gameObject.GetComponent<ShadowCaster>();
         _playerAnimator = gameObject.GetComponent<PlayerAnimator>();
         _playerInteraction = gameObject.GetComponent<PlayerInteraction>();
+        _cameraBehavior = FindObjectOfType<CameraBehavior>();
     }
 
     #endregion
@@ -292,9 +292,11 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        transform.position = CheckpointPos;
-        _shadowPos = CheckpointPos;
-        
+        transform.position = LastCheckpoint.Position;
+        _shadowPos = LastCheckpoint.Position;
+
+        SetCamera();
+
         _playerAnimator.enabled = true;
         OnTransformToPlayer(); 
         _playerInteraction.enabled = true;
@@ -305,6 +307,15 @@ public class PlayerStatus : Entity
         _respawn = false;
         if (_pauseMenu != null)
             StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
+    }
+    CameraBehavior _cameraBehavior;
+
+    void SetCamera()
+    {
+        _cameraBehavior.transform.position = LastCheckpoint.CamPos;
+        _cameraBehavior.transform.rotation = LastCheckpoint.CamRot;
+        _cameraBehavior.WindowOffset = LastCheckpoint.CamOffset;
+        _cameraBehavior.WindowSize = LastCheckpoint.CamSize;
     }
 
     //Set Player to the right Position
