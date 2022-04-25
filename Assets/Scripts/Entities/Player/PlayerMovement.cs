@@ -72,12 +72,34 @@ public class PlayerMovement : EntityMovement
     {
         if (_playerStatus.Dead)
             return;
+
+        CheckForFallDamage();
+        CheckForClimb();
+        SetAnimations();
+    }
+
+    public void SetAnimations()
+    {
+
+
+        if (DetectWall() || (_playerStatus.GetComponent<PlayerAnimator>().IsInAmination && !_playerStatus.IsShadow))
+            animator.SetFloat("VelocityX", 0);
+        else
+            animator.SetFloat("VelocityX", _rb.velocity.x);
+
+        animator.SetFloat("VelocityY", _rb.velocity.y);
+        animator.SetBool("Grounded", _grounded);
+    }
+
+    public void CheckForFallDamage()
+    {
         //Get the pos at start fall.
         if (_rb.velocity.y < -0.1f && !_fallDefine && !_grounded)
         {
             LastPosBeforeFall = transform.position;
             _fallDefine = true;
         }
+
         //Check if fall damage.
         if (_grounded)
         {
@@ -88,16 +110,6 @@ public class PlayerMovement : EntityMovement
             }
             LastPosBeforeFall = transform.position;
         }
-
-        if (DetectWall() || (_playerStatus.GetComponent<PlayerAnimator>().IsInAmination && !_playerStatus.IsShadow))
-            animator.SetFloat("VelocityX", 0);
-        else
-            animator.SetFloat("VelocityX", _rb.velocity.x);
-
-        animator.SetFloat("VelocityY", _rb.velocity.y);
-        animator.SetBool("Grounded", _grounded);
-
-        CheckForClimb();
     }
 
     public void SetDead(bool state)
@@ -204,8 +216,6 @@ public class PlayerMovement : EntityMovement
         }
     }
 
-
-
     private float GetJumpForce(float jumpHeight)
     {
         return Mathf.Sqrt(jumpHeight * -2 * (_globalGravity * _gravityScale));
@@ -225,6 +235,7 @@ public class PlayerMovement : EntityMovement
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
     }
 
+    //Function call on when land
     protected override void LandOnGround()
     {
         if (IsClimbing || _playerStatus.Dead)
@@ -299,7 +310,9 @@ public class PlayerMovement : EntityMovement
         animator.SetBool("Hide", true);
         IsHide = true;
         Quaternion target = Quaternion.Euler(0, 0, 0);
+        // Set Player z position to hide position.
         StartCoroutine(LerpFromTo(transform.position, new Vector3(position.x, transform.position.y, position.z), 0.2f));
+        // Rotate Player
         yield return StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
         yield return new WaitForSeconds(1.133f);
         _playerStatus.IsHide = true;
@@ -312,11 +325,15 @@ public class PlayerMovement : EntityMovement
         _playerStatus.IsHide = false;
         animator.SetBool("Hide", false);
         yield return new WaitForSeconds(0.5f);
+
+        // Set Player z position to initial position.
         StartCoroutine(LerpFromTo(transform.position, new Vector3(transform.position.x, transform.position.y, lastZPos), 0.6f));
         yield return new WaitForSeconds(0.6f);
         IsHide = false;
         _playerStatus.IsHide = false;
         Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
+
+        // Reset Rotation.
         StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
         yield return new WaitForSeconds(0.5f);
         CanHide = true;
