@@ -70,12 +70,14 @@ public class MobileEnemy : Enemy
     override public void Update()
     {
         base.Update();
+        // If Position to go equals zero then change checkpoint.
         if (_controller.GoTo == Vector3.zero)
         {
             CheckpointChange();
         }
         if (_player != null && _player.Dead)
             return;
+        // If Missing Checkpoint Manager.
         if (_checkpointManager == null)
         {
             Debug.LogError("Missing Checkpoint Manager");
@@ -107,17 +109,29 @@ public class MobileEnemy : Enemy
             }
         }
 
-        // Enemy Interaction
+        CheckForInteraction();
+        CheckIfStuck();
+    }
+
+    private void CheckForInteraction()
+    {
+        // Get The Closest Object.
         InteractiveObject objectClose = _objectManager.ObjectsInRange(transform.position, transform.forward * -1, _detectDistance, _detectionDirection);
+        // If object is a LightSwitch
         if (objectClose != null && objectClose.ObjectType == InteractObject.InteractObjects.LightSwitch)
         {
+            // Check if the state of the switch is different from the initial state.
+            // Check also if the state was changed between the first detection and the actual (case when player switch 2 times).
+            // If Enemy is Chasing then continue.
             if (objectClose.DefaultState != objectClose.ObjectActive && State != EnemyState.CHASE || wasChange && State != EnemyState.CHASE)
             {
                 wasChange = true;
                 State = EnemyState.INTERACT;
+                // Set the New Checkpoint to switch position.
                 _controller.NewCheckpoint(new Vector3(objectClose.transform.position.x, transform.position.y, transform.position.z));
                 if ((int)transform.position.x == (int)objectClose.transform.position.x)
                 {
+                    // Interact with Item and Wait 2 seconds.
                     wasChange = false;
                     if (objectClose.DefaultState != objectClose.ObjectActive)
                         objectClose.ItemInteraction(this.gameObject);
@@ -130,18 +144,24 @@ public class MobileEnemy : Enemy
                 State = EnemyState.NORMAL;
             }
         }
+    }
 
+    private void CheckIfStuck()
+    {
         // Check if same position every {_secondCheckStuck} in seconds.
         if (_timeStamp <= Time.time && _checkpointManager.Checkpoints[_currentCheckpoint].Time != -1)
         {
+            // If same position and chase : stop following player and go to next checkpoint.
             if (_precPoS == (Vector3)transform.position && State == EnemyState.CHASE)
             {
                 StopFollowingPlayer();
             }
+            // If same position : go to next checkpoint.
             else if (_precPoS == (Vector3)transform.position && State != EnemyState.CHASE)
             {
                 CheckpointChange();
             }
+            //Set the precedent position.
             _precPoS = transform.position;
             _timeStamp = Time.time + _secondCheckStuck;
         }
