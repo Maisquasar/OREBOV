@@ -84,28 +84,36 @@ public class Enemy : Entity
         }
         if (!_player.Dead)
         {
-            if (TimeStamp > 0 && PlayerDetected)
-            {
-                TimeStamp -= Time.deltaTime * GaugeAdd;
-                if (State != EnemyState.SUSPICIOUS)
-                {
-                    _soundBoard[SoundIDs.EnemySus].PlaySound();
-                    State = EnemyState.SUSPICIOUS;
-                }
-            }
-            else if (TimeStamp < DetectionTime)
-            {
-                TimeStamp += Time.deltaTime * GaugeRemove;
-            }
-            if (TimeStamp <= 0)
-            {
-                _player.Dead = true;
-                Shoot();
-                if (_weapon != null)
-                    _weapon.Shoot();
-                StartCoroutine(Shooting(0.5f));
-            }
+            EnemyDetection();
             SetVibrationController();
+        }
+    }
+
+    private void EnemyDetection()
+    {
+        // Increment Gauge.
+        if (TimeStamp > 0 && PlayerDetected)
+        {
+            TimeStamp -= Time.deltaTime * GaugeAdd;
+            if (State != EnemyState.SUSPICIOUS)
+            {
+                _soundBoard[SoundIDs.EnemySus].PlaySound();
+                State = EnemyState.SUSPICIOUS;
+            }
+        }
+        // Decrement Gauge.
+        else if (TimeStamp < DetectionTime)
+        {
+            TimeStamp += Time.deltaTime * GaugeRemove;
+        }
+        // Gauge Equals 0, kill player.
+        if (TimeStamp <= 0)
+        {
+            _player.Dead = true;
+            Shoot();
+            if (_weapon != null)
+                _weapon.Shoot();
+            StartCoroutine(Shooting(0.5f));
         }
     }
 

@@ -77,6 +77,7 @@ public class PlayerStatus : Entity
     private void Start()
     {
         InitComponent();
+        // Set the Checkpoint position.
         CheckpointPos = transform.position;
         foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
         {

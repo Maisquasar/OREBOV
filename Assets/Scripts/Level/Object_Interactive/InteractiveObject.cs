@@ -22,6 +22,7 @@ namespace InteractObject
 public class InteractiveObject : AmbientTypeHolder
 {
     [Header("Object State")]
+    [HideInInspector] public bool CanBeSelected = true;
     [HideInInspector] public bool IsSelected;
     [HideInInspector] public bool ObjectActive = false;
     public bool UseOnlyInShadow;

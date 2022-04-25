@@ -186,7 +186,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private bool CanBeSelected(InteractiveObject interactiveObject)
     {
-        if (interactiveObject.transform.position.y >= transform.position.y && (interactiveObject.UseOnlyInShadow && _playerStatus.IsShadow || !interactiveObject.UseOnlyInShadow))
+        if (interactiveObject.transform.position.y >= transform.position.y && (interactiveObject.UseOnlyInShadow && _playerStatus.IsShadow || !interactiveObject.UseOnlyInShadow) && interactiveObject.CanBeSelected)
             return true;
         else
             return false;

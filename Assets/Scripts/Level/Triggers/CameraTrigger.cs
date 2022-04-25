@@ -92,16 +92,16 @@ public class CameraTrigger : Trigger
         _inAnim = true;
         Vector3 stPos = initialPos.position;
         Vector3 stRot = initialPos.rotation.eulerAngles;
+        Vector3 dsRot = destPos.rotation.eulerAngles;
         float totalTime = toEnd ? _endTravelTime : _startTravelTime;
         float timer = totalTime;
         while (timer > 0)
         {
             timer -= Time.deltaTime;
-            _cameraToMove.transform.position = Vector3.Lerp(stPos, destPos.position, (float)(1-timer/totalTime));
+            float delta = 1 - timer / totalTime;
+            _cameraToMove.transform.position = Vector3.Lerp(stPos, destPos.position, delta);
             Quaternion rot = initialPos.rotation;
-            rot.eulerAngles = new Vector3(Mathf.LerpAngle(stRot.x, destPos.rotation.eulerAngles.x, 1 - timer / totalTime),
-                Mathf.LerpAngle(stRot.y, destPos.rotation.eulerAngles.y, 1 - timer / totalTime),
-                Mathf.LerpAngle(stRot.z, destPos.rotation.eulerAngles.z, 1 - timer / totalTime));
+            rot.eulerAngles = new Vector3(Mathf.LerpAngle(stRot.x, dsRot.x, delta), Mathf.LerpAngle(stRot.y, dsRot.y, delta), Mathf.LerpAngle(stRot.z, dsRot.z, delta));
             _cameraToMove.transform.rotation = rot;
             yield return Time.deltaTime;
         }
