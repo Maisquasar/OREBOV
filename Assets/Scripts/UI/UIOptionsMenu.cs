@@ -11,6 +11,7 @@ public class UIOptionsMenu : MonoBehaviour
 
     private void Start()
     {
+        
         _fullScreenButton.SetActive(Screen.fullScreen);
         _vSyncButton.SetActive(QualitySettings.vSyncCount != 0);
     }

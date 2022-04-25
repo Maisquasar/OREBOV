@@ -16,6 +16,6 @@ public class UIResolutionOptions : MonoBehaviour
    
     public void ShowResolution()
     {
-        _text.text = _visualSetting.GameResolutions[_visualSetting.CurrentResolution].x.ToString("F0") + " x " + _visualSetting.GameResolutions[_visualSetting.CurrentResolution].y.ToString("F0");
+        _text.text = _visualSetting.GameResolutions[_visualSetting.CurrentResolution].width.ToString("F0") + " x " + _visualSetting.GameResolutions[_visualSetting.CurrentResolution].height.ToString("F0");
     }
 }

@@ -13,7 +13,7 @@ public class CustomObjectManager : Editor
         _listItem = serializedObject.FindProperty("_interactiveObjectList");
     }
 
-    public override void OnInspectorGUI()
+    public override void OnInspectorGUI()   
     {
         ObjectManager objectManager = (ObjectManager)target;
         EditorUtility.ClearDirty(serializedObject.targetObject);
