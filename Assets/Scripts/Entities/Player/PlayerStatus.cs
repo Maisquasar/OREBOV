@@ -299,19 +299,21 @@ public class PlayerStatus : Entity
         {
             transform.position = SpawnPos;
             _shadowPos = SpawnPos;
-
         }
         else
         {
             transform.position = LastCheckpoint.Position;
             _shadowPos = LastCheckpoint.Position;
-        SetCamera();
+            _cameraBehavior.ResetCamCheckpoint();
         }
         _playerAnimator.enabled = true;
-        OnTransformToPlayer();
+        if (IsShadow)
+            OnTransformToPlayer();
+
         _playerInteraction.enabled = true;
         Controller.enabled = true;
         _isDead = false;
+
         PlayerActionState = PlayerAction.IDLE;
         Controller.SetDead(false);
         _respawn = false;
@@ -319,14 +321,6 @@ public class PlayerStatus : Entity
             StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
     }
     CameraBehavior _cameraBehavior;
-
-    void SetCamera()
-    {
-        _cameraBehavior.transform.position = LastCheckpoint.CamPos;
-        _cameraBehavior.transform.rotation = LastCheckpoint.CamRot;
-        _cameraBehavior.WindowOffset = LastCheckpoint.CamOffset;
-        _cameraBehavior.WindowSize = LastCheckpoint.CamSize;
-    }
 
     //Set Player to the right Position
     IEnumerator PlayAnimationBefore(bool started, bool canceled)

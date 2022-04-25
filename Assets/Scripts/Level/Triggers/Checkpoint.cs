@@ -27,10 +27,7 @@ public class Checkpoint : Trigger
             _set = true;
             _camera = Camera.main.GetComponent<CameraBehavior>();
             Position = transform.position + Vector3.up;
-            CamOffset = _camera.WindowOffset;
-            CamSize = _camera.WindowSize;
-            CamPos = _camera.transform.position;
-            CamRot = _camera.transform.rotation;
+            _camera.SetCheckpoint();
             other.GetComponent<PlayerStatus>().LastCheckpoint = this;
         }
     }

@@ -39,6 +39,11 @@ public class MobileEnemy : Enemy
         State = EnemyState.NORMAL;
     }
 
+    public void Reset()
+    {
+        
+    }
+
     IEnumerator WaitStart()
     {
         yield return new WaitUntil(() => _checkpointManager != null);
@@ -66,6 +71,7 @@ public class MobileEnemy : Enemy
     }
 
     bool wasChange = false;
+    bool _reset = false;
     // Update is called once per frame
     override public void Update()
     {
@@ -75,8 +81,14 @@ public class MobileEnemy : Enemy
         {
             CheckpointChange();
         }
-        if (_player != null && _player.Dead)
+        if (_player != null && _player.Dead && !_reset)
+        {
+            _reset = true;
+            StopFollowingPlayer();
             return;
+        }
+        else
+            _reset = false;
         // If Missing Checkpoint Manager.
         if (_checkpointManager == null)
         {
