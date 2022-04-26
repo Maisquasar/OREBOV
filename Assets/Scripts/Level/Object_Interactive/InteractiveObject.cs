@@ -11,8 +11,10 @@ namespace InteractObject
     {
         Box,
         Switch,
+        LightSwitch,
         Hideout,
-        Ladder
+        Ladder,
+        Stair,
     }
 
 }
@@ -20,6 +22,7 @@ namespace InteractObject
 public class InteractiveObject : AmbientTypeHolder
 {
     [Header("Object State")]
+    [HideInInspector] public bool CanBeSelected = true;
     [HideInInspector] public bool IsSelected;
     [HideInInspector] public bool ObjectActive = false;
     public bool UseOnlyInShadow;
@@ -55,7 +58,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void ActiveItem(GameObject player)
     {
-        if (_activeSound)
+        if (_activeSound && _soundActiveTrigger != null)
             _soundActiveTrigger.PlaySound();
         _playerGO = player;
         ObjectActive = true;
@@ -63,7 +66,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void ActiveItem(Enemy enemy)
     {
-        if (_activeSound)
+        if (_activeSound && _soundActiveTrigger != null)
             _soundActiveTrigger.PlaySound();
         _playerGO = enemy.gameObject;
         ObjectActive = true;
@@ -71,7 +74,7 @@ public class InteractiveObject : AmbientTypeHolder
 
     protected virtual void DeactiveItem()
     {
-        if (_activeSound)
+        if (_activeSound && _soundActiveTrigger != null)
             _soundDeactiveTrigger.PlaySound();
         ObjectActive = false;
     }
@@ -102,7 +105,7 @@ public class InteractiveObject : AmbientTypeHolder
             DeactiveItem();
     }
 
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawSphere(HintPosition, 0.112f);

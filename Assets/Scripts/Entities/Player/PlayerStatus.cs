@@ -7,6 +7,7 @@ using static UnityEngine.InputSystem.InputAction;
 using States;
 using InteractObject;
 using System;
+using UnityEngine.InputSystem;
 
 public enum SoundIDs
 {
@@ -30,11 +31,12 @@ public class PlayerStatus : Entity
     private Dictionary<SoundIDs, SoundEffectsHandler> _soundBoard = new Dictionary<SoundIDs, SoundEffectsHandler>();
 
     public PlayerAction PlayerActionState;
-    [HideInInspector] public Vector3 CheckpointPos;
+    [HideInInspector] public Checkpoint LastCheckpoint;
 
     [SerializeField] private UIPauseMenu _pauseMenu;
 
     [Header("Inputs")]
+    [SerializeField]
     [Range(0f, 1f)]
     private float deadZone;
 
@@ -52,12 +54,14 @@ public class PlayerStatus : Entity
 
     public bool IsHide = false;
     [HideInInspector]
+    public Vector3 SpawnPos;
     private bool _isDead = false;
     private bool _isJumping = false;
     private bool _isShadow = false;
     private bool _respawn = false; // To execute repawn only once.
     private bool _exactPos = false; // To execute LerpTo only once.
     private float _stressTimer = 0.0f;
+    public bool IsInLight { get { return _caster.IsInLight(); } }
     public bool IsShadow { get { return _isShadow; } }
 
     public Vector2 MoveDir { get { return _movementDir; } }
@@ -75,8 +79,9 @@ public class PlayerStatus : Entity
     #region Initiate Script 
     private void Start()
     {
+        SpawnPos = transform.position + Vector3.up;
         InitComponent();
-        CheckpointPos = transform.position;
+        // Set the Checkpoint position.
         foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
         {
             bool found = false;
@@ -108,6 +113,7 @@ public class PlayerStatus : Entity
         _caster = gameObject.GetComponent<ShadowCaster>();
         _playerAnimator = gameObject.GetComponent<PlayerAnimator>();
         _playerInteraction = gameObject.GetComponent<PlayerInteraction>();
+        _cameraBehavior = FindObjectOfType<CameraBehavior>();
     }
 
     #endregion
@@ -121,6 +127,7 @@ public class PlayerStatus : Entity
             _soundBoard[SoundIDs.Stress].StopSound();
             return;
         }
+
         if (_stressTimer > 0) _stressTimer -= Time.deltaTime;
         else if (_soundBoard[SoundIDs.Stress].Active) _soundBoard[SoundIDs.Stress].StopSound();
         _shadowPos = _caster.GetShadowPos();
@@ -157,6 +164,7 @@ public class PlayerStatus : Entity
                 }
             }
         }
+        SetVibration();
         _previousPos = transform.position;
     }
 
@@ -289,17 +297,32 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        Debug.Log("Test");
-        transform.position = CheckpointPos;
+        if (LastCheckpoint == null)
+        {
+            transform.position = SpawnPos;
+            _shadowPos = SpawnPos;
+        }
+        else
+        {
+            transform.position = LastCheckpoint.Position;
+            _shadowPos = LastCheckpoint.Position;
+            _cameraBehavior.ResetCamCheckpoint();
+        }
         _playerAnimator.enabled = true;
+        if (IsShadow)
+            OnTransformToPlayer();
+
         _playerInteraction.enabled = true;
         Controller.enabled = true;
         _isDead = false;
+
         PlayerActionState = PlayerAction.IDLE;
         Controller.SetDead(false);
         _respawn = false;
-        StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
+        if (_pauseMenu != null)
+            StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
     }
+    CameraBehavior _cameraBehavior;
 
     //Set Player to the right Position
     IEnumerator PlayAnimationBefore(bool started, bool canceled)
@@ -332,6 +355,8 @@ public class PlayerStatus : Entity
         transform.position = goTo;
     }
 
+
+
     private void PlayerDeath()
     {
         Controller.SetDead(true);
@@ -343,16 +368,17 @@ public class PlayerStatus : Entity
     IEnumerator WaitBeforeRespawn()
     {
         _respawn = true;
-        yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
+        if (_pauseMenu != null) yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
+        else yield return new WaitForSeconds(2f);
         Respawn();
     }
 
 
-    public void Hide(bool hide)
+    public void Hide(bool hide, Vector3 position)
     {
         if (hide)
         {
-            StartCoroutine(Controller.PlayHide());
+            StartCoroutine(Controller.PlayHide(position));
         }
         else
         {
@@ -370,5 +396,19 @@ public class PlayerStatus : Entity
     public void PlaySound(SoundIDs sound)
     {
         _soundBoard[sound].PlaySound();
+    }
+
+    public void SetVibration()
+    {
+        if (Gamepad.current == null)
+            return;
+        float max = 0;
+        foreach (var Enemy in FindObjectsOfType<Enemy>())
+        {
+            if (max < Enemy.VibrationIntensity)
+                max = Enemy.VibrationIntensity;
+        }
+        Gamepad.current.SetMotorSpeeds(max, max);
+
     }
 }

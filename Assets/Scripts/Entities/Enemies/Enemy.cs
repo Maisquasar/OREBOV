@@ -33,7 +33,8 @@ public class Enemy : Entity
     [HideInInspector] public float TimeStamp = 0;
     protected PlayerStatus _player;
 
-    private float _shootTime = 1f;
+    [HideInInspector] public float VibrationIntensity;
+
     public virtual EntityMovement Controller { get { return _entityController; } }
 
     // Start is called before the first frame update
@@ -79,31 +80,44 @@ public class Enemy : Entity
     // Update is called once per frame
     virtual public void Update()
     {
+        if (_player == null)
+        {
+            _player = FindObjectOfType<PlayerStatus>();
+        }
         if (!_player.Dead)
         {
-            if (TimeStamp > 0 && PlayerDetected)
-            {
-                TimeStamp -= Time.deltaTime * GaugeAdd;
-                if (State != EnemyState.SUSPICIOUS)
-                {
-                    _soundBoard[SoundIDs.EnemySus].PlaySound();
-                    State = EnemyState.SUSPICIOUS;
-                }
-            }
-            else if (TimeStamp < DetectionTime)
-            {
-                TimeStamp += Time.deltaTime * GaugeRemove;
-            }
-            if (TimeStamp <= 0)
-            {
-                _player.Dead = true;
-                Debug.Log("Shoot!!");
-                Shoot();
-                if (_weapon != null)
-                    _weapon.Shoot();
-                StartCoroutine(Shooting(0.5f));
-            }
+            EnemyDetection();
             SetVibrationController();
+        }
+    }
+
+    private void EnemyDetection()
+    {
+        // Gauge Equals 0, kill player.
+        if (TimeStamp <= 0 && !_player.Dead && Time.timeSinceLevelLoad > 5f && !WaitForDeath)
+        {
+            WaitForDeath = true;
+            _player.Dead = true;
+            Shoot();
+            if (_weapon != null)
+                _weapon.Shoot();
+            StartCoroutine(Shooting(2f));
+        }
+
+        // Increment Gauge.
+        if (TimeStamp > 0 && PlayerDetected)
+        {
+            TimeStamp -= Time.deltaTime * GaugeAdd;
+            if (State != EnemyState.SUSPICIOUS)
+            {
+                _soundBoard[SoundIDs.EnemySus].PlaySound();
+                State = EnemyState.SUSPICIOUS;
+            }
+        }
+        // Decrement Gauge.
+        else if (TimeStamp < DetectionTime)
+        {
+            TimeStamp += Time.deltaTime * GaugeRemove;
         }
     }
 
@@ -111,7 +125,7 @@ public class Enemy : Entity
 
     virtual public void Shoot() { }
 
-
+    bool WaitForDeath = false;
     private IEnumerator Shooting(float time)
     {
         yield return new WaitForSeconds(time);
@@ -123,6 +137,7 @@ public class Enemy : Entity
         PlayerDetected = false;
         TimeStamp = DetectionTime;
         State = EnemyState.NORMAL;
+        WaitForDeath = false;
     }
 
 
@@ -145,9 +160,8 @@ public class Enemy : Entity
         else
         {
             float distance = Vector3.Distance(transform.position, _player.transform.position);
-            float vibrationIntensity = 1 - (distance) / (_distanceVibration);
-            vibrationIntensity *= _maxVibrationIntensity;
-            Gamepad.current.SetMotorSpeeds(vibrationIntensity, vibrationIntensity);
+            VibrationIntensity = 1 - (distance) / (_distanceVibration);
+            VibrationIntensity *= _maxVibrationIntensity;
         }
     }
 }

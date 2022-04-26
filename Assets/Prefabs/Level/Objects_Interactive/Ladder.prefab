@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -76,7 +77,7 @@ AudioSource:
   m_GameObject: {fileID: 523913447}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -178,8 +179,10 @@ MonoBehaviour:
   _soundName: Ladder Loop
   _audioClipArray:
   - {fileID: 8300000, guid: c609c98f12459534d9318066cf3ebfa0, type: 3}
-  _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 1
   _playCount: 1
@@ -347,6 +350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -377,7 +381,7 @@ AudioSource:
   m_GameObject: {fileID: 8664129559980023033}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -479,8 +483,10 @@ MonoBehaviour:
   _soundName: Ladder Loop
   _audioClipArray:
   - {fileID: 8300000, guid: c609c98f12459534d9318066cf3ebfa0, type: 3}
-  _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 1
   _playCount: 1
@@ -533,6 +539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -563,7 +570,7 @@ AudioSource:
   m_GameObject: {fileID: 8664129560933592509}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -665,8 +672,10 @@ MonoBehaviour:
   _soundName: Ladder Loop
   _audioClipArray:
   - {fileID: 8300000, guid: c609c98f12459534d9318066cf3ebfa0, type: 3}
-  _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 1
   _playCount: 1

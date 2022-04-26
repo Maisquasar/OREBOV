@@ -29,10 +29,12 @@ public class InteractiveBox : InteractiveObject
 
     private Vector3 delta;
     private bool _hasMove;
+    private Vector3 _localScale;
 
     override protected void Start()
     {
         base.Start();
+        _localScale = transform.localScale;
         ObjectType = InteractObjects.Box;
     }
 
@@ -131,7 +133,7 @@ public class InteractiveBox : InteractiveObject
 
     private bool CanBoxMove(float dir)
     {
-        return !Physics.Raycast(transform.position + new Vector3(dir, 0, 0) * transform.localScale.x / 2f, new Vector3(dir, 0, 0), _speedBox * Time.deltaTime, _collisionMask, QueryTriggerInteraction.Ignore);
+        return !Physics.Raycast(transform.position, new Vector3(dir, 0, 0), (_speedBox * Time.deltaTime + (transform.localScale.x / 2f)), _collisionMask, QueryTriggerInteraction.Ignore);
     }
 
     private void StartMouvement()

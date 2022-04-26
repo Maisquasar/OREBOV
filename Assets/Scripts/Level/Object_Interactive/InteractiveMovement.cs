@@ -38,7 +38,7 @@ public class InteractiveMovement : InteractiveObject
     }
 
     protected override void ActiveItem(GameObject player)
-    {
+    {   
         base.ActiveItem(player);
         _movementTimer = 0;
         _rigidbodyPlayer = _playerGO.GetComponent<Rigidbody>();
@@ -53,7 +53,7 @@ public class InteractiveMovement : InteractiveObject
         _posEnd = _endPoint.position;
     }
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
         if (!LockPosition)
         {

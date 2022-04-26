@@ -6,6 +6,8 @@ public class MobileEnemyMovement : EntityMovement
 {
     [SerializeField] AnimationCurve _velocityCurve;
 
+    public Vector3 GoTo { get { return _goTo; } }
+
     Vector3 _goTo;
     float _time;
 
@@ -35,7 +37,7 @@ public class MobileEnemyMovement : EntityMovement
     public override void Move(float move)
     {
         base.Move(move);
-        if (_goTo == null)
+        if (_goTo == Vector3.zero || _goTo == null)
             return;
         move *= speed;
         if ((_goTo.x > transform.position.x && Mathf.Sign(move) == -1) || (_goTo.x < transform.position.x && Mathf.Sign(move) == 1))
@@ -44,12 +46,13 @@ public class MobileEnemyMovement : EntityMovement
         if (_grounded)
             _rb.velocity = new Vector2(_velocityCurve.Evaluate(_time) * move, _rb.velocity.y);
 
+        // Flip Character.
         if (_grounded && _endOfCoroutine)
         {
-            if (move < 0 && _direction == 1)
-                StartCoroutine(Flip(Quaternion.Euler(0, 180, 0), Quaternion.Euler(0, 0, 0), 0.1f));
-            else if (move > 0 && _direction == -1)
-                StartCoroutine(Flip(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 180, 0), 0.1f));
+            if (move < 0 && _direction == 1 || move < 0 && transform.rotation != Quaternion.Euler(0, 0, 0))
+                StartCoroutine(Flip(transform.rotation, Quaternion.Euler(0, 0, 0), 0.1f));
+            else if (move > 0 && _direction == -1 || move > 0 && transform.rotation != Quaternion.Euler(0, 180, 0))
+                StartCoroutine(Flip(transform.rotation, Quaternion.Euler(0, 180, 0), 0.1f));
         }
         _time += Time.deltaTime;
     }
@@ -60,15 +63,16 @@ public class MobileEnemyMovement : EntityMovement
         _goTo = to;
     }
 
+
     override protected void WallDetection()
     {
-        for (int i = 0; i < ray.Count; i++)
+        for (int i = 0; i < _wallRays.Count; i++)
         {
-            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            Vector3 WallPos = transform.position + new Vector3(0, _wallRays[i], 0);
             RaycastHit[] tmpHit = Physics.RaycastAll(WallPos, Vector3.right * _direction, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore);
             for (int j = 0; j < tmpHit.Length; j++)
             {
-                if (!tmpHit[i].transform.GetComponent<PlayerStatus>())
+                if (!tmpHit[j].transform.GetComponent<PlayerStatus>())
                 {
                     Vector3 tmp = _rb.velocity;
                     tmp.x = 0;
@@ -80,13 +84,13 @@ public class MobileEnemyMovement : EntityMovement
 
     protected override bool DetectWall()
     {
-        for (int i = 0; i < ray.Count; i++)
+        for (int i = 0; i < _wallRays.Count; i++)
         {
-            Vector3 WallPos = transform.position + new Vector3(0, ray[i], 0);
+            Vector3 WallPos = transform.position + new Vector3(0, _wallRays[i], 0);
             RaycastHit[] tmp = Physics.RaycastAll(WallPos, Vector3.right * _direction, _rayWallSize, GroundType, QueryTriggerInteraction.Ignore);
             for (int j = 0; j < tmp.Length; j++)
             {
-                if (!tmp[i].transform.GetComponent<PlayerStatus>())
+                if (!tmp[j].transform.GetComponent<PlayerStatus>())
                     return true;
             }
         }

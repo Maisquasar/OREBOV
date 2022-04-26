@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MobilePoint : MonoBehaviour
 {
-
+    [SerializeField] public float Time;
 }

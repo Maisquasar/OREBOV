@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using static UnityEngine.InputSystem.InputAction;
 
 public class CameraBehavior : MonoBehaviour
 {
-    private enum CameraBehaviorState
+    public enum CameraBehaviorState
     {
         FollowTarget,
         FreeMovement,
     }
+
 
     [SerializeField] private CameraBehaviorState _camState;
 
@@ -27,13 +28,21 @@ public class CameraBehavior : MonoBehaviour
     [Range(0, 100f)]
     [SerializeField] private float _stopCamDistance;
     [SerializeField] private LayerMask _camLayer;
-
+    [SerializeField] private Canvas _debugCanvas;
+    [SerializeField] private TextMeshProUGUI _fpsCounter;
+    [SerializeField] private Texture2D tex;
+    private float _maxFPS = 60.0f;
+    private float _minFPS = 60.0f;
+    private int _timer;
 
     // Checkpoint variable
-    [HideInInspector] public Vector2 WindowSizeCheckpoint;
-    [HideInInspector] public Vector2 WindowOffsetCheckpoint;
-    [HideInInspector] public Vector3 PositionCheckpoint;
-    [HideInInspector] public Quaternion RotationCheckpoint;
+    private Vector2 _windowSizeCheckpoint;
+    private Vector2 _windowOffsetCheckpoint;
+    private Vector2 _windowCenterCheckpoint;
+    private Vector2 _windowOriginCheckpoint;
+    private Vector3 _positionCheckpoint;
+    private Quaternion _rotationCheckpoint;
+    private CameraBehaviorState _stateCheckpoint;
 
     private PlayerStatus _player;
     private Vector3 _windowCenter;
@@ -62,8 +71,23 @@ public class CameraBehavior : MonoBehaviour
         _windowOrigin = _windowCenter + (Vector3)(WindowSize / 2f);
     }
 
+    public void SetCheckpoint()
+    {
+        _windowCenterCheckpoint = _windowCenter;
+        _windowOriginCheckpoint = _windowOrigin;
+        _windowSizeCheckpoint = WindowSize;
+        _windowOffsetCheckpoint = WindowOffset;
+        _positionCheckpoint = transform.position;
+        _rotationCheckpoint = transform.rotation;
+        _stateCheckpoint = _camState;
+    }
+
     #endregion
 
+    private void Update()
+    {
+        RefreshFPS();
+    }
     private void FixedUpdate()
     {
         if (_camState == CameraBehaviorState.FollowTarget) UpdateFollowMode();
@@ -92,9 +116,9 @@ public class CameraBehavior : MonoBehaviour
     private Vector3 SetWindowPosition(Vector3 pos)
     {
 
-        Vector3 _windowCenterL = Vector3.Lerp(_windowCenter, new Vector3(pos.x, pos.y, 0f) + (Vector3)WindowOffset, _camWindownSpeed);
-        _windowCenterL.z = _mainTarget.transform.position.z;
-        return _windowCenterL - (Vector3)(WindowSize / 2f);
+        Vector3 WindowCenterL = Vector3.Lerp(_windowCenter, new Vector3(pos.x, pos.y, 0f) + (Vector3)WindowOffset, _camWindownSpeed);
+        WindowCenterL.z = _mainTarget.transform.position.z;
+        return WindowCenterL - (Vector3)(WindowSize / 2f);
     }
 
     private void FollowPlayer()
@@ -126,6 +150,53 @@ public class CameraBehavior : MonoBehaviour
         return Physics.Raycast(pos, Vector3.right, out hit, distance, _camLayer, QueryTriggerInteraction.Ignore);
     }
 
+    public void ToggleDebug(CallbackContext context)
+    {
+        if (context.started)
+            _debugCanvas.enabled = !_debugCanvas.enabled;
+    }
+
+    private void RefreshFPS()
+    {
+        if (!_debugCanvas.enabled) return;
+        float fps = 1 / Time.deltaTime;
+        if (_timer != (int)(Time.time/5))
+        {
+            _timer = (int)(Time.time/5);
+            _minFPS = fps;
+            _maxFPS = fps;
+        }
+        else
+        {
+            if (fps > _maxFPS) _maxFPS = fps;
+            if (fps < _minFPS) _minFPS = fps;
+        }
+        _fpsCounter.text = String.Format("FPS:    {0: 0.0}\nMinFPS: {1: 0.0}\nMaxFPS: {2: 0.0}\nDeltaTime: {3: 0.0}", fps, _minFPS, _maxFPS, Time.deltaTime*1000);
+        RefreshGraph();
+    }
+
+    private void RefreshGraph()
+    {
+        Color32[] array = tex.GetPixels32();
+        for (int i = 0; i < tex.height; i++)
+        {
+            for (int j = 0; j < tex.width-1; j++)
+            {
+                int index = i * tex.width + j;
+                array[index] = array[index + 1];
+            }
+        }
+        float timeMs = Time.deltaTime * 1000;
+        Color32 color = timeMs < 17.5f ? new Color32(0, 255, 0, 255) : (timeMs < 35.0f ? new Color32(255, 255, 0, 255) : new Color32(255,0,0,255));
+        int max = (timeMs > 100) ? tex.height : (int)(timeMs / 100 * tex.height);
+        for (int i = 0; i < tex.height; i++)
+        {
+            array[(i + 1) * tex.width - 1] = (i < max) ? color : new Color32(0,0,0,0);
+        }
+        tex.SetPixels32(array);
+        tex.Apply();
+    }
+
 
     private void OnDrawGizmos()
     {
@@ -134,21 +205,24 @@ public class CameraBehavior : MonoBehaviour
         {
             Debug.LogError("Missing Player");
         }
-        if (_showWindow)
+        else if (_showWindow)
         {
             SetWindowPosition();
             DrawRectWindown();
         }
-
+        RefreshFPS();
     }
 
 
     public void ResetCamCheckpoint()
     {
-        WindowOffset = WindowOffsetCheckpoint;
-        WindowSize = WindowSizeCheckpoint;
-        transform.position = PositionCheckpoint;
-        transform.rotation = RotationCheckpoint;
+        _windowCenter = _windowCenterCheckpoint;
+        _windowOrigin = _windowOriginCheckpoint;
+        WindowOffset = _windowOffsetCheckpoint;
+        WindowSize = _windowSizeCheckpoint;
+        transform.position = _positionCheckpoint;
+        transform.rotation = _rotationCheckpoint;
+        _camState = _stateCheckpoint;
     }
 
     private void DrawRectWindown()

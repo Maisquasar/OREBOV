@@ -5,6 +5,7 @@ using UnityEngine;
 public class MobileLight : MonoBehaviour
 {
     [SerializeField] float Timer;
+    [SerializeField] float _waitingTime = 2f;
 
 
     MobilePoint _mobilePoint;
@@ -33,27 +34,46 @@ public class MobileLight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!atDestination && CoroutineEnd)
+        if (!atDestination)
         {
-            StartCoroutine(LerpFromTo(transform.position, Goto, Timer));
+            if (!_startCoroutine)
+                StartCoroutine(WaitForSeconds(_waitingTime));
+            else if (_coroutineEnd && _startCoroutine)
+                Lerp(_initialPos, Goto, Timer);
         }
-        else if (CoroutineEnd)
+        else if (_coroutineEnd)
         {
-            StartCoroutine(LerpFromTo(transform.position, _initialPos, Timer));
+            if (!_startCoroutine)
+                StartCoroutine(WaitForSeconds(_mobilePoint.Time));
+            else if (_coroutineEnd && _startCoroutine)
+                Lerp(Goto, _initialPos, Timer);
         }
     }
 
-    bool CoroutineEnd = true;
-    IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
+    float _actualTime = 0;
+    private void Lerp(Vector3 initial, Vector3 goTo, float duration)
     {
-        CoroutineEnd = false;
-        for (float t = 0f; t < duration; t += Time.deltaTime)
+        if (_actualTime < duration)
         {
-            transform.position = Vector3.Lerp(initial, goTo, t / duration);
-            yield return 0;
+            transform.position = Vector3.Lerp(initial, goTo, _actualTime / duration);
+            _actualTime += Time.deltaTime;
         }
-        transform.position = goTo;
-        CoroutineEnd = true;
-        atDestination = !atDestination;
+        else
+        {
+            transform.position = goTo;
+            _actualTime = 0;
+            atDestination = !atDestination;
+            _startCoroutine = false;
+        }
+    }
+
+    bool _coroutineEnd = true;
+    bool _startCoroutine = false;
+    IEnumerator WaitForSeconds(float time)
+    {
+        _startCoroutine = true;
+        _coroutineEnd = false;
+        yield return new WaitForSeconds(time);
+        _coroutineEnd = true;
     }
 }

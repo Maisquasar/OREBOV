@@ -13,14 +13,15 @@ public class CustomObjectManager : Editor
         _listItem = serializedObject.FindProperty("_interactiveObjectList");
     }
 
-    public override void OnInspectorGUI()
+    public override void OnInspectorGUI()   
     {
-
+        ObjectManager objectManager = (ObjectManager)target;
+        EditorUtility.ClearDirty(serializedObject.targetObject);
         serializedObject.Update();
         EditorGUILayout.PropertyField(_listItem);
         if(GUILayout.Button("Find Objects"))
         {
-            Selection.activeGameObject.GetComponent<ObjectManager>().FindAllObject();
+            objectManager.FindAllObject();
             EditorUtility.SetDirty(serializedObject.targetObject);
         }
         serializedObject.ApplyModifiedProperties();

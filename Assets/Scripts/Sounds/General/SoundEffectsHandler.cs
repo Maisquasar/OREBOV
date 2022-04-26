@@ -9,7 +9,9 @@ public class SoundEffectsHandler : MonoBehaviour
     [SerializeField] private string _soundName;
     [SerializeField] private AudioClip[] _audioClipArray = new AudioClip[0];
     [SerializeField] private AudioMixerGroup _mixer;
+    [SerializeField] [Range(0.0f,1.0f)] private float _volume = 1.0f;
     [SerializeField] private bool _randomPlaySound;
+    [SerializeField] private bool _randomLeftRightPanning;
     [SerializeField] private bool _playAtStart;
     [SerializeField] private bool _looped;
     [Header("Play Count")]
@@ -120,10 +122,18 @@ public class SoundEffectsHandler : MonoBehaviour
         {
             index = findFirstAudioSource();
         }
+        if (_randomLeftRightPanning)
+        {
+            _audioSources[index].panStereo = Random.Range(-1.0f, 1.0f);
+        }
+        else
+        {
+            _audioSources[index].panStereo = 0.0f;
+        }
         _audioSources[index].clip = _audioClipArray[_indexAudioClip];
         _audioSources[index].outputAudioMixerGroup = _mixer;
         _audioSources[index].loop = _looped;
-        _audioSources[index].volume = 1.0f;
+        _audioSources[index].volume = _volume;
         _audioSources[index].Play();
     }
 

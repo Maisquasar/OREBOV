@@ -61,7 +61,22 @@ public class UIPauseMenu : MonoBehaviour
             if (item.transform.parent.name == "PauseMenu") continue;
             item.speed = 0;
         }
+#if UNITY_EDITOR
+        foreach (ObjectManager item in FindObjectsOfType<ObjectManager>(true))
+        {
+            print(GetPath(item.transform));
+        }
+#endif
     }
+
+#if UNITY_EDITOR
+    private string GetPath(Transform current)
+    {
+        if (current.parent == null)
+            return "/" + current.name;
+        return GetPath(current.parent) + "/" + current.name;
+    }
+#endif
 
     private void CloseMenu()
     {

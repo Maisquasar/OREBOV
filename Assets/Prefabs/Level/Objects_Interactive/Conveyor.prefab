@@ -41,7 +41,7 @@ AudioSource:
   m_GameObject: {fileID: 2326185323904256749}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -143,8 +143,10 @@ MonoBehaviour:
   _soundName: Change Direction
   _audioClipArray:
   - {fileID: 8300000, guid: 75f0759181e2def488a8faa1aedc7675, type: 3}
-  _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 0
   _playCount: 1
@@ -272,7 +274,7 @@ AudioSource:
   m_GameObject: {fileID: 4777625452021451075}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   m_audioClip: {fileID: 8300000, guid: f569d4917da7d8a409a9a35fea4aa872, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1

@@ -7,6 +7,9 @@ public class Elevator : SwitchableObjects
     MobilePoint _mobilePoint;
 
     [SerializeField] float Timer;
+    [SerializeField] SoundEffectsHandler _startSound;
+    [SerializeField] SoundEffectsHandler _stopSound;
+    [SerializeField] SoundEffectsHandler _loopSound;
 
     BelowElevatorDetector _detector;
 
@@ -35,24 +38,29 @@ public class Elevator : SwitchableObjects
         {
             cancel = true;
             StartCoroutine(WaitForRestart());
+            _loopSound.StopSound();
+            _stopSound.PlaySound();
         }
     }
 
     bool atDestination = false;
     public override void Activate()
     {
-        if (!atDestination && CoroutineEnd)
+        if (!CoroutineEnd) return;
+        if (!atDestination)
         {
             StartCoroutine(LerpFromTo(transform.position, Goto, Timer));
         }
-        else if (CoroutineEnd)
+        else
         {
             StartCoroutine(LerpFromTo(transform.position, _initialPos, Timer));
         }
+        _startSound.PlaySound();
+        _loopSound.PlaySound();
     }
     bool cancel = false;
 
-    bool CoroutineEnd = true;
+    [HideInInspector] public bool CoroutineEnd = true;
     IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
     {
         CoroutineEnd = false;
@@ -69,6 +77,8 @@ public class Elevator : SwitchableObjects
         transform.position = goTo;
         CoroutineEnd = true;
         atDestination = !atDestination;
+        _loopSound.StopSound();
+        _stopSound.PlaySound();
     }
 
     IEnumerator WaitForRestart()
@@ -86,8 +96,9 @@ public class Elevator : SwitchableObjects
             var Distance = Vector3.Distance(transform.position, Goto);
             var Distance2 = Vector3.Distance(Goto, _initialPos);
             float tmp = (Distance * Timer) / Distance2;
-            Debug.Log(tmp);
             StartCoroutine(LerpFromTo(transform.position, Goto, tmp));
         }
+        _startSound.PlaySound();
+        _loopSound.PlaySound();
     }
 }

@@ -7,7 +7,6 @@ using UnityEditor;
 public class PlayerMovement : EntityMovement
 {
     [SerializeField] AnimationCurve velocityCurve;
-    [SerializeField] float _flipTime = 0.1f;
 
     [Space]
     [Header("Jump Settings")]
@@ -28,6 +27,8 @@ public class PlayerMovement : EntityMovement
     [Space]
     [SerializeField] float FallDamageHeight = 8;
     [HideInInspector] public bool IsClimbing = false;
+    [HideInInspector] public bool ClimbingLadder = false;
+    [HideInInspector] public bool Stair = false;
 
     Vector3 LastPosBeforeFall;
     private float _lastMove;
@@ -60,6 +61,9 @@ public class PlayerMovement : EntityMovement
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(edgeDetectorDistance, topEdgeDetectorHeight, 0));
         Gizmos.DrawLine(transform.position + new Vector3(0, topEdgeDetectorHeight, 0), transform.position + new Vector3(-edgeDetectorDistance, topEdgeDetectorHeight, 0));
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(LastPosBeforeFall, 0.5f);
     }
 
     #endregion
@@ -68,21 +72,15 @@ public class PlayerMovement : EntityMovement
     {
         if (_playerStatus.Dead)
             return;
-        //Get the pos at start fall.
-        if (_rb.velocity.y < -0.1f && !_fallDefine && !_grounded)
-        {
-            LastPosBeforeFall = transform.position;
-            _fallDefine = true;
-        }
-        //Check if fall damage.
-        if (_grounded)
-        {
-            _fallDefine = false;
-            if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<PlayerStatus>().Dead)
-            {
-                _playerStatus.Dead = true;
-            }
-        }
+
+        CheckForFallDamage();
+        CheckForClimb();
+        SetAnimations();
+    }
+
+    public void SetAnimations()
+    {
+
 
         if (DetectWall() || (_playerStatus.GetComponent<PlayerAnimator>().IsInAmination && !_playerStatus.IsShadow))
             animator.SetFloat("VelocityX", 0);
@@ -91,14 +89,36 @@ public class PlayerMovement : EntityMovement
 
         animator.SetFloat("VelocityY", _rb.velocity.y);
         animator.SetBool("Grounded", _grounded);
+    }
 
-        CheckForClimb();
+    public void CheckForFallDamage()
+    {
+        //Get the pos at start fall.
+        if (_rb.velocity.y < -0.1f && !_fallDefine && !_grounded)
+        {
+            LastPosBeforeFall = transform.position;
+            _fallDefine = true;
+        }
+
+        //Check if fall damage.
+        if (_grounded)
+        {
+            _fallDefine = false;
+            if (LastPosBeforeFall != null && LastPosBeforeFall.y - transform.position.y >= GameMetric.GetGameUnit(FallDamageHeight) && !GetComponent<PlayerStatus>().Dead)
+            {
+                _playerStatus.Dead = true;
+            }
+            LastPosBeforeFall = transform.position;
+        }
     }
 
     public void SetDead(bool state)
     {
         animator.SetBool("Dead", state);
-        LastPosBeforeFall = _playerStatus.CheckpointPos;
+        if (_playerStatus.LastCheckpoint == null)
+            LastPosBeforeFall = _playerStatus.SpawnPos;
+        else
+            LastPosBeforeFall = _playerStatus.LastCheckpoint.Position;
         animator.SetFloat("VelocityX", 0);
     }
 
@@ -160,7 +180,7 @@ public class PlayerMovement : EntityMovement
     public override void Move(float move)
     {
         // If climbing then can't move
-        if (IsClimbing || IsPushing || IsPulling || IsHide || ClimbingLadder)
+        if (IsClimbing || IsPushing || IsPulling || IsHide || ClimbingLadder || Stair)
         {
             base.Move(0);
             return;
@@ -199,8 +219,6 @@ public class PlayerMovement : EntityMovement
         }
     }
 
-
-
     private float GetJumpForce(float jumpHeight)
     {
         return Mathf.Sqrt(jumpHeight * -2 * (_globalGravity * _gravityScale));
@@ -220,6 +238,7 @@ public class PlayerMovement : EntityMovement
             StartCoroutine(Flip(transform.rotation, transform.rotation * Quaternion.Euler(0, 180, 0), 0.1f));
     }
 
+    //Function call on when land
     protected override void LandOnGround()
     {
         if (IsClimbing || _playerStatus.Dead)
@@ -287,15 +306,16 @@ public class PlayerMovement : EntityMovement
     }
 
     [HideInInspector] public bool IsHide = false;
-    public IEnumerator PlayHide()
+    public IEnumerator PlayHide(Vector3 position)
     {
         lastZPos = transform.position.z;
         CanHide = false;
         animator.SetBool("Hide", true);
         IsHide = true;
-        Debug.Log(IsHide);
         Quaternion target = Quaternion.Euler(0, 0, 0);
-        StartCoroutine(LerpFromTo(transform.position, transform.position + Vector3.forward * 1f, 0.2f));
+        // Set Player z position to hide position.
+        StartCoroutine(LerpFromTo(transform.position, new Vector3(position.x, transform.position.y, position.z), 0.2f));
+        // Rotate Player
         yield return StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
         yield return new WaitForSeconds(1.133f);
         _playerStatus.IsHide = true;
@@ -305,18 +325,22 @@ public class PlayerMovement : EntityMovement
     [HideInInspector] public bool CanHide = true;
     public IEnumerator StopHide()
     {
+        canTurn = false;
         _playerStatus.IsHide = false;
         animator.SetBool("Hide", false);
         yield return new WaitForSeconds(0.5f);
+
+        // Set Player z position to initial position.
         StartCoroutine(LerpFromTo(transform.position, new Vector3(transform.position.x, transform.position.y, lastZPos), 0.6f));
         yield return new WaitForSeconds(0.6f);
         IsHide = false;
         _playerStatus.IsHide = false;
-        Debug.Log(IsHide);
-        Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
-        StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
+        _direction = 1;
+        var target = Quaternion.Euler(0, 90, 0);
+        StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
         yield return new WaitForSeconds(0.5f);
         CanHide = true;
+        canTurn = true;
     }
 
     public IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
@@ -339,12 +363,25 @@ public class PlayerMovement : EntityMovement
         transform.rotation = goTo;
     }
 
-    [HideInInspector] public bool ClimbingLadder = false;
+   
     public void Climb(bool value, int direction = 1)
     {
         ClimbingLadder = value;
         animator.SetBool("Ladder Climb", ClimbingLadder);
         animator.SetInteger("Direction", direction);
+    }
+
+    public void ActiveStair(bool value,  bool up)
+    {
+        Stair = value;
+        if(up)
+        {
+            animator.SetBool("StairUp", Stair);
+        }
+        else
+        {
+            animator.SetBool("StairDown", Stair);
+        }
     }
 }
 
