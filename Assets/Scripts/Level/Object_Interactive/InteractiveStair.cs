@@ -56,6 +56,8 @@ public class InteractiveStair : InteractiveObject
         base.DeactiveItem();
         _rigidbodyPlayer.isKinematic = false;
         _playerInteraction.UnlinkObject();
+        _playerStatus.Controller.ActiveStair(false, false);
+        _playerStatus.Controller.ActiveStair(false, true);
     }
 
     protected override void OnDrawGizmos()
@@ -109,7 +111,8 @@ public class InteractiveStair : InteractiveObject
     {
         _playerGO.transform.rotation = Quaternion.Euler(0, 90f, 0);
         _rigidbodyPlayer.isKinematic = false;
-        _playerStatus.Controller.ActiveStair(false, _isStairUp);
+        _playerStatus.Controller.ActiveStair(false, false);
+        _playerStatus.Controller.ActiveStair(false, true);
         _playerInteraction.UnlinkObject();
     }
 

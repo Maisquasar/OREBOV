@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
+  CanBeSelected: 1
   IsSelected: 0
   ObjectActive: 0
   UseOnlyInShadow: 0
@@ -245,9 +246,10 @@ MonoBehaviour:
   _soundName: Active
   _audioClipArray:
   - {fileID: 8300000, guid: 69b42135e40e5f049a30e9e639cf5d03, type: 3}
-  _mixer: {fileID: 0}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 0
   _playCount: 1
@@ -269,9 +271,10 @@ MonoBehaviour:
   _soundName: Desactive
   _audioClipArray:
   - {fileID: 8300000, guid: c45ae1d6708740a44ab57038bf244618, type: 3}
-  _mixer: {fileID: 0}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
   _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 0
   _playCount: 1
