@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowOnLoad: 0
   Enemy: {fileID: 0}
+  IgnoreObstacles: 0
+  DetectOnShadow: 1
   DistanceDetection: 0
   LinkToLight: 0
 --- !u!135 &14736870
@@ -201,6 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timer: 8
+  _waitingTime: 2
 --- !u!114 &1128776689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _instantDie: 1
+  _sphere: {fileID: 14736871}
 --- !u!1001 &789534197015061562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -509,7 +513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2959143553770720487, guid: 6e8bdfede67a61041a6cd1b46afac91e, type: 3}
       propertyPath: m_Name
-      value: InteractableBoxRoundedLight
+      value: InteractableBoxRoundedLight 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e8bdfede67a61041a6cd1b46afac91e, type: 3}

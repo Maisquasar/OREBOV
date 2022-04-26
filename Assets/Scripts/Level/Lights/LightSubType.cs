@@ -1,6 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
 
 public enum LightType
 {
@@ -19,8 +24,17 @@ public class LightSubType : MonoBehaviour
     public Color PrimaryColor;
     public Color SecondaryColor;
     public bool EjectPlayer = false;
+
+    public HDAdditionalLightData data;
+
+    [SerializeField]
     public bool IsBox = false;
     public Vector2 BoxSize = new Vector2();
+
+    private void Start()
+    {
+        BoxSize = new Vector2(data.shapeWidth, data.shapeHeight);
+    }
 
     private void Update()
     {
@@ -31,12 +45,11 @@ public class LightSubType : MonoBehaviour
         if (LightObject != null)
         {
             PrimaryColor = LightObject.color;
-#if UNITY_EDITOR
-            if (IsBox && LightObject.areaSize.magnitude > 1 && LightObject.areaSize.magnitude != BoxSize.magnitude)
+            Vector2 area = new Vector2(data.shapeWidth, data.shapeHeight);
+            if (IsBox && area.magnitude != BoxSize.magnitude)
             {
-                BoxSize = LightObject.areaSize;
+                BoxSize = new Vector2(data.shapeWidth, data.shapeHeight);
             }
-#endif
         }
     }
 }

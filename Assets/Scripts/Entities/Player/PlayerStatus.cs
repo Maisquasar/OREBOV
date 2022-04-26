@@ -30,12 +30,13 @@ public class PlayerStatus : Entity
     private Dictionary<SoundIDs, SoundEffectsHandler> _soundBoard = new Dictionary<SoundIDs, SoundEffectsHandler>();
 
     public PlayerAction PlayerActionState;
-    [HideInInspector] public Vector3 CheckpointPos;
+    [HideInInspector] public Checkpoint LastCheckpoint;
 
     [SerializeField] private UIPauseMenu _pauseMenu;
 
     [Header("Inputs")]
-    [SerializeField]        [Range(0f, 1f)]
+    [SerializeField]
+    [Range(0f, 1f)]
     private float deadZone;
 
     [Header("Sounds")]
@@ -52,6 +53,7 @@ public class PlayerStatus : Entity
 
     public bool IsHide = false;
     [HideInInspector]
+    public Vector3 SpawnPos;
     private bool _isDead = false;
     private bool _isJumping = false;
     private bool _isShadow = false;
@@ -76,9 +78,9 @@ public class PlayerStatus : Entity
     #region Initiate Script 
     private void Start()
     {
+        SpawnPos = transform.position + Vector3.up;
         InitComponent();
         // Set the Checkpoint position.
-        CheckpointPos = transform.position;
         foreach (SoundEffectsHandler item in _soundEffectsHandler.GetComponents<SoundEffectsHandler>())
         {
             bool found = false;
@@ -110,6 +112,7 @@ public class PlayerStatus : Entity
         _caster = gameObject.GetComponent<ShadowCaster>();
         _playerAnimator = gameObject.GetComponent<PlayerAnimator>();
         _playerInteraction = gameObject.GetComponent<PlayerInteraction>();
+        _cameraBehavior = FindObjectOfType<CameraBehavior>();
     }
 
     #endregion
@@ -292,20 +295,32 @@ public class PlayerStatus : Entity
 
     private void Respawn()
     {
-        transform.position = CheckpointPos;
-        _shadowPos = CheckpointPos;
-        
+        if (LastCheckpoint == null)
+        {
+            transform.position = SpawnPos;
+            _shadowPos = SpawnPos;
+        }
+        else
+        {
+            transform.position = LastCheckpoint.Position;
+            _shadowPos = LastCheckpoint.Position;
+            _cameraBehavior.ResetCamCheckpoint();
+        }
         _playerAnimator.enabled = true;
-        OnTransformToPlayer(); 
+        if (IsShadow)
+            OnTransformToPlayer();
+
         _playerInteraction.enabled = true;
         Controller.enabled = true;
         _isDead = false;
+
         PlayerActionState = PlayerAction.IDLE;
         Controller.SetDead(false);
         _respawn = false;
         if (_pauseMenu != null)
             StartCoroutine(_pauseMenu.ScreenfadeOut(1.0f, 0f));
     }
+    CameraBehavior _cameraBehavior;
 
     //Set Player to the right Position
     IEnumerator PlayAnimationBefore(bool started, bool canceled)
@@ -353,7 +368,7 @@ public class PlayerStatus : Entity
         _respawn = true;
         if (_pauseMenu != null) yield return _pauseMenu.ScreenfadeIn(1.0f, 2.0f);
         else yield return new WaitForSeconds(2f);
-       Respawn();
+        Respawn();
     }
 
 

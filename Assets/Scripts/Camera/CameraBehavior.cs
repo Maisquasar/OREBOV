@@ -5,11 +5,12 @@ using static UnityEngine.InputSystem.InputAction;
 
 public class CameraBehavior : MonoBehaviour
 {
-    private enum CameraBehaviorState
+    public enum CameraBehaviorState
     {
         FollowTarget,
         FreeMovement,
     }
+
 
     [SerializeField] private CameraBehaviorState _camState;
 
@@ -35,10 +36,13 @@ public class CameraBehavior : MonoBehaviour
     private int _timer;
 
     // Checkpoint variable
-    [HideInInspector] public Vector2 WindowSizeCheckpoint;
-    [HideInInspector] public Vector2 WindowOffsetCheckpoint;
-    [HideInInspector] public Vector3 PositionCheckpoint;
-    [HideInInspector] public Quaternion RotationCheckpoint;
+    private Vector2 _windowSizeCheckpoint;
+    private Vector2 _windowOffsetCheckpoint;
+    private Vector2 _windowCenterCheckpoint;
+    private Vector2 _windowOriginCheckpoint;
+    private Vector3 _positionCheckpoint;
+    private Quaternion _rotationCheckpoint;
+    private CameraBehaviorState _stateCheckpoint;
 
     private PlayerStatus _player;
     private Vector3 _windowCenter;
@@ -65,6 +69,17 @@ public class CameraBehavior : MonoBehaviour
         transform.position = new Vector3(_mainTarget.transform.position.x, _mainTarget.transform.position.y + naturalOffset.y, transform.position.z);
         _windowCenter = transform.position + (Vector3)WindowOffset;
         _windowOrigin = _windowCenter + (Vector3)(WindowSize / 2f);
+    }
+
+    public void SetCheckpoint()
+    {
+        _windowCenterCheckpoint = _windowCenter;
+        _windowOriginCheckpoint = _windowOrigin;
+        _windowSizeCheckpoint = WindowSize;
+        _windowOffsetCheckpoint = WindowOffset;
+        _positionCheckpoint = transform.position;
+        _rotationCheckpoint = transform.rotation;
+        _stateCheckpoint = _camState;
     }
 
     #endregion
@@ -101,9 +116,9 @@ public class CameraBehavior : MonoBehaviour
     private Vector3 SetWindowPosition(Vector3 pos)
     {
 
-        Vector3 _windowCenterL = Vector3.Lerp(_windowCenter, new Vector3(pos.x, pos.y, 0f) + (Vector3)WindowOffset, _camWindownSpeed);
-        _windowCenterL.z = _mainTarget.transform.position.z;
-        return _windowCenterL - (Vector3)(WindowSize / 2f);
+        Vector3 WindowCenterL = Vector3.Lerp(_windowCenter, new Vector3(pos.x, pos.y, 0f) + (Vector3)WindowOffset, _camWindownSpeed);
+        WindowCenterL.z = _mainTarget.transform.position.z;
+        return WindowCenterL - (Vector3)(WindowSize / 2f);
     }
 
     private void FollowPlayer()
@@ -201,10 +216,13 @@ public class CameraBehavior : MonoBehaviour
 
     public void ResetCamCheckpoint()
     {
-        WindowOffset = WindowOffsetCheckpoint;
-        WindowSize = WindowSizeCheckpoint;
-        transform.position = PositionCheckpoint;
-        transform.rotation = RotationCheckpoint;
+        _windowCenter = _windowCenterCheckpoint;
+        _windowOrigin = _windowOriginCheckpoint;
+        WindowOffset = _windowOffsetCheckpoint;
+        WindowSize = _windowSizeCheckpoint;
+        transform.position = _positionCheckpoint;
+        transform.rotation = _rotationCheckpoint;
+        _camState = _stateCheckpoint;
     }
 
     private void DrawRectWindown()

@@ -206,4 +206,29 @@ public class ShadowCaster : MonoBehaviour
         }
         return false;
     }
+
+    public List<LightSubType> GetLight()
+    {
+        List<LightSubType> _actualLight = new List<LightSubType>();
+        LightSubType[] lights = LightManager.GetUsableLights();
+        for (int i = 0; i < lights.Length; i++)
+        {
+            Vector3 origin;
+            Vector3 direction;
+            if (getLightVectors(lights[i], new Vector2(), out origin, out direction))
+            {
+                if (ShowAllRays)
+                {
+                    CanTransform(true);
+                    Gizmos.color = Color.yellow;
+                    for (int j = 0; j < ShadowRayCastPosition.Count; j++)
+                    {
+                        if (_pointsHit[j]) continue;
+                        _actualLight.Add(lights[i]);
+                    }
+                }
+            }
+        }
+        return _actualLight;
+    }
 }

@@ -18,6 +18,8 @@ public class MobileEnemy : Enemy
 
     [SerializeField] private bool _followPlayerOnDetection = true;
 
+    [SerializeField] private bool _canInteract = true;
+
     ObjectManager _objectManager;
     EnemyCheckpointManager _checkpointManager;
     int _currentCheckpoint;
@@ -37,6 +39,11 @@ public class MobileEnemy : Enemy
         _currentCheckpoint = 0;
         StartCoroutine(WaitStart());
         State = EnemyState.NORMAL;
+    }
+
+    public void Reset()
+    {
+        
     }
 
     IEnumerator WaitStart()
@@ -66,6 +73,7 @@ public class MobileEnemy : Enemy
     }
 
     bool wasChange = false;
+    bool _reset = false;
     // Update is called once per frame
     override public void Update()
     {
@@ -75,8 +83,14 @@ public class MobileEnemy : Enemy
         {
             CheckpointChange();
         }
-        if (_player != null && _player.Dead)
+        if (_player != null && _player.Dead && !_reset)
+        {
+            _reset = true;
+            StopFollowingPlayer();
             return;
+        }
+        else
+            _reset = false;
         // If Missing Checkpoint Manager.
         if (_checkpointManager == null)
         {
@@ -108,8 +122,8 @@ public class MobileEnemy : Enemy
                 StopFollowingPlayer();
             }
         }
-
-        CheckForInteraction();
+        if (_canInteract)
+            CheckForInteraction();
         CheckIfStuck();
     }
 

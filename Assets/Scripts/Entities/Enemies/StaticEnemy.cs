@@ -17,4 +17,11 @@ public class StaticEnemy : Enemy
     {
         _controller.animator.SetBool("Shooting", true);
     }
+
+    protected override void EndShooting()
+    {
+        base.EndShooting();
+        _controller.animator.SetBool("Shooting", false);
+
+    }
 }

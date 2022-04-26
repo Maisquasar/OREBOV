@@ -20,6 +20,11 @@ public class DetectionZone : Trigger
     }
     private void OnTriggerStay(Collider other)
     {
+        if (_playerStatus == null)
+        {
+            _playerAnimator = FindObjectOfType<PlayerAnimator>();
+            _playerStatus = _playerAnimator.GetComponent<PlayerStatus>();
+        }
         if (_playerStatus.Dead)
             return;
         Component t = other.gameObject.GetComponent(typeof(PlayerStatus));
@@ -79,7 +84,9 @@ public class DetectionZone : Trigger
 
     private bool CheckForObstacles()
     {
-        if (Enemy.Controller == null || LinkToLight)
+        if (LinkToLight)
+            return false;
+        if (Enemy.Controller == null)
             return false;
         if (Physics.Raycast(Enemy.transform.position, _playerStatus.transform.position - Enemy.transform.position, Vector3.Distance(Enemy.transform.position, _playerStatus.transform.position), Enemy.Controller.WallType, QueryTriggerInteraction.Ignore))
             return true;
