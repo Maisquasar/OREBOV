@@ -11,6 +11,7 @@ public class EntityWalkSounds : MonoBehaviour
 
     private EntityMovement _mouvement;
     private bool _canTriggerSounds = true;
+    private bool _initiated = false;
 
     #region InitScript
 
@@ -28,6 +29,11 @@ public class EntityWalkSounds : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!_initiated)
+        {
+            _initiated = true;
+            return;
+        }
         if (IsSoundPlayable(other))
         {
             if (_mouvement.WalkSoundManager())

@@ -48,17 +48,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmbientType: 0
-  _isSelected: 0
-  _objectActive: 0
-  _useOnlyInShadow: 0
+  CanBeSelected: 1
+  IsSelected: 0
+  ObjectActive: 0
+  UseOnlyInShadow: 0
   ObjectInteractionArea: 0
-  DefaultActive: 0
-  _deactiveInteraction: 0
+  DefaultState: 0
+  DeactiveInteraction: 0
+  ObjectType: 0
   _uiHintPosition: {x: 0, y: 1, z: -0.4}
   _activeSound: 1
   _soundActiveTrigger: {fileID: 3444530944605682393}
   _soundDeactiveTrigger: {fileID: 144438386123505588}
-  ObjectType: 0
   _debug: 0
   _handle: {fileID: 3683270878600761257}
   _handleAmplitude: 0.089
@@ -74,7 +75,7 @@ AudioSource:
   m_GameObject: {fileID: 3683270876888302749}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -176,8 +177,10 @@ MonoBehaviour:
   _soundName: Active
   _audioClipArray:
   - {fileID: 8300000, guid: 1abc7fbd73bd4284d84647d2831d7efb, type: 3}
-  _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 0
   _playCount: 1
@@ -199,8 +202,10 @@ MonoBehaviour:
   _soundName: Active
   _audioClipArray:
   - {fileID: 8300000, guid: b028a0ebd3d7bc74ebd0261e28aeb7e8, type: 3}
-  _mixer: {fileID: -7511444663554815251, guid: 38526a8b4a8e94a49a50f3387ad84dbf, type: 2}
+  _mixer: {fileID: -7511444663554815251, guid: 486098879d4d44f47964fcd6d0a1bd63, type: 2}
+  _volume: 1
   _randomPlaySound: 0
+  _randomLeftRightPanning: 0
   _playAtStart: 0
   _looped: 0
   _playCount: 1
