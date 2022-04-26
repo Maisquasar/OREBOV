@@ -7,6 +7,7 @@ using static UnityEngine.InputSystem.InputAction;
 using States;
 using InteractObject;
 using System;
+using UnityEngine.InputSystem;
 
 public enum SoundIDs
 {
@@ -163,6 +164,7 @@ public class PlayerStatus : Entity
                 }
             }
         }
+        SetVibration();
         _previousPos = transform.position;
     }
 
@@ -394,5 +396,19 @@ public class PlayerStatus : Entity
     public void PlaySound(SoundIDs sound)
     {
         _soundBoard[sound].PlaySound();
+    }
+
+    public void SetVibration()
+    {
+        if (Gamepad.current == null)
+            return;
+        float max = 0;
+        foreach (var Enemy in FindObjectsOfType<Enemy>())
+        {
+            if (max < Enemy.VibrationIntensity)
+                max = Enemy.VibrationIntensity;
+        }
+        Gamepad.current.SetMotorSpeeds(max, max);
+
     }
 }

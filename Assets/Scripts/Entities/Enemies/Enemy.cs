@@ -33,6 +33,8 @@ public class Enemy : Entity
     [HideInInspector] public float TimeStamp = 0;
     protected PlayerStatus _player;
 
+    [HideInInspector] public float VibrationIntensity;
+
     public virtual EntityMovement Controller { get { return _entityController; } }
 
     // Start is called before the first frame update
@@ -158,9 +160,8 @@ public class Enemy : Entity
         else
         {
             float distance = Vector3.Distance(transform.position, _player.transform.position);
-            float vibrationIntensity = 1 - (distance) / (_distanceVibration);
-            vibrationIntensity *= _maxVibrationIntensity;
-            Gamepad.current.SetMotorSpeeds(vibrationIntensity, vibrationIntensity);
+            VibrationIntensity = 1 - (distance) / (_distanceVibration);
+            VibrationIntensity *= _maxVibrationIntensity;
         }
     }
 }
