@@ -1294,7 +1294,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ef7e9c7e73f711f4ba9417a0ce1c83d1, type: 2}
+  - {fileID: 2100000, guid: 4d1c11ecf91c18d4e86d3818e8c650cc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1536,17 +1536,17 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _flipTime: 0.1
   jumpHeight: 2
   jumpDistance: 1.5
   edgeDetectorHeight: 0.6
   FallDamageHeight: 20
   IsClimbing: 0
+  ClimbingLadder: 0
+  Stair: 0
   IsPushing: 0
   IsPulling: 0
   IsHide: 0
   CanHide: 1
-  ClimbingLadder: 0
 --- !u!114 &5666957167554232153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1792,11 +1792,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerActionState: 0
-  CheckpointPos: {x: 0, y: 0, z: 0}
+  LastCheckpoint: {fileID: 0}
   _pauseMenu: {fileID: 0}
+  deadZone: 0
   _soundEffectsHandler: {fileID: 7618428330397827339}
   Controller: {fileID: 0}
   IsHide: 0
+  SpawnPos: {x: 0, y: 0, z: 0}
 --- !u!1 &5975660130336304170
 GameObject:
   m_ObjectHideFlags: 0
