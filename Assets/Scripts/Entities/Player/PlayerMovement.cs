@@ -334,10 +334,6 @@ public class PlayerMovement : EntityMovement
         yield return new WaitForSeconds(0.6f);
         IsHide = false;
         _playerStatus.IsHide = false;
-        Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
-
-        // Reset Rotation.
-        StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
         yield return new WaitForSeconds(0.5f);
         CanHide = true;
     }
