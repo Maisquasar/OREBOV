@@ -20,6 +20,7 @@ public class UIScriptCredits : MonoBehaviour
 
     private void Start()
     {
+
         StartCoroutine(FadeOutImage());
     }
 
