@@ -146,6 +146,7 @@ public class EntityMovement : AmbientTypeHolder
 
     protected void SetGravity()
     {
+        if (!_rb) return;
         Vector3 gravity = _globalGravity * _gravityScale * Vector3.up;
         _rb.AddForce(gravity, ForceMode.Acceleration);
     }
