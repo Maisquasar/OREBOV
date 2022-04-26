@@ -325,6 +325,7 @@ public class PlayerMovement : EntityMovement
     [HideInInspector] public bool CanHide = true;
     public IEnumerator StopHide()
     {
+        canTurn = false;
         _playerStatus.IsHide = false;
         animator.SetBool("Hide", false);
         yield return new WaitForSeconds(0.5f);
@@ -334,12 +335,12 @@ public class PlayerMovement : EntityMovement
         yield return new WaitForSeconds(0.6f);
         IsHide = false;
         _playerStatus.IsHide = false;
-        Quaternion target = Quaternion.Euler(0, Direction * 90, 0);
-
-        // Reset Rotation.
-        StartCoroutine(LerpFromTo(transform.rotation, target, 0.3f));
+        _direction = 1;
+        var target = Quaternion.Euler(0, 90, 0);
+        StartCoroutine(LerpFromTo(transform.rotation, target, 0.1f));
         yield return new WaitForSeconds(0.5f);
         CanHide = true;
+        canTurn = true;
     }
 
     public IEnumerator LerpFromTo(Vector3 initial, Vector3 goTo, float duration)
