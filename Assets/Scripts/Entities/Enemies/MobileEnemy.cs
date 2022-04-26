@@ -18,6 +18,8 @@ public class MobileEnemy : Enemy
 
     [SerializeField] private bool _followPlayerOnDetection = true;
 
+    [SerializeField] private bool _canInteract = true;
+
     ObjectManager _objectManager;
     EnemyCheckpointManager _checkpointManager;
     int _currentCheckpoint;
@@ -120,8 +122,8 @@ public class MobileEnemy : Enemy
                 StopFollowingPlayer();
             }
         }
-
-        CheckForInteraction();
+        if (_canInteract)
+            CheckForInteraction();
         CheckIfStuck();
     }
 
