@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 4.1509476, g: 3.1169357, b: 1.7082949, a: 1}
+  m_IndirectSpecularColor: {r: 4.150009, g: 3.1140938, b: 1.7064209, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7944,7 +7944,7 @@ Transform:
   m_LocalScale: {x: 25, y: 0.2, z: 12}
   m_Children: []
   m_Father: {fileID: 1348016726}
-  m_RootOrder: 79
+  m_RootOrder: 77
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &571957589
 BoxCollider:
@@ -9479,7 +9479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5121259598529145712, guid: e1f4629769aed694893f1d7dff7a3981, type: 3}
       propertyPath: _windowSize.x
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5121259598529145712, guid: e1f4629769aed694893f1d7dff7a3981, type: 3}
       propertyPath: _windowSize.y
@@ -9793,7 +9793,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 259190657974691988, guid: 7ceee308f3489324f8ecc87b4b80740c, type: 3}
       propertyPath: m_Size.y
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 259190657974691988, guid: 7ceee308f3489324f8ecc87b4b80740c, type: 3}
       propertyPath: m_Size.z
@@ -9805,7 +9805,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 259190657974691988, guid: 7ceee308f3489324f8ecc87b4b80740c, type: 3}
       propertyPath: m_Center.y
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 259190657974691988, guid: 7ceee308f3489324f8ecc87b4b80740c, type: 3}
       propertyPath: m_Center.z
@@ -13645,7 +13645,7 @@ Transform:
   - {fileID: 977658845}
   - {fileID: 903465130}
   m_Father: {fileID: 1348016726}
-  m_RootOrder: 76
+  m_RootOrder: 71
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1153663184
 PrefabInstance:
@@ -16936,17 +16936,17 @@ Transform:
   - {fileID: 1526406536}
   - {fileID: 239203566}
   - {fileID: 585325343}
+  - {fileID: 1139260148}
   - {fileID: 753449580}
   - {fileID: 907500558}
   - {fileID: 1171312742}
   - {fileID: 498234616}
   - {fileID: 1895383573}
-  - {fileID: 1139260148}
+  - {fileID: 571957588}
   - {fileID: 1756512160}
   - {fileID: 1631810138}
-  - {fileID: 571957588}
-  - {fileID: 1575615970}
   - {fileID: 1432895548}
+  - {fileID: 1575615970}
   m_Father: {fileID: 1325966560}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -18082,7 +18082,7 @@ Transform:
   m_LocalScale: {x: 8, y: 5, z: 0.2}
   m_Children: []
   m_Father: {fileID: 1348016726}
-  m_RootOrder: 81
+  m_RootOrder: 80
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1432895549
 BoxCollider:
