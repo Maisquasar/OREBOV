@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeakGround : MonoBehaviour
 {
     [SerializeField] private float _minimunFallSpeed;
+    [SerializeField] private Animator _breakAnimator;
 
     private Collider _colliderGO;
 
@@ -23,7 +24,10 @@ public class WeakGround : MonoBehaviour
         {
             bool isBreak =  collision.relativeVelocity.y < -_minimunFallSpeed;
            
-            if(isBreak) { _colliderGO.enabled = false; }
+            if(isBreak) {
+                _colliderGO.enabled = false;
+                _breakAnimator.SetBool("Break",true);
+            }
         }
     }
 
